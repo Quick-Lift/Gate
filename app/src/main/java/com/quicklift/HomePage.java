@@ -16,7 +16,7 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        getSupportActionBar().setTitle("Home");
+        getSupportActionBar().setTitle("Home Page");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
