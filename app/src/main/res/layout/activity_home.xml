@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.quicklift.Home">
+
+        <fragment
+            android:id="@+id/fragment"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+             <LinearLayout
+                 android:id="@+id/layout1"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:orientation="vertical"
+                 android:layout_marginTop="20dp">
+
+    <LinearLayout
+        android:id="@+id/pickup_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:weightSum="5"
+        android:visibility="gone"
+        android:layout_marginBottom="10dp">
+
+                 <EditText
+                     android:id="@+id/pickup"
+                     android:layout_width="0dp"
+                     android:layout_height="50dp"
+                     android:layout_weight="4"
+                     android:layout_marginLeft="20dp"
+                     android:layout_marginRight="5dp"
+                     android:hint="Pick Up"
+                     android:paddingLeft="20dp"
+                     android:textColor="#fdfefe"
+                     android:textColorHint="#dcdcdc"
+                     android:background="#660000bb"/>
+
+        <Button
+            android:id="@+id/pick_go"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginRight="20dp"
+            android:text="Go"
+            android:textColor="#fdfefe"
+            android:textColorHint="#dcdcdc"
+            android:background="#660000bb" />
+
+     </LinearLayout>
+
+             <LinearLayout
+                 android:id="@+id/destn_layout"
+                 android:layout_width="match_parent"
+                 android:layout_height="50dp"
+                 android:orientation="horizontal"
+                 android:weightSum="5">
+
+                 <EditText
+                     android:id="@+id/destination"
+                     android:layout_width="0dp"
+                     android:layout_height="50dp"
+                     android:layout_weight="4"
+                     android:layout_marginLeft="20dp"
+                     android:layout_marginRight="5dp"
+                     android:hint="Destination"
+                     android:paddingLeft="20dp"
+                     android:textColor="#fdfefe"
+                     android:textColorHint="#dcdcdc"
+                     android:background="#660000bb"
+                     android:layout_below="@+id/pickup"/>
+
+                 <Button
+                     android:id="@+id/dest_go"
+                     android:layout_width="0dp"
+                     android:layout_height="50dp"
+                     android:layout_weight="1"
+                     android:layout_marginRight="20dp"
+                     android:text="Go"
+                     android:textColor="#fdfefe"
+                     android:textColorHint="#dcdcdc"
+                     android:background="#660000bb" />
+
+             </LinearLayout>
+
+             <LinearLayout
+                 android:id="@+id/layout2"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:orientation="vertical"
+                 android:gravity="bottom"
+                 android:layout_marginBottom="20dp">
+
+                 <Button
+                     android:id="@+id/ride"
+                     android:layout_width="100dp"
+                     android:layout_height="50dp"
+                     android:onClick="logout"
+                     android:text="Ride"
+                     android:textColor="#fdfefe"
+                     android:background="#660000bb"
+                     android:layout_gravity="center_horizontal"/>
+
+                 <LinearLayout
+                     android:id="@+id/layout3"
+                     android:layout_width="match_parent"
+                     android:layout_height="150dp"
+                     android:orientation="vertical"
+                     android:layout_marginLeft="20dp"
+                     android:layout_marginRight="20dp"
+                     android:visibility="gone">
+
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="80dp"
+                         android:orientation="horizontal">
+
+                         <LinearLayout
+                             android:layout_width="80dp"
+                             android:layout_height="80dp"
+                             android:background="#fdfefe"
+                             android:gravity="center">
+
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:id="@+id/img"
+                                 android:layout_width="70dp"
+                                 android:layout_height="70dp"
+                                 android:src="@drawable/profile"/>
+
+                         </LinearLayout>
+
+                         <LinearLayout
+                             android:layout_width="match_parent"
+                             android:layout_height="match_parent"
+                             android:orientation="vertical">
+
+                             <EditText
+                                 android:id="@+id/name"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="40dp"
+                                 android:hint="Name"
+                                 android:textColor="#ff000000"
+                                 android:gravity="center"
+                                 android:textColorHint="#99000000"
+                                 android:background="#fdfefe"/>
+
+                             <EditText
+                                 android:id="@+id/phone"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="40dp"
+                                 android:hint="Contact No."
+                                 android:gravity="center"
+                                 android:textColor="#ff000000"
+                                 android:textColorHint="#99000000"
+                                 android:background="#fdfefe"/>
+
+                         </LinearLayout>
+                     </LinearLayout>
+
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+                         android:orientation="horizontal"
+                         android:weightSum="3">
+
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_height="match_parent"
+                             android:layout_weight="2"
+                             android:orientation="vertical">
+
+                             <EditText
+                                 android:id="@+id/cartype"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="35dp"
+                                 android:hint="Car Type"
+                                 android:paddingLeft="10dp"
+                                 android:gravity="center"
+                                 android:textColor="#ff000000"
+                                 android:textColorHint="#99000000"
+                                 android:background="#fdfefe"/>
+
+                             <EditText
+                                 android:id="@+id/carno"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="35dp"
+                                 android:hint="Car Number"
+                                 android:paddingLeft="10dp"
+                                 android:gravity="center"
+                                 android:textColor="#ff000000"
+                                 android:textColorHint="#99000000"
+                                 android:background="#fdfefe"/>
+
+                         </LinearLayout>
+
+                         <EditText
+                             android:id="@+id/rating"
+                             android:layout_width="0dp"
+                             android:layout_height="70dp"
+                             android:layout_weight="1"
+                             android:hint="Ratings"
+                             android:gravity="center"
+                             android:textColor="#ff000000"
+                             android:textColorHint="#99000000"
+                             android:background="#fdfefe"/>
+
+                     </LinearLayout>
+                 </LinearLayout>
+
+                 <LinearLayout
+                     android:id="@+id/layout4"
+                     android:layout_width="match_parent"
+                     android:layout_height="145dp"
+                     android:orientation="vertical"
+                     android:layout_marginLeft="20dp"
+                     android:layout_marginRight="20dp"
+                     android:visibility="gone">
+
+                     <TextView
+                         android:id="@+id/time"
+                         android:layout_width="match_parent"
+                         android:layout_height="40dp"
+                         android:hint="Estimated Time"
+                         android:gravity="center"
+                         android:layout_marginBottom="5dp"
+                         android:textColor="#ff000000"
+                         android:textColorHint="#99000000"
+                         android:background="#fdfefe" />
+
+                     <TextView
+                         android:id="@+id/fare"
+                         android:layout_width="match_parent"
+                         android:layout_height="40dp"
+                         android:hint="Estimated Fare"
+                         android:gravity="center"
+                         android:layout_marginBottom="10dp"
+                         android:textColor="#ff000000"
+                         android:textColorHint="#99000000"
+                         android:background="#fdfefe" />
+
+                     <Button
+                         android:id="@+id/confirm"
+                         android:layout_width="100dp"
+                         android:layout_height="50dp"
+                         android:onClick="logout"
+                         android:text="Confirm"
+                         android:textColor="#fdfefe"
+                         android:background="#660000bb"
+                         android:layout_gravity="center_horizontal"/>
+                 </LinearLayout>
+             </LinearLayout>
+             </LinearLayout>
+</RelativeLayout>

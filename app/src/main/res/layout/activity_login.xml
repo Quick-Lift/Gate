@@ -13,10 +13,10 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/email"
+            android:id="@+id/phone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Email"
+            android:hint="Email Address"
             android:inputType="textEmailAddress"/>
 
         <EditText

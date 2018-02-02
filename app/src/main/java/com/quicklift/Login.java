@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     ProgressDialog pdialog;
-    EditText mEmail,mPassword;
+    EditText mPhone,mPassword;
     Button mLogin,mRegistration;
 
     @Override
@@ -46,7 +46,7 @@ public class Login extends AppCompatActivity {
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
 
-        mEmail=(EditText)findViewById(R.id.email);
+        mPhone=(EditText)findViewById(R.id.phone);
         mPassword=(EditText)findViewById(R.id.password);
 
         mLogin=(Button)findViewById(R.id.login);
@@ -68,7 +68,7 @@ public class Login extends AppCompatActivity {
 
         showProgressDialog();
 
-        mAuth.signInWithEmailAndPassword(mEmail.getText().toString(), mPassword.getText().toString())
+        mAuth.signInWithEmailAndPassword(mPhone.getText().toString(), mPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -76,17 +76,8 @@ public class Login extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             // Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if (!user.isEmailVerified()){
-                                hideProgressDialog();
-                                mAuth.signOut();
-                                Toast.makeText(Login.this, "Please verify your email first !", Toast.LENGTH_SHORT).show();
-
-                                mEmail.setText("");
-                                mPassword.setText("");
-                            }
-                            else {
                                 updateUI(user);
-                            }
+
                         } else {
                             // If sign in fails, display a message to the user.
                             // Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -103,12 +94,12 @@ public class Login extends AppCompatActivity {
     private boolean validateForm() {
         boolean valid = true;
 
-        String email = mEmail.getText().toString();
+        String email = mPhone.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            mEmail.setError("Required.");
+            mPhone.setError("Required.");
             valid = false;
         } else {
-            mEmail.setError(null);
+            mPhone.setError(null);
         }
 
         String password = mPassword.getText().toString();
@@ -125,10 +116,10 @@ public class Login extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-            startActivity(new Intent(Login.this,HomePage.class));
+            startActivity(new Intent(Login.this,Home.class));
             finish();
         } else {
-            mEmail.setText("");
+            mPhone.setText("");
             mPassword.setText("");
         }
     }
