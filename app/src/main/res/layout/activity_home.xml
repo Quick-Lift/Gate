@@ -25,9 +25,11 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        android:weightSum="5"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone"
-        android:layout_marginBottom="10dp">
+        android:background="#850000ff">
 
                  <EditText
                      android:id="@+id/pickup"
@@ -39,8 +41,9 @@
                      android:hint="Pick Up"
                      android:paddingLeft="20dp"
                      android:textColor="#fdfefe"
+                     android:visibility="gone"
                      android:textColorHint="#dcdcdc"
-                     android:background="#660000bb"/>
+                     android:background="#850000ff"/>
 
         <Button
             android:id="@+id/pick_go"
@@ -51,7 +54,14 @@
             android:text="Go"
             android:textColor="#fdfefe"
             android:textColorHint="#dcdcdc"
-            android:background="#660000bb" />
+            android:visibility="gone"
+            android:background="#850000ff" />
+
+        <fragment
+            android:id="@+id/place_autocomplete_fragment_pickup"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
 
      </LinearLayout>
 
@@ -60,7 +70,9 @@
                  android:layout_width="match_parent"
                  android:layout_height="50dp"
                  android:orientation="horizontal"
-                 android:weightSum="5">
+                 android:layout_marginLeft="20dp"
+                 android:layout_marginRight="20dp"
+                 android:background="#850000ff">
 
                  <EditText
                      android:id="@+id/destination"
@@ -73,7 +85,8 @@
                      android:paddingLeft="20dp"
                      android:textColor="#fdfefe"
                      android:textColorHint="#dcdcdc"
-                     android:background="#660000bb"
+                     android:background="#850000ff"
+                     android:visibility="gone"
                      android:layout_below="@+id/pickup"/>
 
                  <Button
@@ -85,7 +98,14 @@
                      android:text="Go"
                      android:textColor="#fdfefe"
                      android:textColorHint="#dcdcdc"
-                     android:background="#660000bb" />
+                     android:visibility="gone"
+                     android:background="#850000ff" />
+
+                 <fragment
+                     android:id="@+id/place_autocomplete_fragment"
+                     android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                     android:layout_width="match_parent"
+                     android:layout_height="50dp" />
 
              </LinearLayout>
 
@@ -104,7 +124,7 @@
                      android:onClick="logout"
                      android:text="Ride"
                      android:textColor="#fdfefe"
-                     android:background="#660000bb"
+                     android:background="#850000ff"
                      android:layout_gravity="center_horizontal"/>
 
                  <LinearLayout
@@ -251,9 +271,10 @@
                          android:onClick="logout"
                          android:text="Confirm"
                          android:textColor="#fdfefe"
-                         android:background="#660000bb"
+                         android:background="#850000ff"
                          android:layout_gravity="center_horizontal"/>
                  </LinearLayout>
+
              </LinearLayout>
              </LinearLayout>
 </RelativeLayout>

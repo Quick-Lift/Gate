@@ -27,6 +27,10 @@ public class WelcomeScreen extends AppCompatActivity {
         //DatabaseReference db=FirebaseDatabase.getInstance().getReference();
         //db.push().setValue("hi");
 
+        Intent intent = new Intent(WelcomeScreen.this, Login.class);
+        Bundle bundle= ActivityOptions.makeCustomAnimation(getApplicationContext(),R.anim.animation_slide1,R.anim.animation_slide2).toBundle();
+        startActivity(intent,bundle);
+        finish();
 
         i1=(ImageView)findViewById(R.id.img1);
         i2=(ImageView)findViewById(R.id.img2);
@@ -129,5 +133,7 @@ public class WelcomeScreen extends AppCompatActivity {
 
             }
         });
+
+
     }
 }

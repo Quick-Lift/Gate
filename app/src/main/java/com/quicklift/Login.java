@@ -61,13 +61,11 @@ public class Login extends AppCompatActivity {
     }
 
     private void signIn() {
-
         if (!validateForm()) {
             return;
         }
 
         showProgressDialog();
-
         mAuth.signInWithEmailAndPassword(mPhone.getText().toString(), mPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
