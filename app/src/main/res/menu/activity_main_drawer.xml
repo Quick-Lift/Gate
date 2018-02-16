@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+<!--
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"/>
+        <item
+            android:id="@+id/nav_profile"
+            android:title="My Profile" />
+        <item
+            android:id="@+id/nav_rides"
+            android:title="Rides" />
+        <item
+            android:id="@+id/nav_free_rides"
+            android:title="Free Rides" />
+        <item
+            android:id="@+id/nav_notif"
+            android:title="Notification" />
+        <item
+            android:id="@+id/nav_offers"
+            android:title="My Offers" />
+        <item
+            android:id="@+id/nav_about"
+            android:title="About" />
+        <item
+            android:id="@+id/nav_terms_cond"
+            android:title="Terms and Conditions" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:title="Share" />
+
+        </menu>
+    </item>
+-->
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_payment"
+            android:icon="@drawable/ic_payment"
+            android:title="Payment"/>
+        <item
+            android:id="@+id/nav_rides"
+            android:icon="@drawable/ic_rides"
+            android:title="Rides" />
+        <item
+            android:id="@+id/nav_offers"
+            android:icon="@drawable/ic_offers"
+            android:title="Offers" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+        <item
+            android:id="@+id/support"
+            android:icon="@drawable/ic_support"
+            android:title="Support" />
+        <item
+            android:id="@+id/nav_emergency_contact"
+            android:icon="@drawable/ic_contact"
+            android:title="Emergency Contact" />
+        <item
+            android:id="@+id/nav_drive_with_us"
+            android:icon="@drawable/ic_drive"
+            android:title="Drive with us" />
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share"
+            android:title="Share" />
+    </group>
+</menu>

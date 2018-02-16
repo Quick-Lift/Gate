@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,16 +16,25 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +66,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -76,34 +87,40 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Home extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, RoutingListener {
+public class Home extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, RoutingListener, NavigationView.OnNavigationItemSelectedListener {
     private GoogleMap mMap;
     GoogleApiClient gpc;
-    Marker marker_pick,marker_drop,marker,driver_drop;
+    Marker marker_pick,marker_drop,marker,driver_drop,driver;
     EditText pickup_address,destn_address;
     TextView time;
     Float estimated_time;
     Button pickup_go,destn_go,ride,confirm;
     Data data=new Data();
     Polyline line;
-    LatLng pickup;
+    LatLng pickup,cur_loc;
     GeoLocation driver_loc;
     PlaceAutocompleteFragment autocompleteFragment,autocompleteFragment_pickup;
     ProgressDialog pdialog;
     int i=0,found=0;
     ArrayList<String> driver_list=new ArrayList<String>();
     private GeoQuery find_driver;
+    SharedPreferences log_id;
+    Integer no_of_drivers=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setTitle("Home ");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+       //// getSupportActionBar().setTitle("Home ");
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
 
         pdialog=new ProgressDialog(this);
         pdialog.setMessage("Searching for driver...");
@@ -112,7 +129,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
         if (googleServicesAvailable()) {
             Toast.makeText(this, "Perfect !", Toast.LENGTH_SHORT).show();
-            setContentView(R.layout.activity_home);
+            setContentView(R.layout.activity_home_screen);
             initMap();
         } else {
             Toast.makeText(this, "Unable to load map !", Toast.LENGTH_SHORT).show();
@@ -130,13 +147,65 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         MapFragment mapfragment = (MapFragment) getFragmentManager().findFragmentById(R.id.fragment);
         mapfragment.getMapAsync(this);
 
-        //pickup_address=(EditText)findViewById(R.id.pickup);
-        //destn_address=(EditText)findViewById(R.id.destination);
+        pickup_address=(EditText)findViewById(R.id.pickup);
+        destn_address=(EditText)findViewById(R.id.destination);
         time=(TextView)findViewById(R.id.time);
         //pickup_go=(Button)findViewById(R.id.pick_go);
         //destn_go=(Button)findViewById(R.id.dest_go);
         ride=(Button)findViewById(R.id.ride);
         confirm=(Button)findViewById(R.id.confirm);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.getBackground().setAlpha(0);
+        toolbar.setBackgroundColor(0x00ffffff);
+        toolbar.setTitle("");
+
+        setSupportActionBar(toolbar);
+
+        pickup_address.setInputType(0);
+        destn_address.setInputType(0);
+/*
+        mGeoDataClient.getPlaceById(placeId).addOnCompleteListener(new OnCompleteListener<PlaceBufferResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
+                if (task.isSuccessful()) {
+                    PlaceBufferResponse places = task.getResult();
+                    Place myPlace = places.get(0);
+                    Log.i(TAG, "Place found: " + myPlace.getName());
+                    places.release();
+                } else {
+                    Log.e(TAG, "Place not found.");
+                }
+            }
+        });
+        */
+
+        pickup_address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(Home.this,PlaceSelector.class),1);
+            }
+        });
+
+        destn_address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(Home.this,PlaceSelector.class),2);
+            }
+        });
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        if (!log_id.getString("driver",null).equals("")){
+            tracktripstatus();
+        }
 /*
         destn_go.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,10 +267,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                i=0;
                 findViewById(R.id.layout4).setVisibility(View.GONE);
-                findViewById(R.id.layout3).setVisibility(View.VISIBLE);
 /*
-                String userId= FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String userId= log_id.getString("id",null);
                 DatabaseReference ref= FirebaseDatabase.getInstance().getReference("CustomerRequest");
 
                 GeoFire geoFire=new GeoFire(ref);
@@ -209,18 +278,22 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 */
 
                // pdialog.show();
-                data.setCustomer_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                getClosestDriver();
+                data.setCustomer_id(log_id.getString("id",null));
+                find_driver.removeAllListeners();
+                finddriver();
             }
         });
-
+/*
         autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
+        autocompleteFragment.setBoundsBias(new LatLngBounds(
+                new LatLng(12.864162, 77.438610),
+                new LatLng(13.139807, 77.711895)));
         autocompleteFragment.setHint("Destination");
+        autocompleteFragment.getView().setVisibility(View.GONE);
         destn_address=(EditText)autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
-        ((EditText)autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input)).setTextColor(Color.WHITE);
-        ((EditText)autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input)).setHintTextColor(Color.WHITE);
+        ((EditText)autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input)).setTextColor(Color.BLACK);
+        ((EditText)autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input)).setHintTextColor(Color.DKGRAY);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -262,10 +335,14 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 dataTransfer[3]=data;
 
                 getDirectionsData.execute(dataTransfer);
-*/
+
                 findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
 
                 getRouteToMarker(marker_pick.getPosition(),marker_drop.getPosition());
+
+                findViewById(R.id.layout3).setVisibility(View.GONE);
+                findViewById(R.id.layout4).setVisibility(View.GONE);
+                ride.setVisibility(View.VISIBLE);
 /*
                 Uri gmmIntentUri = Uri.parse("https://www.google.com/maps/dir/?api=1&origin="+marker_pick.getPosition().latitude+","+marker_pick.getPosition().longitude+"&destination="+marker_drop.getPosition().latitude+","+marker_drop.getPosition().longitude+"&travelmode=driving");
                 Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -284,7 +361,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 String uri = String.format(Locale.ENGLISH, "geo:%f,%f", marker_drop.getPosition().latitude, marker_drop.getPosition().longitude);
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                 startActivity(intent);
-*/
+
             }
 
             @Override
@@ -297,11 +374,15 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
         autocompleteFragment_pickup = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_pickup);
-
+        autocompleteFragment_pickup.setBoundsBias(new LatLngBounds(
+                new LatLng(12.864162, 77.438610),
+                new LatLng(13.139807, 77.711895)));
         autocompleteFragment_pickup.setHint("Pickup");
+
+        autocompleteFragment.getView().setVisibility(View.GONE);
         pickup_address=(EditText)autocompleteFragment_pickup.getView().findViewById(R.id.place_autocomplete_search_input);
-        ((EditText)autocompleteFragment_pickup.getView().findViewById(R.id.place_autocomplete_search_input)).setTextColor(Color.WHITE);
-        ((EditText)autocompleteFragment_pickup.getView().findViewById(R.id.place_autocomplete_search_input)).setHintTextColor(Color.WHITE);
+        ((EditText)autocompleteFragment_pickup.getView().findViewById(R.id.place_autocomplete_search_input)).setTextColor(Color.BLACK);
+        ((EditText)autocompleteFragment_pickup.getView().findViewById(R.id.place_autocomplete_search_input)).setHintTextColor(Color.DKGRAY);
 
         autocompleteFragment_pickup.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -330,8 +411,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 if (line!=null)
                     line.remove();
                 drawline();
-*/
+
+                place_drivers();
                 getRouteToMarker(marker_pick.getPosition(),marker_drop.getPosition());
+
+                findViewById(R.id.layout3).setVisibility(View.GONE);
+                findViewById(R.id.layout4).setVisibility(View.GONE);
+                ride.setVisibility(View.VISIBLE);
               /*
                 //float result[]=new float[10];
                 //Location.distanceBetween(marker_pick.getPosition().latitude,marker_pick.getPosition().longitude,marker_drop.getPosition().latitude,marker_drop.getPosition().longitude,result);
@@ -346,58 +432,52 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                 getDirectionsData.execute(dataTransfer);
 
-                */
+
             }
 
             @Override
             public void onError(Status status) {
                 // TODO: Handle the error.
                 // Log.i(TAG, "An error occurred: " + status);
-                Toast.makeText(Home.this, status.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Home.this, status.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        */
+    }
+
+    private void finddriver() {
+        Log.v("TAG",String.valueOf(i));
+        if (found==1)
+            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
+        else if (found==0 && i<driver_list.size())
+            getClosestDriver();
+        else {
+            findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+            findViewById(R.id.layout3).setVisibility(View.GONE);
+            Toast.makeText(this, "No Ride Found", Toast.LENGTH_SHORT).show();
+            findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+            findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+        }
     }
 
     DatabaseReference cust_req;
     DatabaseReference resp;
 
     private void getClosestDriver() {
-        find_driver.removeAllListeners();
-
-        for (int t=0;t<5;t++){
-            //Toast.makeText(Home.this, String.valueOf(i++), Toast.LENGTH_SHORT).show();
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                        Toast.makeText(Home.this, String.valueOf(++i), Toast.LENGTH_SHORT).show();
-                }
-            }, 5000);
-        }
-        //Toast.makeText(Home.this, String.valueOf(++i), Toast.LENGTH_SHORT).show();
-
-/*
             cust_req = FirebaseDatabase.getInstance().getReference("CustomerRequests/" + driver_list.get(i));
-            cust_req.child("Info").setValue(data);
-
-            resp = FirebaseDatabase.getInstance().getReference("Response/" + driver_list.get(i));
-            resp.addValueEventListener(new ValueEventListener() {
+            cust_req.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        Toast.makeText(Home.this, "hi", Toast.LENGTH_SHORT).show();
-                        Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                        if (map.get("resp").toString().equals("Accept")) {
-                            Toast.makeText(Home.this, "Accepted", Toast.LENGTH_SHORT).show();
-                            found = 1;
-                        } else {
-                            Toast.makeText(Home.this, "Rejected", Toast.LENGTH_SHORT).show();
-                            found = 0;
-                            cust_req.removeValue();
-                            resp.removeValue();
-                            i++;
-                        }
+                    if (!dataSnapshot.exists()) {
+                        cust_req.child("Info").setValue(data);
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("DriversAvailable");
+                        GeoFire geoFire = new GeoFire(ref);
+                        geoFire.removeLocation(driver_list.get(i));
+                    }
+                    else {
+                        ++i;
+                        finddriver();
                     }
                 }
 
@@ -406,13 +486,234 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                 }
             });
-            i++;
-            */
-            //Toast.makeText(this, "i"+i, Toast.LENGTH_SHORT).show();
+
+        resp = FirebaseDatabase.getInstance().getReference("Response/" + driver_list.get(i));
+        resp.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    //Toast.makeText(Home.this, "hi", Toast.LENGTH_SHORT).show();
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if (map.get("resp").toString().equals("Accept")) {
+                        Toast.makeText(Home.this, "Driver is on its way !", Toast.LENGTH_SHORT).show();
+                        found = 1;
+                        DatabaseReference db=FirebaseDatabase.getInstance().getReference("Drivers/"+driver_list.get(i));
+                        db.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                findViewById(R.id.layout3).setVisibility(View.VISIBLE);
+                                Map<String,Object> cust=(Map<String, Object>) dataSnapshot.getValue();
+                                TextView name=(TextView)findViewById(R.id.name);
+                                TextView phone=(TextView)findViewById(R.id.phone);
+                                TextView car_type=(TextView)findViewById(R.id.cartype);
+                                TextView car_no=(TextView)findViewById(R.id.carno);
+                                TextView rating=(TextView)findViewById(R.id.rating);
+                                CircleImageView img=(CircleImageView)findViewById(R.id.img);
+
+                                name.setText(cust.get("name").toString());
+                                phone.setText(cust.get("phone").toString());
+                                car_type.setText(cust.get("veh_type").toString());
+                                car_no.setText(cust.get("veh_num").toString());
+
+                                if (!cust.get("thumb").toString().equals("")) {
+                                    byte[] dec = Base64.decode(cust.get("thumb").toString(), Base64.DEFAULT);
+                                    Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
+                                    img.setImageBitmap(decbyte);
+                                }
+                                findViewById(R.id.pickup_layout).setVisibility(View.GONE);
+                                findViewById(R.id.destn_layout).setVisibility(View.GONE);
+                                SharedPreferences.Editor editor=log_id.edit();
+                                editor.putString("driver",driver_list.get(i));
+                                editor.commit();
+
+                                tracktripstatus();
+                                //pdialog.dismiss();
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else {
+                        if (log_id.getString("driver",null).equals("")) {
+                            Toast.makeText(Home.this, "Rejected", Toast.LENGTH_SHORT).show();
+                            found = 0;
+                            cust_req.removeValue();
+                            resp.removeValue();
+                            ++i;
+                            if (i <= driver_list.size())
+                                finddriver();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //Toast.makeText(this, "i"+i, Toast.LENGTH_SHORT).show();
         //}
-        if (i==driver_list.size() || found!=1){
-            //Toast.makeText(this, "No Ride Found", Toast.LENGTH_SHORT).show();
+        Handler handle=new Handler();
+        handle.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (found==0 && ++i<=driver_list.size()){
+                    cust_req.removeValue();
+                    resp.removeValue();
+                    resp.onDisconnect();
+                    finddriver();
+                    Toast.makeText(Home.this, "hi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        },8000);
+    }
+
+    private void tracktripstatus() {
+        findViewById(R.id.canceltrip).setVisibility(View.VISIBLE);
+        ride.setVisibility(View.GONE);
+        DatabaseReference tripstatus=FirebaseDatabase.getInstance().getReference("Status/"+log_id.getString("driver",null)+"/l");
+        tripstatus.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    ArrayList<Double> map=(ArrayList<Double>) dataSnapshot.getValue();
+
+                    if (driver!=null){
+                        driver.remove();
+                    }
+
+                    MarkerOptions options = new MarkerOptions()
+                            .title("Driver")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            .position(new LatLng((Double) map.get(0),(Double) map.get(1)))
+                            .snippet("Location");
+                    driver=mMap.addMarker(options);
+
+                    getRouteToMarker(marker_pick.getPosition(),driver.getPosition());
+                }
+                else {
+                    Toast.makeText(Home.this, "Trip Cancelled", Toast.LENGTH_SHORT).show();
+                    if (driver!=null){
+                        driver.remove();
+                    }
+                    if (marker_drop!=null){
+                        marker_drop.remove();
+                    }
+                    found=0;
+                    erasePolylines();
+                    ride.setVisibility(View.GONE);
+                    findViewById(R.id.layout4).setVisibility(View.GONE);
+                    findViewById(R.id.layout3).setVisibility(View.GONE);
+                    findViewById(R.id.pickup_layout).setVisibility(View.GONE);
+                    findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+                    findViewById(R.id.canceltrip).setVisibility(View.GONE);
+                    destn_address.setText("");
+                    DatabaseReference cr = FirebaseDatabase.getInstance().getReference("CustomerRequests/" + log_id.getString("driver",null));
+                    cr.removeValue();
+                    mMap.clear();
+                    if (marker_pick!=null){
+                        marker_pick.remove();
+                    }
+
+                    MarkerOptions options=new MarkerOptions()
+                            .title("Current Location")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            .position(cur_loc)
+                            .snippet("Pick up");
+                    marker_pick=mMap.addMarker(options);
+                    pickup=cur_loc;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        DatabaseReference db=FirebaseDatabase.getInstance().getReference("Drivers/"+log_id.getString("driver",null));
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                findViewById(R.id.layout3).setVisibility(View.VISIBLE);
+                Map<String,Object> cust=(Map<String, Object>) dataSnapshot.getValue();
+                TextView name=(TextView)findViewById(R.id.name);
+                TextView phone=(TextView)findViewById(R.id.phone);
+                TextView car_type=(TextView)findViewById(R.id.cartype);
+                TextView car_no=(TextView)findViewById(R.id.carno);
+                TextView rating=(TextView)findViewById(R.id.rating);
+                CircleImageView img=(CircleImageView)findViewById(R.id.img);
+
+                name.setText(cust.get("name").toString());
+                phone.setText(cust.get("phone").toString());
+                car_type.setText(cust.get("veh_type").toString());
+                car_no.setText(cust.get("veh_num").toString());
+
+                if (!cust.get("thumb").toString().equals("")) {
+                    byte[] dec = Base64.decode(cust.get("thumb").toString(), Base64.DEFAULT);
+                    Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
+                    img.setImageBitmap(decbyte);
+                }
+                findViewById(R.id.pickup_layout).setVisibility(View.GONE);
+                findViewById(R.id.destn_layout).setVisibility(View.GONE);
+                //SharedPreferences.Editor editor=log_id.edit();
+                //editor.putString("driver",driver_list.get(i));
+                //editor.commit();
+
+                //tracktripstatus();
+                //pdialog.dismiss();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void cancel_trip(View v){
+        DatabaseReference tripstatus=FirebaseDatabase.getInstance().getReference("Status/"+log_id.getString("driver",null));
+        tripstatus.removeValue();
+        resp.removeValue();
+        SharedPreferences.Editor editor=log_id.edit();
+        editor.putString("driver","");
+        editor.commit();
+
+        DatabaseReference cr = FirebaseDatabase.getInstance().getReference("CustomerRequests/" + log_id.getString("driver",null));
+        cr.removeValue();
+        found=0;
+
+        if (driver!=null){
+            driver.remove();
         }
+        if (marker_drop!=null){
+            marker_drop.remove();
+        }
+        erasePolylines();
+        ride.setVisibility(View.VISIBLE);
+        findViewById(R.id.layout4).setVisibility(View.GONE);
+        findViewById(R.id.layout3).setVisibility(View.GONE);
+        findViewById(R.id.pickup_layout).setVisibility(View.GONE);
+        findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+        findViewById(R.id.canceltrip).setVisibility(View.GONE);
+        destn_address.setText("");
+        mMap.clear();
+        if (marker_pick!=null){
+            marker_pick.remove();
+        }
+
+        MarkerOptions options=new MarkerOptions()
+                .title("Current Location")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .position(cur_loc)
+                .snippet("Pick up");
+        marker_pick=mMap.addMarker(options);
+        pickup=cur_loc;
 
     }
 
@@ -689,17 +990,18 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     .snippet("Pick up");
             marker_pick=mMap.addMarker(options);
             pickup=marker_pick.getPosition();
+            cur_loc=marker_pick.getPosition();
 
             data.setSt_lat(marker_pick.getPosition().latitude);
             data.setSt_lng(marker_pick.getPosition().longitude);
 
-            //pickup_address.setText(address.getFeatureName());
-            autocompleteFragment_pickup.setText(address.getFeatureName());
+            pickup_address.setText(address.getLocality());
+           // autocompleteFragment_pickup.setText(address.getFeatureName());
             place_drivers();
         }
     }
 
-    int radius=10;
+    int radius=5;
     boolean driverfound=false;
     String driverid;
 /*
@@ -854,7 +1156,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         GeoQuery geoQuery=geoFire.queryAtLocation(new GeoLocation(pickup.latitude,pickup.longitude),radius);
         geoQuery.removeAllListeners();
 
-        data.setCustomer_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        data.setCustomer_id(log_id.getString("id",null));
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -970,7 +1272,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 */
     public void place_drivers(){
         driver_list.clear();
+        final List<Marker> driver_markers=new ArrayList<>();
         final DatabaseReference ref=FirebaseDatabase.getInstance().getReference("DriversAvailable");
+
+        for (int k=0;k<driver_markers.size();k++){
+            driver_markers.get(k).remove();
+        }
+        driver_markers.clear();
 
         GeoFire geoFire=new GeoFire(ref);
         find_driver=geoFire.queryAtLocation(new GeoLocation(pickup.latitude,pickup.longitude),radius);
@@ -986,7 +1294,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                         .position(new LatLng(location.latitude,location.longitude));
 
-                mMap.addMarker(options);
+               driver_markers.add(mMap.addMarker(options));
             }
 
             @Override
@@ -1040,7 +1348,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         //for (int i = 0; i <route.size(); i++) {
             PolylineOptions polyOptions = new PolylineOptions();
             polyOptions.color(Color.BLUE);
-            polyOptions.width(10);
+            polyOptions.width(7);
             polyOptions.addAll(route.get(shortestRouteIndex).getPoints());
             Polyline polyline = mMap.addPolyline(polyOptions);
             polylines.add(polyline);
@@ -1073,6 +1381,74 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             line.remove();
         }
         polylines.clear();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode==1 && resultCode==RESULT_OK){
+            String name;
+            Double latitude,longitude;
+            name=intent.getStringExtra("place");
+            latitude=intent.getDoubleExtra("lat",0);
+            longitude=intent.getDoubleExtra("lng",0);
+
+            pickup_address.setText(name);
+            goToLocationZoom(latitude, longitude, 15);
+
+            if (marker_pick!=null){
+                marker_pick.remove();
+            }
+
+            MarkerOptions options=new MarkerOptions()
+                    .title(name)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .position(new LatLng(latitude,longitude))
+                    .snippet("Pick up");
+            marker_pick=mMap.addMarker(options);
+            pickup=marker_pick.getPosition();
+
+            data.setSt_lat(marker_pick.getPosition().latitude);
+            data.setSt_lng(marker_pick.getPosition().longitude);
+
+            place_drivers();
+            getRouteToMarker(marker_pick.getPosition(),marker_drop.getPosition());
+
+        } else if (requestCode==2 && resultCode==RESULT_OK){
+            String name;
+            Double latitude,longitude;
+            name=intent.getStringExtra("place");
+            latitude=intent.getDoubleExtra("lat",0);
+            longitude=intent.getDoubleExtra("lng",0);
+
+            destn_address.setText(name);
+
+            goToLocationZoom(latitude,longitude, 15);
+
+            if (marker_drop!=null){
+                marker_drop.remove();
+            }
+
+            MarkerOptions options = new MarkerOptions()
+                    .title(name)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                    .position(new LatLng(latitude,longitude))
+                    .snippet("Destination");
+            marker_drop=mMap.addMarker(options);
+
+            data.setEn_lat(marker_drop.getPosition().latitude);
+            data.setEn_lng(marker_drop.getPosition().longitude);
+            findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+            getRouteToMarker(marker_pick.getPosition(),marker_drop.getPosition());
+            findViewById(R.id.layout3).setVisibility(View.GONE);
+            findViewById(R.id.layout4).setVisibility(View.GONE);
+            ride.setVisibility(View.VISIBLE);
+        }
     }
 }
 

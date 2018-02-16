@@ -2,6 +2,7 @@ package com.quicklift;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +40,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         getSupportActionBar().setTitle("Login");
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         pdialog=new ProgressDialog(this);
 
@@ -114,6 +115,11 @@ public class Login extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
+            final SharedPreferences log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
+            final SharedPreferences.Editor editor=log_id.edit();
+            editor.putString("id",user.getUid());
+            editor.putString("driver","");
+            editor.commit();
             startActivity(new Intent(Login.this,Home.class));
             finish();
         } else {
