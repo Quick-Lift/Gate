@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rating_bar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:CardView="http://schemas.android.com/apk/res-auto"
+    tools:context="com.quicklift.RatingActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        CardView:cardBackgroundColor="@color/frame_background">
+        <GridLayout
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fare_main"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent">
+            <android.support.v7.widget.CardView
+                android:layout_row="0"
+                android:layout_column="0"
+                CardView:cardBackgroundColor="@android:color/transparent"
+                CardView:cardElevation="0dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@android:color/transparent">
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxWidth="220dp"
+                        android:text="Last visited place !"
+                        android:paddingLeft="10dp"
+                        android:textSize="16sp"
+                        android:layout_marginTop="5dp"
+                        android:background="@android:color/transparent"/>
+                    <TextView
+                        android:id="@+id/timestamp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Travel Date"
+                        android:layout_marginTop="5dp"
+                        android:paddingLeft="10dp"
+                        android:background="@android:color/transparent"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_gravity="center"
+                CardView:cardElevation="0dp"
+                CardView:cardBackgroundColor="@android:color/transparent">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/driver_pic"
+                    android:layout_width="90sp"
+                    android:layout_height="70sp"
+                    android:src="@drawable/home"
+                    android:background="@android:color/transparent"/>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_row="1"
+                android:layout_column="0"
+                CardView:cardElevation="0dp"
+                CardView:cardBackgroundColor="@android:color/transparent">
+                <RatingBar
+                    android:id="@+id/rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:theme="@style/RatingBar"
+                    android:onClick="ratingbarclick"
+                    android:background="@android:color/transparent"/>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_row="1"
+                android:layout_column="1"
+                android:layout_gravity="center"
+                CardView:cardElevation="0dp"
+                CardView:cardBackgroundColor="@android:color/transparent">
+                <TextView
+                    android:id="@+id/driver_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:hint="Driver Name"
+                    android:gravity="center"
+                    android:background="@android:color/transparent"/>
+            </android.support.v7.widget.CardView>
+        </GridLayout>
+    </android.support.v7.widget.CardView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Feedback -"
+                android:textSize="20dp"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="Option 1"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="Option 2"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="Option 3"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="Option 4"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="Option 5"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="Option 6"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Submit"
+                android:textColor="#fdfefe"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_margin="40dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

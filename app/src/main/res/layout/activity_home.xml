@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:CardView="http://schemas.android.com/apk/res-auto"
     tools:context="com.quicklift.Home">
 
         <fragment
@@ -37,14 +38,11 @@
                      android:layout_width="0dp"
                      android:layout_height="40dp"
                      android:layout_weight="4"
-                     android:layout_marginLeft="20dp"
-                     android:layout_marginRight="5dp"
                      android:hint="Pick Up"
                      android:paddingLeft="20dp"
                      android:textColor="#000000"
                      android:textColorHint="#fdfefe"
-                     android:visibility="gone"
-                     android:background="#850000ff"/>
+                     android:background="@android:color/transparent"/>
 <!--
         <Button
             android:id="@+id/pick_go"
@@ -121,56 +119,170 @@
                      android:scrollbars="none"
                      android:layout_marginBottom="0dp"
                      android:id="@+id/fragmentTwo"
+                     android:visibility="gone"
                      android:background="@android:color/transparent">
                      <LinearLayout
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:background="@android:color/transparent">
-                         <Button
+
+                         <LinearLayout
+                             android:layout_width="120dp"
+                             android:layout_height="120dp"
+                             android:gravity="center"
+                             android:orientation="vertical"
+                             android:onClick="select_vehicle"
                              android:id="@+id/bike"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:background="@drawable/round_button"
-                             android:text="Bike" />
-                         <Button
-                             android:id="@+id/car"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:background="@drawable/round_button"
-                             android:text="Car" />
-                         <Button
-                             android:id="@+id/shareCar"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:background="@drawable/round_button"
-                             android:text="Share Car" />
-                         <Button
+                             android:background="@drawable/round_button">
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:layout_width="60dp"
+                                 android:layout_height="60dp"
+                                 android:layout_gravity="center_horizontal"
+                                 android:src="@drawable/ic_bike"/>
+
+                             <TextView
+                                 android:id="@+id/price_bike"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Rs. 1500"
+                                 android:textSize="18sp"
+                                 android:textColor="@android:color/black"/>
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="120dp"
+                             android:layout_height="120dp"
+                             android:gravity="center"
+                             android:orientation="vertical"
                              android:id="@+id/auto"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Auto"
-                             android:background="@drawable/round_button"/>
-                         <Button
-                             android:id="@+id/shareAuto"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Share Auto"
-                             android:background="@drawable/round_button"/>
-                         <Button
+                             android:onClick="select_vehicle"
+                             android:background="@drawable/round_button">
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:layout_width="60dp"
+                                 android:layout_height="60dp"
+                                 android:layout_gravity="center_horizontal"
+                                 android:src="@drawable/ic_car"/>
+
+                             <TextView
+                                 android:id="@+id/price_auto"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Rs. 1500"
+                                 android:textSize="18sp"
+                                 android:textColor="@android:color/black"/>
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="120dp"
+                             android:layout_height="120dp"
+                             android:gravity="center"
+                             android:orientation="vertical"
                              android:id="@+id/rickshaw"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="E-Rickshaw"
-                             android:background="@drawable/round_button"/>
-                         <Button
+                             android:onClick="select_vehicle"
+                             android:background="@drawable/round_button">
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:layout_width="60dp"
+                                 android:layout_height="60dp"
+                                 android:layout_gravity="center_horizontal"
+                                 android:src="@drawable/ic_car"/>
+
+                             <TextView
+                                 android:id="@+id/price_rickshaw"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Rs. 1500"
+                                 android:textSize="18sp"
+                                 android:textColor="@android:color/black"/>
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="120dp"
+                             android:layout_height="120dp"
+                             android:gravity="center"
+                             android:orientation="vertical"
+                             android:id="@+id/car"
+                             android:onClick="select_vehicle"
+                             android:background="@drawable/round_button">
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:layout_width="60dp"
+                                 android:layout_height="60dp"
+                                 android:layout_gravity="center_horizontal"
+                                 android:src="@drawable/ic_car"/>
+
+                             <TextView
+                                 android:id="@+id/price_car"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Rs. 1500"
+                                 android:textSize="18sp"
+                                 android:textColor="@android:color/black"/>
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="120dp"
+                             android:layout_height="120dp"
+                             android:gravity="center"
+                             android:orientation="vertical"
+                             android:id="@+id/shareAuto"
+                             android:onClick="select_vehicle"
+                             android:background="@drawable/round_button">
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:layout_width="60dp"
+                                 android:layout_height="60dp"
+                                 android:layout_gravity="center_horizontal"
+                                 android:src="@drawable/ic_car"/>
+
+                             <TextView
+                                 android:id="@+id/price_shareAuto"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Rs. 1500"
+                                 android:textSize="18sp"
+                                 android:textColor="@android:color/black"/>
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="120dp"
+                             android:layout_height="120dp"
+                             android:gravity="center"
+                             android:orientation="vertical"
                              android:id="@+id/shareRickshaw"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Share E-Rickshaw"
-                             android:background="@drawable/round_button"/>
+                             android:onClick="select_vehicle"
+                             android:background="@drawable/round_button">
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:layout_width="60dp"
+                                 android:layout_height="60dp"
+                                 android:layout_gravity="center_horizontal"
+                                 android:src="@drawable/ic_car"/>
+
+                             <TextView
+                                 android:id="@+id/price_shareRickshaw"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Rs. 1500"
+                                 android:textSize="18sp"
+                                 android:textColor="@android:color/black"/>
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="120dp"
+                             android:layout_height="120dp"
+                             android:gravity="center"
+                             android:orientation="vertical"
+                             android:id="@+id/shareCar"
+                             android:onClick="select_vehicle"
+                             android:background="@drawable/round_button">
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:layout_width="60dp"
+                                 android:layout_height="60dp"
+                                 android:layout_gravity="center_horizontal"
+                                 android:src="@drawable/ic_car"/>
+
+                             <TextView
+                                 android:id="@+id/price_shareCar"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Rs. 1500"
+                                 android:textSize="18sp"
+                                 android:textColor="@android:color/black"/>
+                         </LinearLayout>
                      </LinearLayout>
                  </HorizontalScrollView>
-
+<!--
                  <Button
                      android:id="@+id/ride"
                      android:layout_width="100dp"
@@ -179,154 +291,198 @@
                      android:text="Ride"
                      android:textColor="#000000"
                      android:background="#dd05affc"
-                     android:visibility="gone"
                      android:layout_gravity="center_horizontal"/>
-
+-->
                  <LinearLayout
                      android:id="@+id/layout3"
                      android:layout_width="match_parent"
-                     android:layout_height="150dp"
+                     android:layout_height="wrap_content"
                      android:orientation="vertical"
                      android:layout_marginLeft="20dp"
                      android:layout_marginRight="20dp"
-                     android:visibility="gone">
+                     android:background="#aa05affc"
+                     android:visibility="invisible">
 
                      <LinearLayout
                          android:layout_width="match_parent"
-                         android:layout_height="80dp"
-                         android:orientation="horizontal">
-
-                         <LinearLayout
-                             android:layout_width="80dp"
-                             android:layout_height="80dp"
-                             android:background="#fdfefe"
-                             android:gravity="center">
-
-                             <de.hdodenhof.circleimageview.CircleImageView
-                                 android:id="@+id/img"
-                                 android:layout_width="70dp"
-                                 android:layout_height="70dp"
-                                 android:src="@drawable/profile"/>
-
-                         </LinearLayout>
-
-                         <LinearLayout
-                             android:layout_width="match_parent"
-                             android:layout_height="match_parent"
-                             android:orientation="vertical">
-
-                             <EditText
-                                 android:id="@+id/name"
-                                 android:layout_width="match_parent"
-                                 android:layout_height="40dp"
-                                 android:hint="Name"
-                                 android:textColor="#ff000000"
-                                 android:gravity="center"
-                                 android:textColorHint="#99000000"
-                                 android:background="#fdfefe"/>
-
-                             <EditText
-                                 android:id="@+id/phone"
-                                 android:layout_width="match_parent"
-                                 android:layout_height="40dp"
-                                 android:hint="Contact No."
-                                 android:gravity="center"
-                                 android:textColor="#ff000000"
-                                 android:textColorHint="#99000000"
-                                 android:background="#fdfefe"/>
-
-                         </LinearLayout>
-                     </LinearLayout>
-
-                     <LinearLayout
-                         android:layout_width="match_parent"
-                         android:layout_height="match_parent"
+                         android:layout_height="100dp"
+                         android:gravity="center"
                          android:orientation="horizontal"
                          android:weightSum="3">
 
                          <LinearLayout
                              android:layout_width="0dp"
-                             android:layout_height="match_parent"
                              android:layout_weight="2"
+                             android:layout_height="100dp"
+                             android:gravity="center">
+
+                             <LinearLayout
+                                 android:layout_width="80dp"
+                                 android:layout_height="80dp"
+                                 android:gravity="center"
+                                 android:orientation="vertical"
+                                 android:background="@drawable/round_button">
+
+                                 <de.hdodenhof.circleimageview.CircleImageView
+                                     android:layout_width="60dp"
+                                     android:layout_height="60dp"
+                                     android:id="@+id/call"
+                                     android:layout_gravity="center_horizontal"
+                                     android:src="@drawable/ic_call"/>
+
+                             </LinearLayout>
+                             <LinearLayout
+                                 android:layout_width="80dp"
+                                 android:layout_height="80dp"
+                                 android:gravity="center"
+                                 android:orientation="vertical"
+                                 android:layout_marginLeft="20dp"
+                                 android:background="@drawable/round_button">
+
+                                 <TextView
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="OTP\n1500"
+                                     android:textSize="18sp"
+                                     android:gravity="center"
+                                     android:textColor="#ffffff"/>
+                             </LinearLayout>
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_weight="1"
+                             android:gravity="center"
+                             android:layout_height="100dp">
+
+                             <de.hdodenhof.circleimageview.CircleImageView
+                                 android:layout_width="85dp"
+                                 android:layout_height="85dp"
+                                 android:id="@+id/pic"
+                                 android:src="@drawable/profile"/>
+                         </LinearLayout>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="70dp"
+                         android:weightSum="2"
+                         android:gravity="center"
+                         android:orientation="horizontal">
+
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_weight="1"
+                             android:layout_height="60dp"
+                             android:gravity="center"
                              android:orientation="vertical">
 
-                             <EditText
-                                 android:id="@+id/cartype"
+                             <TextView
                                  android:layout_width="match_parent"
-                                 android:layout_height="35dp"
-                                 android:hint="Car Type"
-                                 android:paddingLeft="10dp"
+                                 android:layout_height="25dp"
+                                 android:id="@+id/bike_name"
                                  android:gravity="center"
-                                 android:textColor="#ff000000"
-                                 android:textColorHint="#99000000"
-                                 android:background="#fdfefe"/>
+                                 android:text="Bike Name"
+                                 android:textSize="16sp"
+                                 android:textColor="#000000"/>
 
-                             <EditText
-                                 android:id="@+id/carno"
+                             <TextView
                                  android:layout_width="match_parent"
-                                 android:layout_height="35dp"
-                                 android:hint="Car Number"
-                                 android:paddingLeft="10dp"
+                                 android:layout_height="25dp"
                                  android:gravity="center"
-                                 android:textColor="#ff000000"
-                                 android:textColorHint="#99000000"
-                                 android:background="#fdfefe"/>
-
+                                 android:id="@+id/bike_no"
+                                 android:text="Bike No"
+                                 android:textSize="16sp"
+                                 android:textColor="#000000"/>
                          </LinearLayout>
-
-                         <EditText
-                             android:id="@+id/rating"
+                         <LinearLayout
                              android:layout_width="0dp"
-                             android:layout_height="70dp"
                              android:layout_weight="1"
-                             android:hint="Ratings"
+                             android:layout_height="60dp"
                              android:gravity="center"
-                             android:textColor="#ff000000"
-                             android:textColorHint="#99000000"
-                             android:background="#fdfefe"/>
+                             android:orientation="vertical">
 
+                             <TextView
+                                 android:layout_width="match_parent"
+                                 android:layout_height="25dp"
+                                 android:gravity="center"
+                                 android:text="Driver Name"
+                                 android:id="@+id/dname"
+                                 android:textSize="16sp"
+                                 android:textColor="#000000"/>
+
+                             <TextView
+                                 android:layout_width="match_parent"
+                                 android:layout_height="25dp"
+                                 android:gravity="center"
+                                 android:text="Some Text"
+                                 android:textSize="16sp"
+                                 android:textColor="#000000"/>
+                         </LinearLayout>
                      </LinearLayout>
                  </LinearLayout>
 
                  <LinearLayout
                      android:id="@+id/layout4"
                      android:layout_width="match_parent"
-                     android:layout_height="145dp"
+                     android:layout_height="wrap_content"
                      android:orientation="vertical"
                      android:layout_marginLeft="20dp"
                      android:layout_marginRight="20dp"
                      android:visibility="gone">
 
-                     <TextView
-                         android:id="@+id/time"
-                         android:layout_width="match_parent"
-                         android:layout_height="40dp"
-                         android:hint="Estimated Time"
+                     <LinearLayout
+                         android:layout_width="100dp"
+                         android:layout_height="100dp"
                          android:gravity="center"
-                         android:layout_marginBottom="5dp"
-                         android:textColor="#ff000000"
-                         android:textColorHint="#99000000"
-                         android:background="#fdfefe" />
+                         android:orientation="vertical"
+                         android:layout_gravity="center_horizontal"
+                         android:background="@drawable/round_button">
+                         <de.hdodenhof.circleimageview.CircleImageView
+                             android:id="@+id/final_image"
+                             android:layout_width="60dp"
+                             android:layout_height="60dp"
+                             android:layout_gravity="center_horizontal"
+                             android:src="@drawable/ic_bike"/>
 
-                     <TextView
-                         android:id="@+id/fare"
+                         <TextView
+                             android:id="@+id/price"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="Rs. 1500"
+                             android:textSize="16sp"
+                             android:textColor="@android:color/black"/>
+                     </LinearLayout>
+
+                     <Spinner
+                         android:id="@+id/pick_time"
                          android:layout_width="match_parent"
                          android:layout_height="40dp"
-                         android:hint="Estimated Fare"
-                         android:gravity="center"
+                         android:layout_marginTop="5dp"
+                         android:visibility="gone"
+                         android:background="#8805affc" />
+
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="40dp"
                          android:layout_marginBottom="10dp"
-                         android:textColor="#ff000000"
-                         android:textColorHint="#99000000"
-                         android:background="#fdfefe" />
+                         android:layout_marginTop="5dp"
+                         android:background="#8805affc">
+
+                         <Spinner
+                             android:id="@+id/pay_mode"
+                             android:layout_width="match_parent"
+                             android:layout_height="40dp" />
+                     </LinearLayout>
 
                      <Button
                          android:id="@+id/confirm"
-                         android:layout_width="100dp"
+                         android:layout_width="match_parent"
                          android:layout_height="50dp"
                          android:onClick="logout"
-                         android:text="Confirm"
-                         android:textColor="#fdfefe"
-                         android:background="#dd05affc"
+                         android:text="Confirm Booking"
+                         android:textColor="#000000"
+                         android:background="#05affc"
+                         android:textAllCaps="false"
+                         android:textSize="20sp"
                          android:layout_gravity="center_horizontal"/>
                  </LinearLayout>
 
@@ -342,5 +498,102 @@
         android:textColor="#fdfefe"
         android:background="#850000ff"
         android:visibility="gone"/>
+
+    <FrameLayout
+        android:id="@+id/rating_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#FF0298db"
+        android:onClick="ratingbarclick"
+        android:visibility="visible">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            CardView:cardBackgroundColor="@color/frame_background">
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fare_main"
+                android:columnCount="2"
+                android:rowCount="2"
+                android:background="@android:color/transparent">
+                <android.support.v7.widget.CardView
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    CardView:cardBackgroundColor="@android:color/transparent"
+                    CardView:cardElevation="0dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@android:color/transparent">
+                        <TextView
+                            android:id="@+id/location"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxWidth="220dp"
+                            android:text="Last visited place !"
+                            android:paddingLeft="10dp"
+                            android:textSize="16sp"
+                            android:layout_marginTop="5dp"
+                            android:background="@android:color/transparent"/>
+                        <TextView
+                            android:id="@+id/timestamp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="Travel Date"
+                            android:layout_marginTop="5dp"
+                            android:paddingLeft="10dp"
+                            android:background="@android:color/transparent"/>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:layout_gravity="center"
+                    CardView:cardElevation="0dp"
+                    CardView:cardBackgroundColor="@android:color/transparent">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/driver_pic"
+                        android:layout_width="90sp"
+                        android:layout_height="70sp"
+                        android:src="@drawable/home"
+                        android:background="@android:color/transparent"/>
+                </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    CardView:cardElevation="0dp"
+                    CardView:cardBackgroundColor="@android:color/transparent">
+                    <RatingBar
+                        android:id="@+id/rating"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:theme="@style/RatingBar"
+                        android:onClick="ratingbarclick"
+                        android:background="@android:color/transparent"/>
+                </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:layout_gravity="center"
+                    CardView:cardElevation="0dp"
+                    CardView:cardBackgroundColor="@android:color/transparent">
+                    <TextView
+                        android:id="@+id/driver_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:hint="Driver Name"
+                        android:gravity="center"
+                        android:background="@android:color/transparent"/>
+                </android.support.v7.widget.CardView>
+            </GridLayout>
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
 
 </RelativeLayout>
