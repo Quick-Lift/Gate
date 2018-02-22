@@ -75,6 +75,11 @@ public class Login extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             // Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            final SharedPreferences log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
+                            final SharedPreferences.Editor editor=log_id.edit();
+                            editor.putString("id",user.getUid());
+                            editor.putString("driver","");
+                            editor.commit();
                                 updateUI(user);
 
                         } else {
@@ -115,11 +120,6 @@ public class Login extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-            final SharedPreferences log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
-            final SharedPreferences.Editor editor=log_id.edit();
-            editor.putString("id",user.getUid());
-            editor.putString("driver","");
-            editor.commit();
             startActivity(new Intent(Login.this,Home.class));
             finish();
         } else {
