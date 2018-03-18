@@ -78,7 +78,9 @@
         <activity
             android:name=".EditProfile"
             android:theme="@style/AppTheme2" />
-        <activity android:name=".RatingActivity"></activity>
+        <activity android:name=".RatingActivity" />
+        <activity android:name=".OffersActivity"
+            android:theme="@style/AppTheme2" />
     </application>
 
 </manifest>

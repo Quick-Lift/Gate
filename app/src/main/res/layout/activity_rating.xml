@@ -115,6 +115,7 @@
                 android:textSize="20dp"/>
 
             <CheckBox
+                android:id="@+id/box1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -122,6 +123,7 @@
                 android:text="Option 1"/>
 
             <CheckBox
+                android:id="@+id/box2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -129,6 +131,7 @@
                 android:text="Option 2"/>
 
             <CheckBox
+                android:id="@+id/box3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -136,6 +139,7 @@
                 android:text="Option 3"/>
 
             <CheckBox
+                android:id="@+id/box4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -143,6 +147,7 @@
                 android:text="Option 4"/>
 
             <CheckBox
+                android:id="@+id/box5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -150,6 +155,7 @@
                 android:text="Option 5"/>
 
             <CheckBox
+                android:id="@+id/box6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -161,6 +167,7 @@
                 android:layout_height="50dp"
                 android:text="Submit"
                 android:textColor="#fdfefe"
+                android:onClick="submit"
                 android:backgroundTint="@color/colorPrimary"
                 android:layout_margin="40dp"/>
         </LinearLayout>

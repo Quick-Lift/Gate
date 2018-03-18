@@ -139,13 +139,19 @@
                                  android:layout_height="60dp"
                                  android:layout_gravity="center_horizontal"
                                  android:src="@drawable/ic_bike"/>
-
+                             <TextView
+                                 android:id="@+id/time_bike"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Time"
+                                 android:textSize="14sp"
+                                 android:textColor="@android:color/black"/>
                              <TextView
                                  android:id="@+id/price_bike"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:text="Rs. 1500"
-                                 android:textSize="18sp"
+                                 android:textSize="14sp"
                                  android:textColor="@android:color/black"/>
                          </LinearLayout>
                          <LinearLayout
@@ -161,13 +167,19 @@
                                  android:layout_height="60dp"
                                  android:layout_gravity="center_horizontal"
                                  android:src="@drawable/ic_car"/>
-
+                             <TextView
+                                 android:id="@+id/time_auto"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Time"
+                                 android:textSize="14sp"
+                                 android:textColor="@android:color/black"/>
                              <TextView
                                  android:id="@+id/price_auto"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:text="Rs. 1500"
-                                 android:textSize="18sp"
+                                 android:textSize="14sp"
                                  android:textColor="@android:color/black"/>
                          </LinearLayout>
                          <LinearLayout
@@ -183,13 +195,19 @@
                                  android:layout_height="60dp"
                                  android:layout_gravity="center_horizontal"
                                  android:src="@drawable/ic_car"/>
-
+                             <TextView
+                                 android:id="@+id/time_rickshaw"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Time"
+                                 android:textSize="14sp"
+                                 android:textColor="@android:color/black"/>
                              <TextView
                                  android:id="@+id/price_rickshaw"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:text="Rs. 1500"
-                                 android:textSize="18sp"
+                                 android:textSize="14sp"
                                  android:textColor="@android:color/black"/>
                          </LinearLayout>
                          <LinearLayout
@@ -205,13 +223,19 @@
                                  android:layout_height="60dp"
                                  android:layout_gravity="center_horizontal"
                                  android:src="@drawable/ic_car"/>
-
+                             <TextView
+                                 android:id="@+id/time_car"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Time"
+                                 android:textSize="14sp"
+                                 android:textColor="@android:color/black"/>
                              <TextView
                                  android:id="@+id/price_car"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:text="Rs. 1500"
-                                 android:textSize="18sp"
+                                 android:textSize="14sp"
                                  android:textColor="@android:color/black"/>
                          </LinearLayout>
                          <LinearLayout
@@ -227,13 +251,19 @@
                                  android:layout_height="60dp"
                                  android:layout_gravity="center_horizontal"
                                  android:src="@drawable/ic_car"/>
-
+                             <TextView
+                                 android:id="@+id/time_shareAuto"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Time"
+                                 android:textSize="14sp"
+                                 android:textColor="@android:color/black"/>
                              <TextView
                                  android:id="@+id/price_shareAuto"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:text="Rs. 1500"
-                                 android:textSize="18sp"
+                                 android:textSize="14sp"
                                  android:textColor="@android:color/black"/>
                          </LinearLayout>
                          <LinearLayout
@@ -249,13 +279,19 @@
                                  android:layout_height="60dp"
                                  android:layout_gravity="center_horizontal"
                                  android:src="@drawable/ic_car"/>
-
+                             <TextView
+                                 android:id="@+id/time_shareRickshaw"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Time"
+                                 android:textSize="14sp"
+                                 android:textColor="@android:color/black"/>
                              <TextView
                                  android:id="@+id/price_shareRickshaw"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:text="Rs. 1500"
-                                 android:textSize="18sp"
+                                 android:textSize="14sp"
                                  android:textColor="@android:color/black"/>
                          </LinearLayout>
                          <LinearLayout
@@ -271,13 +307,19 @@
                                  android:layout_height="60dp"
                                  android:layout_gravity="center_horizontal"
                                  android:src="@drawable/ic_car"/>
-
+                             <TextView
+                                 android:id="@+id/time_shareCar"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Time"
+                                 android:textSize="14sp"
+                                 android:textColor="@android:color/black"/>
                              <TextView
                                  android:id="@+id/price_shareCar"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:text="Rs. 1500"
-                                 android:textSize="18sp"
+                                 android:textSize="14sp"
                                  android:textColor="@android:color/black"/>
                          </LinearLayout>
                      </LinearLayout>
@@ -442,13 +484,19 @@
                              android:layout_height="60dp"
                              android:layout_gravity="center_horizontal"
                              android:src="@drawable/ic_bike"/>
-
+                         <TextView
+                             android:id="@+id/time"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="Time"
+                             android:textSize="14sp"
+                             android:textColor="@android:color/black"/>
                          <TextView
                              android:id="@+id/price"
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
                              android:text="Rs. 1500"
-                             android:textSize="16sp"
+                             android:textSize="14sp"
                              android:textColor="@android:color/black"/>
                      </LinearLayout>
 
@@ -510,6 +558,7 @@
         android:background="#FF0298db"
         android:onClick="ratingbarclick"
         android:visibility="visible">
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

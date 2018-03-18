@@ -43,10 +43,11 @@
     </item>
 -->
     <group android:checkableBehavior="single">
+        <!--
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/home"
-            android:title="Home"/>
+            android:title="Home"/>  -->
         <item
             android:id="@+id/nav_payment"
             android:icon="@drawable/ic_payment"
@@ -75,9 +76,10 @@
             android:id="@+id/nav_drive_with_us"
             android:icon="@drawable/ic_drive"
             android:title="Drive with us" />
+        <!--
         <item
             android:id="@+id/nav_share"
             android:icon="@drawable/ic_share"
-            android:title="Share" />
+            android:title="Share" />  -->
     </group>
 </menu>

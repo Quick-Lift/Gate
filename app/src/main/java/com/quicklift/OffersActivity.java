@@ -1,11 +1,9 @@
 package com.quicklift;
 
-import android.*;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -25,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,32 +35,25 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CustomerRides extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private Cursor cursor;
+public class OffersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ListView list;
-    DatabaseReference db;
     private SharedPreferences log_id;
-    ArrayList<Map<String,Object>> ride_list=new ArrayList<Map<String,Object>>();
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
+    private DatabaseReference db;
+    ArrayList<String> offers=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_rides);
+        setContentView(R.layout.activity_offers);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
-        db= FirebaseDatabase.getInstance().getReference("Rides");
+        db= FirebaseDatabase.getInstance().getReference("CustomerOffers/"+log_id.getString("id",null));
 
         list=(ListView)findViewById(R.id.list);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Rides");
+        toolbar.setTitle("Offers");
 
         setSupportActionBar(toolbar);
 
@@ -76,16 +66,13 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        db.orderByChild("customerid").equalTo(log_id.getString("id",null)).addListenerForSingleValueEvent(new ValueEventListener() {
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ride_list.clear();
+                offers.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
-                    ride_list.add((Map<String, Object>) data.getValue());
-                    //Toast.makeText(CustomerRides.this, String.valueOf(ride_list.size()), Toast.LENGTH_SHORT).show();
-                    //Toast.makeText(CustomerRides.this, ride_list.get(ride_list.size()-1).get("time").toString(), Toast.LENGTH_SHORT).show();
+                    offers.add(data.getValue(String.class));
                 }
-                //Toast.makeText(CustomerRides.this, String.valueOf(ride_list.size()), Toast.LENGTH_SHORT).show();
                 list.setAdapter(new CustomAdapter());
             }
 
@@ -103,9 +90,10 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
         Intent intent;
 
         if (id == R.id.nav_rides) {
-
+            intent = new Intent(OffersActivity.this, CustomerRides.class);
+            startActivity(intent);
         } else if (id == R.id.nav_settings) {
-            startActivity(new Intent(CustomerRides.this,EditProfile.class));
+            startActivity(new Intent(OffersActivity.this,EditProfile.class));
             finish();
         } else if (id == R.id.nav_drive_with_us) {
 
@@ -113,7 +101,7 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(Uri.parse("tel:0000000000"));
 
-            if (ActivityCompat.checkSelfPermission(CustomerRides.this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(OffersActivity.this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -125,8 +113,7 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             }
             startActivity(callIntent);
         } else if (id == R.id.nav_offers) {
-            intent = new Intent(CustomerRides.this, OffersActivity.class);
-            startActivity(intent);
+
         } else if (id == R.id.nav_payment) {
 
         } else if (id == R.id.nav_support) {
@@ -141,11 +128,11 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
         return false;
     }
 
-    class CustomAdapter extends BaseAdapter{
+    class CustomAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return ride_list.size();
+            return offers.size();
         }
 
         @Override
@@ -160,33 +147,16 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
 
         @Override
         public View getView(int position, View view, ViewGroup parent) {
-            view=getLayoutInflater().inflate(R.layout.ride_info,null);
+            view=getLayoutInflater().inflate(R.layout.offerlayout,null);
+            TextView title=(TextView)view.findViewById(R.id.title);
+            final TextView detail=(TextView)view.findViewById(R.id.details);
 
-            final CircleImageView img=(CircleImageView)view.findViewById(R.id.image);
-            final TextView veh=(TextView)view.findViewById(R.id.vehiclemodel);
-            TextView time=(TextView)view.findViewById(R.id.timestamp);
-            TextView source=(TextView)view.findViewById(R.id.source);
-            TextView destination=(TextView)view.findViewById(R.id.destination);
-            TextView amount=(TextView)view.findViewById(R.id.amount);
-            final TextView name=(TextView)view.findViewById(R.id.name);
-
-            time.setText(ride_list.get(position).get("time").toString());
-            source.setText(ride_list.get(position).get("source").toString());
-            destination.setText(ride_list.get(position).get("destination").toString());
-            amount.setText("Rs. "+ride_list.get(position).get("amount").toString());
-
-            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers");
-            dref.child(ride_list.get(position).get("driver").toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+            title.setText(offers.get(offers.size()-position-1));
+            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Offers/"+offers.get(offers.size()-position-1));
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                    veh.setText(map.get("veh_type").toString()+" , "+map.get("veh_num").toString());
-                    name.setText(map.get("name").toString());
-                    if (!map.get("thumb").toString().equals("")) {
-                        byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
-                        Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
-                        img.setImageBitmap(decbyte);
-                    }
+                    detail.setText(dataSnapshot.getValue(String.class));
                 }
 
                 @Override

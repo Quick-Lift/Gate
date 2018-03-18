@@ -126,9 +126,7 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
         int id = item.getItemId();
         Intent intent;
 
-        if (id == R.id.nav_home) {
-            finish();
-        } else if (id == R.id.nav_rides) {
+        if (id == R.id.nav_rides) {
             startActivity(new Intent(EditProfile.this,CustomerRides.class));
             finish();
         } else if (id == R.id.nav_settings) {
@@ -137,7 +135,7 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
 
         } else if (id == R.id.nav_emergency_contact) {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:7896858413"));
+            callIntent.setData(Uri.parse("tel:0000000000"));
 
             if (ActivityCompat.checkSelfPermission(EditProfile.this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
@@ -151,10 +149,9 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
             }
             startActivity(callIntent);
         } else if (id == R.id.nav_offers) {
-
+            intent = new Intent(EditProfile.this, OffersActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_payment) {
-
-        } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_support) {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
