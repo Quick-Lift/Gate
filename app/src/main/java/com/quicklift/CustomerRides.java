@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,9 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
     private Cursor cursor;
     ListView list;
     DatabaseReference db;
+    TextView name,phone;
+    CircleImageView image;
+    Button ongoing;
     private SharedPreferences log_id;
     ArrayList<Map<String,Object>> ride_list=new ArrayList<Map<String,Object>>();
 
@@ -52,29 +56,71 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_rides);
+        setContentView(R.layout.content_ride_screen);
 
+        getSupportActionBar().setTitle("Rides");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
         db= FirebaseDatabase.getInstance().getReference("Rides");
 
         list=(ListView)findViewById(R.id.list);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Rides");
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        toolbar.setTitle("Rides");
+//
+//        setSupportActionBar(toolbar);
+//
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        NavigationView navigationView = findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//        name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.name);
+//        phone = (TextView) navigationView.getHeaderView(0).findViewById(R.id.phone);
+//        image = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.image);
+        ongoing=(Button)findViewById(R.id.ongoingride);
 
-        setSupportActionBar(toolbar);
+        ongoing.setVisibility(View.GONE);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+//        image.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(CustomerRides.this,EditProfile.class));
+//            }
+//        });
+//
+//        updatenavbar();
+        if (!log_id.getString("driver",null).equals("")){
+            ongoing.setVisibility(View.VISIBLE);
+        }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        ongoing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor=log_id.edit();
+                editor.putString("show","ride");
+                editor.commit();
+                startActivity(new Intent(CustomerRides.this,Home.class));
+                finish();
+            }
+        });
 
         db.orderByChild("customerid").equalTo(log_id.getString("id",null)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -96,6 +142,28 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
         });
     }
 
+    private void updatenavbar() {
+        DatabaseReference db= FirebaseDatabase.getInstance().getReference("Users/"+log_id.getString("id",null));
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
+                name.setText(map.get("name").toString());
+                phone.setText(map.get("phone").toString());
+                if (!map.get("thumb").toString().equals("")) {
+                    byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
+                    Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
+                    image.setImageBitmap(decbyte);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -108,7 +176,8 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             startActivity(new Intent(CustomerRides.this,EditProfile.class));
             finish();
         } else if (id == R.id.nav_drive_with_us) {
-
+            startActivity(new Intent(CustomerRides.this,DriveWithUs.class));
+            finish();
         } else if (id == R.id.nav_emergency_contact) {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(Uri.parse("tel:0000000000"));
@@ -128,13 +197,16 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             intent = new Intent(CustomerRides.this, OffersActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_payment) {
-
+            startActivity(new Intent(CustomerRides.this,Payment.class));
+            finish();
         } else if (id == R.id.nav_support) {
-            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto","qiklift@gmail.com", null));
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, "Message : ");
-            startActivity(Intent.createChooser(emailIntent, "Requesting Support !"));
+            startActivity(new Intent(CustomerRides.this,Support.class));
+            finish();
+//            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+//                    "mailto","qiklift@gmail.com", null));
+//            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support");
+//            emailIntent.putExtra(Intent.EXTRA_TEXT, "Message : ");
+//            startActivity(Intent.createChooser(emailIntent, "Requesting Support !"));
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -173,7 +245,7 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             time.setText(ride_list.get(position).get("time").toString());
             source.setText(ride_list.get(position).get("source").toString());
             destination.setText(ride_list.get(position).get("destination").toString());
-            amount.setText("Rs. "+ride_list.get(position).get("amount").toString());
+            amount.setText(ride_list.get(position).get("amount").toString());
 
             DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers");
             dref.child(ride_list.get(position).get("driver").toString()).addListenerForSingleValueEvent(new ValueEventListener() {

@@ -60,7 +60,7 @@ public class PlaceSelector extends AppCompatActivity {
         setContentView(R.layout.activity_place_selector);
 
         getSupportActionBar().setTitle("Select Place");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         destination=(EditText)findViewById(R.id.destination);

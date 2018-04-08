@@ -6,15 +6,27 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     android:fitsSystemWindows="true"
+    tools:context="com.quicklift.CustomerRides"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/app_bar_ride"
-    tools:context="com.quicklift.CustomerRides">
+    tools:showIn="@layout/app_bar_ride">
+
+    <Button
+        android:id="@+id/ongoingride"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:backgroundTint="#05affc"
+        android:layout_margin="10dp"
+        android:text="Go to ongoing ride"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"/>
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:dividerHeight="5dp"
+        android:layout_below="@+id/ongoingride"
         android:divider="@android:color/transparent"
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_margin="5dp"/>

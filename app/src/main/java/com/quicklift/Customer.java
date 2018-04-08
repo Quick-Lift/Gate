@@ -5,9 +5,17 @@ package com.quicklift;
  */
 
 public class Customer {
-    String name,email,phone,thumb;
+    String name,email,phone,thumb,address;
 
     public Customer() {
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getName() {

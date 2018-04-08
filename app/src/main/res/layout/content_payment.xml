@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_payment"
+    tools:context="com.quicklift.Payment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Payment Methods"
+        android:gravity="center_vertical"
+        android:paddingLeft="50dp"
+        android:textSize="18sp"
+        android:textColor="#05affc"
+        android:layout_marginTop="30dp"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cash"
+            android:textSize="24sp"
+            android:textColor="#05affc"
+            android:buttonTint="#05affc"
+            android:paddingLeft="15dp"/>
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Debit/Credit Card"
+            android:textSize="24sp"
+            android:paddingLeft="15dp"
+            android:textColor="#05affc"
+            android:buttonTint="#05affc"
+            android:layout_marginTop="20dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textColor="#05affc"
+            android:hint="Card Number"
+            android:textColorHint="#8805affc"
+            android:paddingLeft="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/margin"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="#05affc"
+                android:hint="Expiry"
+                android:textColorHint="#8805affc"
+                android:paddingLeft="20dp"
+                android:background="@drawable/margin"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textColor="#05affc"
+                android:hint="CVV"
+                android:textColorHint="#8805affc"
+                android:paddingLeft="20dp"
+                android:background="@drawable/margin"/>
+
+        </LinearLayout>
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Paytm"
+            android:textSize="24sp"
+            android:paddingLeft="15dp"
+            android:textColor="#05affc"
+            android:buttonTint="#05affc"
+            android:layout_marginTop="20dp"/>
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UPI"
+            android:textSize="24sp"
+            android:buttonTint="#05affc"
+            android:paddingLeft="15dp"
+            android:textColor="#05affc"
+            android:layout_marginTop="20dp"/>
+
+    </RadioGroup>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="NEXT"
+        android:textSize="24dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:backgroundTint="#05affc"
+        android:textColor="#FFFFFF"/>
+</LinearLayout>

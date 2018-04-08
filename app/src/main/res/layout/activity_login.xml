@@ -4,7 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/logo"
     tools:context="com.quicklift.Login">
+
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:layout_marginTop="30dp"-->
+        <!--android:src="@drawable/logo"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,6 +25,12 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="Email Address"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="15dp"
+            android:textColor="#05affc"
+            android:textColorHint="#9905affc"
+            android:background="@drawable/all_margin"
             android:inputType="textEmailAddress"/>
 
         <EditText
@@ -24,20 +38,48 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="Password"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="15dp"
+            android:textColor="#05affc"
+            android:textColorHint="#9905affc"
+            android:background="@drawable/all_margin"
             android:inputType="textPassword"/>
 
-        <Button
-            android:id="@+id/login"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Login"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="30dp">
 
-        <Button
-            android:id="@+id/registration"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:onClick="register"
-            android:text="Register"/>
+            <Button
+                android:id="@+id/login"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#0000FF"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:text="Login"/>
 
+            <Button
+                android:id="@+id/registration"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="50dp"
+                android:onClick="register"
+                android:background="#0000FF"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Register"/>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

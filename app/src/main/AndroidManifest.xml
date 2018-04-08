@@ -34,7 +34,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name=".WelcomeScreen">
+        <activity android:name=".WelcomeScreen"
+            android:theme="@style/AppTheme3">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -73,14 +74,26 @@
             android:theme="@style/AppTheme2" />
         <activity android:name=".PlaceSelector" />
         <activity
-            android:name=".CustomerRides"
-            android:theme="@style/AppTheme2" />
+            android:name=".CustomerRides" />
         <activity
-            android:name=".EditProfile"
-            android:theme="@style/AppTheme2" />
+            android:name=".EditProfile" />
         <activity android:name=".RatingActivity" />
-        <activity android:name=".OffersActivity"
-            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".OffersActivity" />
+
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".TripCompleted" />
+        <activity android:name=".DriveWithUs" />
+        <activity
+            android:name=".Payment" />
+        <activity
+            android:name=".Support" />
+        <activity
+            android:name=".Settings"/>
     </application>
 
 </manifest>

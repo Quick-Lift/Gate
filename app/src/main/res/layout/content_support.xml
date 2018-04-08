@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_support"
+    tools:context="com.quicklift.Support">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#05affc"
+        android:text="Contact Us"
+        android:textSize="18sp"
+        android:paddingLeft="20dp"
+        android:paddingBottom="2dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#05affc"
+        android:text="Quick Lift"
+        android:textSize="18sp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#05affc"
+        android:text="Gola Road"
+        android:textSize="18sp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#05affc"
+        android:text="Patna - 1234566"
+        android:textSize="18sp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#05affc"
+        android:text="Phone  +918765432100"
+        android:textSize="18sp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="20dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="#05affc"
+        android:text="Last Trip"
+        android:textSize="20sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/margin"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="#05affc"
+        android:text="Frequently Asked Questions"
+        android:textSize="20sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="40dp"
+        android:background="@drawable/margin"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="#05affc"
+        android:text="Fares and Charges"
+        android:textSize="20sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="40dp"
+        android:background="@drawable/margin"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="#05affc"
+        android:text="Ride Options"
+        android:textSize="20sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="40dp"
+        android:background="@drawable/margin"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="#05affc"
+        android:text="About Us"
+        android:textSize="20sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="40dp"
+        android:background="@drawable/margin"/>
+
+</LinearLayout>

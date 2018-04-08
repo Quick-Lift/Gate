@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,7 +57,7 @@ public class HomeScreen extends AppCompatActivity
     private DatabaseReference reference,rate_ref,driver_info;
     private ListView location_list;
     private ArrayList<places> places_list;
-    private ArrayList<rides> rate_list;
+    private ArrayList<Ride> rate_list;
     private String did;
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -111,16 +110,16 @@ public class HomeScreen extends AppCompatActivity
                     if (data.child("rated").getValue().toString().equals("false")) {
                         //Toast.makeText(MainActivity.this, "hi", Toast.LENGTH_SHORT).show();
                         did = new String(data.child("did").getValue().toString());
-                        rides ride = new rides();
+                        Ride ride = new Ride();
                         ride.setDestination(data.child("destination").getValue().toString());
                         ride.setSource(data.child("source").getValue().toString());
-                        ride.setTimestamp(data.child("timestamp").getValue().toString());
-                        ride.setDid(data.child("did").getValue().toString());
+                  //      ride.setTimestamp(data.child("timestamp").getValue().toString());
+                  //      ride.setDid(data.child("did").getValue().toString());
 
-                        rate_list.add(ride);
-                        StringTokenizer st = new StringTokenizer(ride.getTimestamp(), " ");
-                        String times = st.nextToken();
-                        timestamp.setText("on " + times + " ");
+                 //       rate_list.add(ride);
+                 //       StringTokenizer st = new StringTokenizer(ride.getTimestamp(), " ");
+                 //       String times = st.nextToken();
+                 //       timestamp.setText("on " + times + " ");
 
                         driver_info = database.getReference("driver/lkkaHaQalTWCTMETFcSgL1ysd7G3");
                         driver_info.addListenerForSingleValueEvent(new ValueEventListener() {

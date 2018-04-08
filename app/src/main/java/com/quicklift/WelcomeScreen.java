@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -29,6 +30,7 @@ import java.util.Calendar;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -40,6 +42,26 @@ public class WelcomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
 
+//        StringBuilder googleDirectionsUrl=new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+//        googleDirectionsUrl.append("origin=12.8284773,77.70238379999999");
+//        googleDirectionsUrl.append("&destination=12.950288500000001,77.69906259999999");
+//      //  googleDirectionsUrl.append("&waypoints=optimize:true|12.835483999999997,77.679803|12.950288500000001,77.69906259999999");
+//        googleDirectionsUrl.append("&waypoints=optimize:true|12.835483999999997,77.679803|12.934533,77.626579");
+//        googleDirectionsUrl.append("&key="+"AIzaSyAicFor08br3-Jl-xwUc0bZHC2KMdcGRNo");
+//
+//
+////        googleDirectionsUrl.append("&destination=12.950288500000001,77.69906259999999");
+////        googleDirectionsUrl.append("&waypoints=optimize:true|12.835483999999997,77.679803");
+//
+//        Log.v("TAG",googleDirectionsUrl.toString());
+//        Object[] dataTransfer = new Object[9];
+//        String url = googleDirectionsUrl.toString();
+//        BestRoute getDirectionsData = new BestRoute();
+//        dataTransfer[0] = url;
+//        getDirectionsData.execute(dataTransfer);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         // variables storing function values returned by network connection functions
         boolean status1 = haveNetworkConnection();
         boolean status2 = hasActiveInternetConnection();
@@ -48,12 +70,16 @@ public class WelcomeScreen extends AppCompatActivity {
         if(!checkPermission())
         {
             appendLog(getCurrentTime()+"Gathering permissions status:0");
-
             //requesting permission to access mobile resources
-            Intent i = new Intent(this,Login.class);
-            startActivity(i);
-            finish();
-            requestPermission();
+            if(status1 && status2)
+            {
+                appendLog(getCurrentTime()+"Gathering network information status:1");
+                requestPermission();
+            }
+            else{
+                requestPermission();
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+            }
         }
         else {
             appendLog(getCurrentTime() + "Gathered permissions status:1");
@@ -69,7 +95,6 @@ public class WelcomeScreen extends AppCompatActivity {
                 Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     private boolean haveNetworkConnection() {
@@ -113,7 +138,8 @@ public class WelcomeScreen extends AppCompatActivity {
                         READ_EXTERNAL_STORAGE,
                         ACCESS_FINE_LOCATION,
                         ACCESS_COARSE_LOCATION,
-                        LOCATION_SERVICE
+                        LOCATION_SERVICE,
+                        CALL_PHONE
 
                 }, RequestPermissionCode);
 
@@ -126,47 +152,52 @@ public class WelcomeScreen extends AppCompatActivity {
             case RequestPermissionCode:
 
                 if (grantResults.length > 0) {
-
                     boolean CameraPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean RecordAudioPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     boolean WriteStoragePermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
                     boolean ReadStorgaePermission = grantResults[3] == PackageManager.PERMISSION_GRANTED;
                     boolean LocationService = grantResults[4] == PackageManager.PERMISSION_GRANTED;
+                    boolean CallPhone = grantResults[5] == PackageManager.PERMISSION_GRANTED;
 
-                    if (CameraPermission && RecordAudioPermission && WriteStoragePermission && ReadStorgaePermission && LocationService) {
-
+                    if (CameraPermission && RecordAudioPermission && WriteStoragePermission && ReadStorgaePermission && LocationService && CallPhone) {
+                        Intent i = new Intent(this,Login.class);
+                        startActivity(i);
+                        finish();
                         //Toast.makeText(AnimationActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        Toast.makeText(WelcomeScreen.this,"Permission Denied",Toast.LENGTH_LONG).show();
+                        //Toast.makeText(WelcomeScreen.this,"Permission Denied",Toast.LENGTH_LONG).show();
                         appendLog(getCurrentTime()+"Few permissions denied status:0");
-
+                        Intent i = new Intent(this,Login.class);
+                        startActivity(i);
+                        finish();
                     }
                 }
-
                 break;
         }
     }
 
     public boolean checkPermission() {
-
         int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), LOCATION_SERVICE);
         int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_COARSE_LOCATION);
         int ThirdPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
         int FourthPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
         int FifthPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
+        int SixthPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE);
 
         return FirstPermissionResult == PackageManager.PERMISSION_GRANTED &&
                 SecondPermissionResult == PackageManager.PERMISSION_GRANTED &&
                 ThirdPermissionResult == PackageManager.PERMISSION_GRANTED &&
                 FourthPermissionResult ==PackageManager.PERMISSION_GRANTED &&
-                FifthPermissionResult ==PackageManager.PERMISSION_GRANTED;
+                FifthPermissionResult ==PackageManager.PERMISSION_GRANTED &&
+                SixthPermissionResult ==PackageManager.PERMISSION_GRANTED;
     }
 
     static public void appendLog(String text)
     {
         File logFile = new File("sdcard/log.txt");
         if (!logFile.exists())
+
         {
             try
             {

@@ -42,45 +42,64 @@ public class OffersActivity extends AppCompatActivity implements NavigationView.
     ArrayList<String> offers=new ArrayList<>();
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_offers);
+        setContentView(R.layout.content_offer_screen);
 
+        getSupportActionBar().setTitle("Offers");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
         db= FirebaseDatabase.getInstance().getReference("CustomerOffers/"+log_id.getString("id",null));
 
         list=(ListView)findViewById(R.id.list);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Offers");
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        toolbar.setTitle("Invite Friends");
+//
+//        setSupportActionBar(toolbar);
+//
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        NavigationView navigationView = findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
 
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                offers.clear();
-                for (DataSnapshot data:dataSnapshot.getChildren()){
-                    offers.add(data.getValue(String.class));
-                }
-                list.setAdapter(new CustomAdapter());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        db.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                offers.clear();
+//                for (DataSnapshot data:dataSnapshot.getChildren()){
+//                    offers.add(data.getValue(String.class));
+//                }
+//                list.setAdapter(new CustomAdapter());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -128,44 +147,44 @@ public class OffersActivity extends AppCompatActivity implements NavigationView.
         return false;
     }
 
-    class CustomAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return offers.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View view, ViewGroup parent) {
-            view=getLayoutInflater().inflate(R.layout.offerlayout,null);
-            TextView title=(TextView)view.findViewById(R.id.title);
-            final TextView detail=(TextView)view.findViewById(R.id.details);
-
-            title.setText(offers.get(offers.size()-position-1));
-            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Offers/"+offers.get(offers.size()-position-1));
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    detail.setText(dataSnapshot.getValue(String.class));
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            return view;
-        }
-    }
+//    class CustomAdapter extends BaseAdapter {
+//
+//        @Override
+//        public int getCount() {
+//            return offers.size();
+//        }
+//
+//        @Override
+//        public Object getItem(int position) {
+//            return null;
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return 0;
+//        }
+//
+//        @Override
+//        public View getView(int position, View view, ViewGroup parent) {
+//            view=getLayoutInflater().inflate(R.layout.offerlayout,null);
+//            TextView title=(TextView)view.findViewById(R.id.title);
+//            final TextView detail=(TextView)view.findViewById(R.id.details);
+//
+//            title.setText(offers.get(offers.size()-position-1));
+//            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Offers/"+offers.get(offers.size()-position-1));
+//            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    detail.setText(dataSnapshot.getValue(String.class));
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
+//
+//            return view;
+//        }
+//    }
 }

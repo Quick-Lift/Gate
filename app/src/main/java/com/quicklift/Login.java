@@ -39,8 +39,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        getSupportActionBar().setTitle("Login");
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getSupportActionBar().setTitle("");
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         pdialog=new ProgressDialog(this);
 
@@ -75,8 +75,10 @@ public class Login extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             // Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            final SharedPreferences log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
-                            final SharedPreferences.Editor editor=log_id.edit();
+                            SharedPreferences log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
+                            SharedPreferences.Editor editor=log_id.edit();
+                            //Toast.makeText(Login.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
+                            //Log.v("TAG",user.getUid());
                             editor.putString("id",user.getUid());
                             editor.putString("driver","");
                             editor.commit();

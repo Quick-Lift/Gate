@@ -46,7 +46,7 @@ import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CustomerRegistration extends AppCompatActivity {
-    EditText name,email,phone,password;
+    EditText name,email,phone,password,address;
     CircleImageView pic;
     ProgressDialog pdialog;
     private FirebaseAuth mAuth;
@@ -77,7 +77,7 @@ public class CustomerRegistration extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_registration);
 
-        getSupportActionBar().setTitle("User Registration");
+        getSupportActionBar().setTitle("Registration");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -91,6 +91,7 @@ public class CustomerRegistration extends AppCompatActivity {
         email=(EditText)findViewById(R.id.email);
         phone=(EditText)findViewById(R.id.phone);
         password=(EditText)findViewById(R.id.password);
+        address=(EditText)findViewById(R.id.address);
         pic=(CircleImageView) findViewById(R.id.image);
 
         pic.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +146,7 @@ public class CustomerRegistration extends AppCompatActivity {
             customer.setName(name.getText().toString());
             customer.setEmail(email.getText().toString());
             customer.setPhone(phone.getText().toString());
+            customer.setAddress(address.getText().toString());
             customer.setThumb(upload_img);
 
             if (selectedImage!=null){
@@ -166,12 +168,19 @@ public class CustomerRegistration extends AppCompatActivity {
                 });
             }
             else {
-                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
             }
 
-            Toast.makeText(this, "Successfully Registered !", Toast.LENGTH_SHORT).show();
             user_db.child(user.getUid()).setValue(customer);
-            mAuth.signOut();
+            SharedPreferences log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
+            SharedPreferences.Editor editor=log_id.edit();
+            //Toast.makeText(CustomerRegistration.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
+            //Log.v("TAG",user.getUid());
+            editor.putString("id",user.getUid());
+            editor.putString("driver","");
+            editor.commit();
+            Toast.makeText(this, "Successfully Registered !", Toast.LENGTH_SHORT).show();
+            //mAuth.signOut();
 
             finish();
 
@@ -241,7 +250,14 @@ public class CustomerRegistration extends AppCompatActivity {
             password.setError("Required.");
             valid = false;
         } else {
-           password.setError(null);
+            password.setError(null);
+        }
+
+        if (TextUtils.isEmpty(address.getText().toString())) {
+            address.setError("Required.");
+            valid = false;
+        } else {
+            address.setError(null);
         }
 
         return valid;
