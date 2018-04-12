@@ -2,7 +2,11 @@ package com.quicklift;
 
 import android.*;
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -15,6 +19,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -26,6 +31,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -40,14 +46,19 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +90,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -155,7 +167,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     TextView time_bike,time_car,time_auto,time_rickshaw,time_shareAuto,time_shareCar,time_shareRickshaw,final_time;
     boolean doubleBackToExitPressedOnce = false;
     DrawerLayout drawer;
-    Spinner seats,offer;
+    Spinner seats;
+    TextView offer;
     List<Marker> driver_markers = new ArrayList<>();
     List<Marker> driver_markers_share = new ArrayList<>();
     List<Marker> driver_markers_bike = new ArrayList<>();
@@ -165,6 +178,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     private LatLng pick_loc;
     int show=0;
     String ridetype=null,vehicletype="car";
+    TextView findingridemsg,ridedetails;
+    Dialog dialog;
 
     @Override
     public void onBackPressed() {
@@ -247,7 +262,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         confirm = (Button) findViewById(R.id.confirm);
         payment = (Spinner) findViewById(R.id.pay_mode);
         seats = (Spinner) findViewById(R.id.seats);
-        offer = (Spinner) findViewById(R.id.offer);
+        offer = (TextView) findViewById(R.id.offer);
         hsv = (HorizontalScrollView) findViewById(R.id.fragmentTwo);
         price_auto = (TextView) findViewById(R.id.price_auto);
         price_bike = (TextView) findViewById(R.id.price_bike);
@@ -266,6 +281,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         final_price = (TextView) findViewById(R.id.price);
         final_time = (TextView) findViewById(R.id.time);
         otp = (TextView) findViewById(R.id.otp);
+        ridedetails = (TextView) findViewById(R.id.ridedetails);
         final_image = (ImageView) findViewById(R.id.final_image);
 
         payment_mode.add("Cash");
@@ -278,16 +294,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         seats_list.add("2");
         seats_list.add("3");
         seats_list.add("4");
-
-        offer_list.add("Offer 1");
-        offer_list.add("Offer 2");
-        offer_list.add("Offer 3");
-        offer_list.add("Offer 4");
-
-        ArrayAdapter<String> adapter2 =
-                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, offer_list);
-        adapter2.setDropDownViewResource(R.layout.payment_list);
-        offer.setAdapter(adapter2);
 
         ArrayAdapter<String> adapter1 =
                 new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
@@ -435,9 +441,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                        driver_list.add(driver_list_rickshaw.get(i));
 //                    }
 //                }
-
+                dialogdisplay();
                 find_driver.removeAllListeners();
-                find_driver_share.removeAllListeners();
+//                find_driver_share.removeAllListeners();
 //                find_driver_bike.removeAllListeners();
 //                find_driver_car.removeAllListeners();
 //                find_driver_auto.removeAllListeners();
@@ -449,14 +455,84 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 //findViewById(R.id.layout3).setVisibility(View.VISIBLE);
                // Toast.makeText(Home.this, "2", Toast.LENGTH_SHORT).show();
                 screen_status=0;
-                findViewById(R.id.pickup_layout).setVisibility(View.INVISIBLE);
-                findViewById(R.id.destn_layout).setVisibility(View.INVISIBLE);
+                findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
                 if (ridetype.equals("full"))
                     finddriver();
                 else
                     findsharedriver();
             }
         });
+
+        offer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(Home.this, SelectOffers.class), 3);
+            }
+        });
+    }
+
+    public void dialogdisplay(){
+        View view=getLayoutInflater().inflate(R.layout.waitingdialog,null);
+        final ImageView img1=(ImageView)view.findViewById(R.id.image1);
+        final ImageView img2=(ImageView)view.findViewById(R.id.image2);
+        findingridemsg=(TextView)view.findViewById(R.id.text);
+
+        if (vehicletype.equals("car"))
+            img2.setImageResource(R.drawable.carfinal);
+        else if (vehicletype.equals("rickshaw"))
+            img2.setImageResource(R.drawable.rickshawfinal);
+        img1.setVisibility(View.GONE);
+        final Animation left_to_right = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.welcome_animation);
+        final Animation right_to_left = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.welcome_animation_right_to_left);
+        img2.setAnimation(right_to_left);
+//        img1.setAnimation(left_to_right);
+
+        left_to_right.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+//                img1.setVisibility(View.GONE);
+//                img2.setVisibility(View.VISIBLE);
+//                img2.startAnimation(left_to_right);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+//                img2.setAnimation(right_to_left);
+            }
+        });
+
+        right_to_left.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+//                img2.setVisibility(View.GONE);
+//                img1.setVisibility(View.VISIBLE);
+//                img1.setAnimation(left_to_right);
+//                img1.startAnimation(right_to_left);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        dialog=new Dialog(this);
+        dialog.setContentView(view);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     private void findsharedriver() {
@@ -464,7 +540,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         String id = String.format("%04d", random.nextInt(10000));
         data.setOtp(id);
         otp.setText("OTP\n"+id);
-        data.setPrice(final_price.getText().toString());
+        editor.putString("otp",id);
+        editor.commit();
+        data.setPrice(final_price.getText().toString().substring(4));
         data.setSource(pickup_address.getText().toString());
         data.setDestination(destn_address.getText().toString());
         data.setSeat(seats.getSelectedItem().toString());
@@ -544,11 +622,19 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //            }
 //        }
             screen_status=1;
-        if (found == 1)
+        if (found == 1) {
             Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing())
+                dialog.dismiss();
+        }
         else if (found==0 && sharedriver<share_driver_list.size()) {
-            Toast.makeText(Home.this, "hello "+String.valueOf(sharedriver)+" "+share_driver_list.get(sharedriver), Toast.LENGTH_SHORT).show();
-            DatabaseReference dref = FirebaseDatabase.getInstance().getReference("DriversWorking/Car/" + share_driver_list.get(sharedriver)+"/seat");
+//            Toast.makeText(Home.this, "hello "+String.valueOf(sharedriver)+" "+share_driver_list.get(sharedriver), Toast.LENGTH_SHORT).show();
+            DatabaseReference dref=null;
+            if (vehicletype.equals("car"))
+                dref = FirebaseDatabase.getInstance().getReference("DriversWorking/Car/" + share_driver_list.get(sharedriver)+"/seat");
+            else if (vehicletype.equals("rickshaw"))
+                dref = FirebaseDatabase.getInstance().getReference("DriversWorking/Rickshaw/" + share_driver_list.get(sharedriver)+"/seat");
+
             dref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -681,13 +767,18 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         String id = String.format("%04d", random.nextInt(10000));
         data.setOtp(id);
         otp.setText("OTP\n"+id);
-        data.setPrice(final_price.getText().toString());
+        editor.putString("otp",id);
+        editor.commit();
+        data.setPrice(final_price.getText().toString().substring(4));
         data.setSource(pickup_address.getText().toString());
         data.setDestination(destn_address.getText().toString());
         data.setSeat(seats.getSelectedItem().toString());
         //Toast.makeText(this, ""+String.valueOf(i), Toast.LENGTH_SHORT).show();
-        if (found == 1)
+        if (found == 1) {
             Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing())
+                dialog.dismiss();
+        }
         else if (found == 0 && i < driver_list.size())
             getClosestDriver();
         else {
@@ -709,7 +800,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                 place_drivers_rickshaw();
             driverid="";
             place_drivers();
-            place_drivers_share();
+//            place_drivers_share();
+
+            if (dialog.isShowing())
+                dialog.dismiss();
         }
     }
 
@@ -740,11 +834,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 vehicletype="car";
                 final_price.setText(price_car.getText());
                 final_time.setText(time_car.getText());
-                final_image.setImageResource(R.drawable.car1);
+                final_image.setImageResource(R.drawable.carfinal);
                 seats.setSelection(0);
                 seats.setEnabled(false);
                 ridetype="full";
                 place_drivers();
+                ridedetails.setText("This option is for booking car. It allows you to book complete car for yourself.");
 //                remove_drivers_auto();
 //                remove_drivers_bike();
 //                remove_drivers_rickshaw();
@@ -766,11 +861,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 // Toast.makeText(this, "rickshaw", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_rickshaw.getText());
                 final_time.setText(time_rickshaw.getText());
-                final_image.setImageResource(R.drawable.erickshaw1);
+                final_image.setImageResource(R.drawable.rickshawfinal);
                 seats.setSelection(0);
                 seats.setEnabled(false);
                 ridetype="full";
                 place_drivers();
+                ridedetails.setText("This option is for booking rickshaw. It allows you to book full rickshaw for yourself.");
 //                remove_drivers_auto();
 //                remove_drivers_car();
 //                remove_drivers_bike();
@@ -778,11 +874,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 vehicletype="car";
                 final_price.setText(price_shareCar.getText());
                 final_time.setText(time_shareCar.getText());
-                final_image.setImageResource(R.drawable.car1);
+                final_image.setImageResource(R.drawable.carfinal);
                 seats.setSelection(1);
                 seats.setEnabled(true);
                 ridetype="share";
                 place_drivers();
+                ridedetails.setText("This option is for booking share car. It allows you to book only required number of seats for yourself.");
 //                remove_drivers_auto();
 //                remove_drivers_bike();
 //                remove_drivers_rickshaw();
@@ -804,11 +901,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 // Toast.makeText(this, "rickshaw", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_shareRickshaw.getText());
                 final_time.setText(time_shareRickshaw.getText());
-                final_image.setImageResource(R.drawable.erickshaw1);
+                final_image.setImageResource(R.drawable.rickshawfinal);
                 seats.setSelection(1);
                 seats.setEnabled(true);
                 ridetype="share";
                 place_drivers();
+                ridedetails.setText("This option is for booking share rickshaw. It allows you to book only required number of seats for yourself.");
 //                remove_drivers_auto();
 //                remove_drivers_car();
 //                remove_drivers_bike();
@@ -1089,6 +1187,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                 editor.putString("driver",driverid);
                                 editor.putString("status","accepted");
                                 editor.commit();
+                                if (dialog.isShowing())
+                                    dialog.dismiss();
                                 tracktripstatus();
                             }
 
@@ -1121,14 +1221,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         tracktripstatus();
                     }
                     else if (map.get("resp").toString().equals("Trip Ended")){
-                        editor.putString("status","ended");
-                        editor.commit();
                         Toast.makeText(Home.this, "Trip Ended !", Toast.LENGTH_LONG).show();
                         Intent intent=new Intent(Home.this,TripCompleted.class);
                         intent.putExtra("id",log_id.getString("driver",null));
                         startActivity(intent);
-
+                        stopService(new Intent(Home.this, NotificationService.class));
                         finish();
+                        resp.removeValue();
                         resp.removeEventListener(resplistener);
                     }
                     else if (map.get("resp").toString().equals("Reject")) {
@@ -1137,6 +1236,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         cust_req.child(log_id.getString("id",null)).removeValue();
                         resp.removeValue();
                         resp.removeEventListener(resplistener);
+                        stopService(new Intent(Home.this, NotificationService.class));
                         driverid="";
                         ++i;
                         //if (i <= driver_list.size())
@@ -1145,6 +1245,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     else if (map.get("resp").toString().equals("Cancel")){
                         Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
                         cancel_current_trip();
+                        stopService(new Intent(Home.this, NotificationService.class));
                         // Log.v("TAG","cancel");
 
 //                        if (driver != null) {
@@ -1229,10 +1330,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             if (marker_pick != null) {
                 marker_pick.remove();
             }
+
+            final BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_current_loc);
             if (show==1){
                 MarkerOptions opt = new MarkerOptions()
                         .title(pickup_address.getText().toString())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        .icon(icon)
                         .position(pick_loc)
                         .snippet("Pick Up");
                 marker_pick = mMap.addMarker(opt);
@@ -1240,7 +1343,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             else {
                 MarkerOptions opt = new MarkerOptions()
                         .title(pickup_address.getText().toString())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        .icon(icon)
                         .position(pickup)
                         .snippet("Pick Up");
                 marker_pick = mMap.addMarker(opt);
@@ -1255,7 +1358,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     }
                     MarkerOptions opt = new MarkerOptions()
                             .title(dataSnapshot.child("destination").getValue(String.class))
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_destination))
                             .position(new LatLng(dataSnapshot.child("en_lat").getValue(Double.class),dataSnapshot.child("en_lng").getValue(Double.class)))
                             .snippet("Destination");
                     marker_pick = mMap.addMarker(opt);
@@ -1275,12 +1378,20 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 if (dataSnapshot.exists()) {
                     //mMap.clear();
                     ArrayList<Double> map = (ArrayList<Double>) dataSnapshot.getValue();
-                    if (marker_drop != null) {
-                        marker_drop.remove();
-                    }
-                    MarkerOptions opt = new MarkerOptions()
+                    if (Double.parseDouble(map.get(0).toString())!=0 && Double.parseDouble(map.get(0).toString())!=0) {
+                        if (marker_drop != null) {
+                            marker_drop.remove();
+                        }
+                        Bitmap b = null;
+                        if (vehicletype.equals("rickshaw"))
+                            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.rickshawfinal), 100,60, false);
+                        else if (vehicletype.equals("car"))
+                            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.carfinal), 100,60, false);
+
+                        final BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(b);
+                        MarkerOptions opt = new MarkerOptions()
                                 .title("Driver")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                .icon(icon)
                                 .position(new LatLng(Double.parseDouble(map.get(0).toString()), Double.parseDouble(map.get(1).toString())))
                                 .snippet("Driver Location");
                         marker_drop = mMap.addMarker(opt);
@@ -1339,9 +1450,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                                .snippet("Pickup Location");
 //                        marker_pick = mMap.addMarker(opt);
 
-                       // getRouteToMarker(marker_pick.getPosition(), marker_drop.getPosition());
-                    //}
-
+                        // getRouteToMarker(marker_pick.getPosition(), marker_drop.getPosition());
+                        //}
+                    }
                 }
             }
 
@@ -1532,7 +1643,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                     MarkerOptions options = new MarkerOptions()
                             .title(address.getLocality())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_current_loc))
                             .position(new LatLng(lat, lng))
                             .snippet("Pick up");
                     marker_pick = mMap.addMarker(options);
@@ -1546,7 +1657,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                 pickup_address.setText(address.getLocality());
                 place_drivers();
-                place_drivers_share();
+//                place_drivers_share();
             }
         }
     }
@@ -1567,6 +1678,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             driver_markers.get(k).remove();
         }
         driver_markers.clear();
+        Bitmap b=null;
+        if (vehicletype.equals("rickshaw"))
+           b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.rickshawfinal),100,60,false);
+        else if (vehicletype.equals("car"))
+            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.carfinal),100,60,false);
+
+        final BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(b);
 
         GeoFire geoFire = new GeoFire(ref);
         find_driver = geoFire.queryAtLocation(new GeoLocation(pickup.latitude, pickup.longitude), radius);
@@ -1580,9 +1698,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 if (driver_list.size()==1){
                     loc=location;
                 }
+
                 MarkerOptions options = new MarkerOptions()
-                        .title("Bike")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        .title(vehicletype)
+                        .icon(icon)
                         .position(new LatLng(location.latitude, location.longitude));
 
                 driver_markers.add(mMap.addMarker(options));
@@ -1607,7 +1726,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     if (key.equals(driver_list.get(i))){
                         MarkerOptions options = new MarkerOptions()
                                 .title("Bike")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                .icon(icon)
                                 .position(new LatLng(location.latitude, location.longitude));
 
                         Marker mrk=driver_markers.get(i);
@@ -1643,103 +1762,103 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             }
         });
 
-        if (!vehicletype.equals("bike"))
-            place_drivers_share();
+//        if (!vehicletype.equals("bike"))
+//            place_drivers_share();
     }
 
-    public void place_drivers_share() {
-        driver_list_share.clear();
-        DatabaseReference ref=null ;
-
-        if (vehicletype.equals("car"))
-            ref= FirebaseDatabase.getInstance().getReference("DriversWorking/Car");
-        else if (vehicletype.equals("auto"))
-            ref= FirebaseDatabase.getInstance().getReference("DriversWorking/Auto");
-        else if (vehicletype.equals("bike"))
-            ref= FirebaseDatabase.getInstance().getReference("DriversWorking/Bike");
-        else if (vehicletype.equals("rickshaw"))
-            ref= FirebaseDatabase.getInstance().getReference("DriversWorking/Rickshaw");
-
-        for (int k = 0; k < driver_markers_share.size(); k++) {
-            driver_markers_share.get(k).remove();
-        }
-        driver_markers_share.clear();
-
-        GeoFire geoFire = new GeoFire(ref);
-        find_driver_share = geoFire.queryAtLocation(new GeoLocation(pickup.latitude, pickup.longitude), radius);
-        find_driver_share.removeAllListeners();
-
-        find_driver_share.addGeoQueryEventListener(new GeoQueryEventListener() {
-            @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-                driver_list_share.add(key);
-
-                if (driver_list_share.size()==1){
-                    loc=location;
-                }
-                MarkerOptions options = new MarkerOptions()
-                        .title("Bike")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                        .position(new LatLng(location.latitude, location.longitude));
-
-                driver_markers_share.add(mMap.addMarker(options));
-            }
-
-            @Override
-            public void onKeyExited(String key) {
-                for (int i=0;i<driver_list_share.size();i++) {
-                    if (key.equals(driver_list_share.get(i))) {
-                        Marker mrk = driver_markers_share.get(i);
-                        mrk.remove();
-                        driver_list_share.remove(i);
-                        driver_markers_share.remove(i);
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-                for (int i=0;i<driver_list_share.size();i++){
-                    if (key.equals(driver_list_share.get(i))){
-                        MarkerOptions options = new MarkerOptions()
-                                .title("Bike")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                                .position(new LatLng(location.latitude, location.longitude));
-
-                        Marker mrk=driver_markers_share.get(i);
-                        mrk.remove();
-                        driver_markers_share.set(i,mMap.addMarker(options));
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onGeoQueryReady() {
-                if (!pickup_address.getText().toString().equals("") && !destn_address.getText().toString().equals("") && loc!=null) {
-                    Object[] dataTransfer = new Object[9];
-                    String url = getDirectionsUrl(loc);
-                    GetDirectionsData getDirectionsData = new GetDirectionsData();
-                    dataTransfer[0] = mMap;
-                    dataTransfer[1] = url;
-                    dataTransfer[2] = time_bike;
-                    dataTransfer[3] = time_car;
-                    dataTransfer[4] = time_auto;
-                    dataTransfer[5] = time_rickshaw;
-                    dataTransfer[6] = time_shareAuto;
-                    dataTransfer[7] = time_shareCar;
-                    dataTransfer[8] = time_shareRickshaw;
-                    getDirectionsData.execute(dataTransfer);
-                }
-            }
-
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-
-            }
-        });
-    }
+//    public void place_drivers_share() {
+//        driver_list_share.clear();
+//        DatabaseReference ref=null ;
+//
+//        if (vehicletype.equals("car"))
+//            ref= FirebaseDatabase.getInstance().getReference("DriversWorking/Car");
+//        else if (vehicletype.equals("auto"))
+//            ref= FirebaseDatabase.getInstance().getReference("DriversWorking/Auto");
+//        else if (vehicletype.equals("bike"))
+//            ref= FirebaseDatabase.getInstance().getReference("DriversWorking/Bike");
+//        else if (vehicletype.equals("rickshaw"))
+//            ref= FirebaseDatabase.getInstance().getReference("DriversWorking/Rickshaw");
+//
+//        for (int k = 0; k < driver_markers_share.size(); k++) {
+//            driver_markers_share.get(k).remove();
+//        }
+//        driver_markers_share.clear();
+//
+//        GeoFire geoFire = new GeoFire(ref);
+//        find_driver_share = geoFire.queryAtLocation(new GeoLocation(pickup.latitude, pickup.longitude), radius);
+//        find_driver_share.removeAllListeners();
+//
+//        find_driver_share.addGeoQueryEventListener(new GeoQueryEventListener() {
+//            @Override
+//            public void onKeyEntered(String key, GeoLocation location) {
+//                driver_list_share.add(key);
+//
+//                if (driver_list_share.size()==1){
+//                    loc=location;
+//                }
+//                MarkerOptions options = new MarkerOptions()
+//                        .title("Bike")
+//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+//                        .position(new LatLng(location.latitude, location.longitude));
+//
+//                driver_markers_share.add(mMap.addMarker(options));
+//            }
+//
+//            @Override
+//            public void onKeyExited(String key) {
+//                for (int i=0;i<driver_list_share.size();i++) {
+//                    if (key.equals(driver_list_share.get(i))) {
+//                        Marker mrk = driver_markers_share.get(i);
+//                        mrk.remove();
+//                        driver_list_share.remove(i);
+//                        driver_markers_share.remove(i);
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onKeyMoved(String key, GeoLocation location) {
+//                for (int i=0;i<driver_list_share.size();i++){
+//                    if (key.equals(driver_list_share.get(i))){
+//                        MarkerOptions options = new MarkerOptions()
+//                                .title("Bike")
+//                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+//                                .position(new LatLng(location.latitude, location.longitude));
+//
+//                        Marker mrk=driver_markers_share.get(i);
+//                        mrk.remove();
+//                        driver_markers_share.set(i,mMap.addMarker(options));
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onGeoQueryReady() {
+//                if (!pickup_address.getText().toString().equals("") && !destn_address.getText().toString().equals("") && loc!=null) {
+//                    Object[] dataTransfer = new Object[9];
+//                    String url = getDirectionsUrl(loc);
+//                    GetDirectionsData getDirectionsData = new GetDirectionsData();
+//                    dataTransfer[0] = mMap;
+//                    dataTransfer[1] = url;
+//                    dataTransfer[2] = time_bike;
+//                    dataTransfer[3] = time_car;
+//                    dataTransfer[4] = time_auto;
+//                    dataTransfer[5] = time_rickshaw;
+//                    dataTransfer[6] = time_shareAuto;
+//                    dataTransfer[7] = time_shareCar;
+//                    dataTransfer[8] = time_shareRickshaw;
+//                    getDirectionsData.execute(dataTransfer);
+//                }
+//            }
+//
+//            @Override
+//            public void onGeoQueryError(DatabaseError error) {
+//
+//            }
+//        });
+//    }
 
 //    public void place_drivers_bike() {
 //        driver_list.clear();
@@ -2548,7 +2667,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
             MarkerOptions options=new MarkerOptions()
                     .title(name)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_current_loc))
                     .position(new LatLng(latitude,longitude))
                     .snippet("Pick up");
             marker_pick=mMap.addMarker(options);
@@ -2559,9 +2678,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             data.setSt_lng(longitude);
 
             find_driver.removeAllListeners();
-            find_driver_share.removeAllListeners();
+//            find_driver_share.removeAllListeners();
             place_drivers();
-            place_drivers_share();
+//            place_drivers_share();
             getRouteToMarker(marker_pick.getPosition(),marker_drop.getPosition());
 
         } else if (requestCode==2 && resultCode==RESULT_OK){
@@ -2584,7 +2703,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
             MarkerOptions options = new MarkerOptions()
                     .title(name)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_destination))
                     .position(new LatLng(latitude,longitude))
                     .snippet("Destination");
             marker_drop=mMap.addMarker(options);
@@ -2596,6 +2715,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             findViewById(R.id.layout3).setVisibility(View.GONE);
             findViewById(R.id.layout4).setVisibility(View.GONE);
             findViewById(R.id.fragmentTwo).setVisibility(View.VISIBLE);
+
+        } else if (requestCode==3 && resultCode==RESULT_OK){
+            offer.setText(intent.getStringExtra("offer"));
         }
     }
 
@@ -2603,6 +2725,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         Intent intent=new Intent(Home.this,RatingActivity.class);
         intent.putExtra("rating",0);
         startActivity(intent);
+    }
+
+    public void closelocationsave(View view){
+        findViewById(R.id.location_card_view).setVisibility(View.GONE);
+        findViewById(R.id.rating_bar).setVisibility(View.GONE);
     }
 }
 

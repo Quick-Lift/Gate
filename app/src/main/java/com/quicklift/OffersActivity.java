@@ -1,5 +1,6 @@
 package com.quicklift;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -40,6 +41,9 @@ public class OffersActivity extends AppCompatActivity implements NavigationView.
     private SharedPreferences log_id;
     private DatabaseReference db;
     ArrayList<String> offers=new ArrayList<>();
+    TextView code,offer;
+    String refcode="";
+    ProgressDialog dialog;
 
     @Override
     public void onBackPressed() {
@@ -67,9 +71,35 @@ public class OffersActivity extends AppCompatActivity implements NavigationView.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
-        db= FirebaseDatabase.getInstance().getReference("CustomerOffers/"+log_id.getString("id",null));
+        db= FirebaseDatabase.getInstance().getReference("ReferalCode/"+log_id.getString("id",null));
 
+        dialog=new ProgressDialog(this);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setIndeterminate(true);
+        dialog.setMessage("Loading ... Please Wait !!!");
+        dialog.show();
+
+        code=(TextView)findViewById(R.id.code);
+        offer=(TextView)findViewById(R.id.offer);
         list=(ListView)findViewById(R.id.list);
+
+        db.child("code").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    code.setText("Referal Code : "+dataSnapshot.getValue(String.class));
+                    refcode=dataSnapshot.getValue(String.class);
+
+//                    Use Promocode: Love20\nget Rs. 20 off instantly
+                }
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        toolbar.setTitle("Invite Friends");
@@ -187,4 +217,17 @@ public class OffersActivity extends AppCompatActivity implements NavigationView.
 //            return view;
 //        }
 //    }
+
+    public void share(View view){
+        if (!refcode.equals("")) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    "Download Quicklift app and win 100% off upto Rs. 50 on your first ride.\n " +
+                            "Playstore Link Here !!!!!" +
+                            "\nUse Referal Code : "+refcode);
+            shareIntent.setType("text/plain");
+            startActivity(shareIntent);
+        }
+    }
 }

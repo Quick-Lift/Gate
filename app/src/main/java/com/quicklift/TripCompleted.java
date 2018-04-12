@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
@@ -64,6 +65,16 @@ public class TripCompleted extends AppCompatActivity {
 
         amount.setText(log_id.getString("amount",null));
 
+        editor.putString("driver","");
+        editor.putString("ride","");
+        editor.remove("status");
+        editor.commit();
+
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/"+getIntent().getStringExtra("id")+"/"+log_id.getString("id",null));
+        DatabaseReference db= FirebaseDatabase.getInstance().getReference("Response/"+log_id.getString("id",null));
+        db.removeValue();
+        ref.removeValue();
+
 //        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/" + log_id.getString("driver",null)+"/Info");
 //        ref.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
@@ -105,11 +116,15 @@ public class TripCompleted extends AppCompatActivity {
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                if (!map.get("thumb").toString().equals("")) {
-                    byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
-                    Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
-                    photo.setImageBitmap(decbyte);
+                Log.v("TAG",getIntent().getStringExtra("id"));
+                if (dataSnapshot.exists()) {
+                    Log.v("TAG","hello");
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if (!map.get("thumb").toString().equals("")) {
+                        byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
+                        Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
+                        photo.setImageBitmap(decbyte);
+                    }
                 }
             }
 
@@ -140,10 +155,6 @@ public class TripCompleted extends AppCompatActivity {
                 DatabaseReference ref=FirebaseDatabase.getInstance().getReference("LastRide");
                 ref.child(log_id.getString("id",null)+"/status").setValue("rated");
 
-                editor.putString("driver","");
-                editor.putString("ride","");
-                editor.remove("status");
-                editor.commit();
                 startActivity(new Intent(TripCompleted.this,Home.class));
                 finish();
             }
@@ -152,10 +163,6 @@ public class TripCompleted extends AppCompatActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.putString("driver","");
-                editor.putString("ride","");
-                editor.remove("status");
-                editor.commit();
                 startActivity(new Intent(TripCompleted.this,Home.class));
                 finish();
             }

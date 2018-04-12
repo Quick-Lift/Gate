@@ -6,11 +6,18 @@
         android:fromAlpha="0.0"
         android:toAlpha="1.0"
     />      -->
-    <translate
-        android:duration="2000"
+    <!--<translate-->
+        <!--android:duration="4000"-->
+        <!--android:fromYDelta="0%"-->
+        <!--android:toYDelta="0"-->
+        <!--android:fromXDelta="-500%"-->
+        <!--android:toXDelta="0"/>-->
+
+    <translate android:fromXDelta="0%"
+        android:toXDelta="400%"
         android:fromYDelta="0%"
-        android:toYDelta="0"
-        android:fromXDelta="-500%"
-        android:toXDelta="0"/>
+        android:toYDelta="0%"
+        android:duration="8000"
+        android:repeatCount="infinite"/>
 
 </set>

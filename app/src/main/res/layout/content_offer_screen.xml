@@ -26,8 +26,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
+            android:text="Refer your friends and get 50% off upto Rs. 50/- on your next ride"
+            android:gravity="center"
+            android:textSize="22sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="#05affc"/>
+
+        <TextView
+            android:id="@+id/code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:text="Refer your friends and get\n20% off on your next ride\nReferal Code : ABCDE"
+            android:text="Referal Code : "
             android:gravity="center"
             android:textSize="22sp"
             android:textColor="#05affc"/>
@@ -49,10 +60,11 @@
             android:layout_marginTop="10dp">
 
             <ImageView
-                android:layout_width="50dp"
+                android:layout_width="40dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_call"
                 android:tint="#05affc"
+                android:onClick="share"
                 android:layout_marginLeft="20dp"/>
 
             <TextView
@@ -61,6 +73,7 @@
                 android:text="WhatsApp"
                 android:paddingLeft="30dp"
                 android:textSize="22sp"
+                android:onClick="share"
                 android:gravity="center_vertical"
                 android:textColor="#05affc"/>
         </LinearLayout>
@@ -71,9 +84,10 @@
             android:layout_marginTop="10dp">
 
             <ImageView
-                android:layout_width="50dp"
+                android:layout_width="40dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_sms"
+                android:onClick="share"
                 android:layout_marginLeft="20dp"/>
 
             <TextView
@@ -82,6 +96,7 @@
                 android:text="SMS"
                 android:paddingLeft="30dp"
                 android:textSize="22sp"
+                android:onClick="share"
                 android:gravity="center_vertical"
                 android:textColor="#05affc"/>
         </LinearLayout>
@@ -92,9 +107,10 @@
             android:layout_marginTop="10dp">
 
             <ImageView
-                android:layout_width="50dp"
+                android:layout_width="40dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_email"
+                android:onClick="share"
                 android:layout_marginLeft="20dp"/>
 
             <TextView
@@ -103,6 +119,7 @@
                 android:text="Email"
                 android:paddingLeft="30dp"
                 android:textSize="22sp"
+                android:onClick="share"
                 android:gravity="center_vertical"
                 android:textColor="#05affc"/>
         </LinearLayout>
@@ -115,16 +132,17 @@
             android:background="@drawable/margin">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="#05affc"
                 android:src="@drawable/ic_star"
                 android:layout_marginLeft="20dp"/>
 
             <TextView
+                android:id="@+id/offer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Use Promocode: Love20\nget Rs. 20 off instantly"
+                android:text="Use Promocode: Ride20\nGet Rs. 20 off instantly"
                 android:paddingLeft="20dp"
                 android:textSize="18sp"
                 android:gravity="center_vertical"

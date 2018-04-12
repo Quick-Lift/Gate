@@ -93,6 +93,19 @@
             android:background="@drawable/all_margin"
             android:inputType="textPassword"/>
 
+        <EditText
+            android:id="@+id/refcode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Referal Code"
+            android:paddingLeft="15dp"
+            android:textSize="18sp"
+            android:textColor="#05affc"
+            android:textColorHint="#9905affc"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/all_margin"
+            android:inputType="textEmailAddress"/>
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="50dp"

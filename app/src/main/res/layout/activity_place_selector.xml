@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#11000000"
+    android:background="#fdfefe"
     tools:context="com.quicklift.PlaceSelector">
 <!--
     <EditText
@@ -19,8 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:hint="Select Location"
-        android:backgroundTint="#ffffff"
-        android:background="#fdfefe"
+        android:backgroundTint="#05affc"
         android:paddingLeft="10dp"
         android:elevation="20sp"
         android:layout_below="@+id/pickup"/>
@@ -29,20 +28,24 @@
         android:id="@+id/list_places"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="#000000"
-        android:dividerHeight="1dp"
-        android:background="#ffffff"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="3dp"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_below="@+id/destination"/>
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="#000000"
-        android:dividerHeight="1dp"
-        android:background="#ffffff"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="3dp"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_below="@+id/list_places"/>
 
 </RelativeLayout>

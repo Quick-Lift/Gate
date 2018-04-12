@@ -1,6 +1,7 @@
 package com.quicklift;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.os.Handler;
@@ -35,6 +36,11 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,6 +53,7 @@ public class PlaceSelector extends AppCompatActivity {
     private ArrayList<SavePlace> name=new ArrayList<SavePlace>();
     private GeoDataClient mGeoDataClient;
     SQLQueries sqlQueries;
+    private SharedPreferences log_id;
 
     @Override
     public void onBackPressed() {
@@ -81,39 +88,63 @@ public class PlaceSelector extends AppCompatActivity {
         //sqlQueries.saveplace("Huskur Gate","24","34","Work");
         //sqlQueries.recentplace("Salarpuria info zone","24","33","Other");
 
-        Cursor cursor=sqlQueries.retrieve_save_place();
-        if (cursor!=null && cursor.getCount()>0){
-            while (cursor.moveToNext()){
-                SavePlace sp=new SavePlace();
-                sp.setName(cursor.getString(cursor.getColumnIndex("name")));
-                sp.setPlace(cursor.getString(cursor.getColumnIndex("place")));
-                sp.setLat(cursor.getString(cursor.getColumnIndex("lat")));
-                sp.setLng(cursor.getString(cursor.getColumnIndex("lng")));
+//        Cursor cursor=sqlQueries.retrieve_save_place();
+//        if (cursor!=null && cursor.getCount()>0){
+//            while (cursor.moveToNext()){
+//                SavePlace sp=new SavePlace();
+//                sp.setName(cursor.getString(cursor.getColumnIndex("name")));
+//                sp.setPlace(cursor.getString(cursor.getColumnIndex("locname")));
+//                sp.setLat(cursor.getString(cursor.getColumnIndex("lat")));
+//                sp.setLng(cursor.getString(cursor.getColumnIndex("lng")));
+//
+//                //Toast.makeText(this, sp.getName(), Toast.LENGTH_SHORT).show();
+//                name.add(sp);
+//            }
+//            //Toast.makeText(this, String.valueOf(name.size()), Toast.LENGTH_SHORT).show();
+//        }
+//
+//        if (name.size()<4){
+//            cursor=sqlQueries.retrieve_recent_place();
+//            if (cursor!=null && cursor.getCount()>0){
+//
+//                while (cursor.moveToNext() && name.size()<4){
+//                    SavePlace sp=new SavePlace();
+//                    sp.setName(cursor.getString(cursor.getColumnIndex("name")));
+//                    sp.setPlace(cursor.getString(cursor.getColumnIndex("locname")));
+//                    sp.setLat(cursor.getString(cursor.getColumnIndex("lat")));
+//                    sp.setLng(cursor.getString(cursor.getColumnIndex("lng")));
+//
+//                    name.add(sp);
+//                }
+//               // Toast.makeText(this, String.valueOf(name.size()), Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        CustomAdapter customAdapter=new CustomAdapter();
 
-                //Toast.makeText(this, sp.getName(), Toast.LENGTH_SHORT).show();
-                name.add(sp);
-            }
-            //Toast.makeText(this, String.valueOf(name.size()), Toast.LENGTH_SHORT).show();
-        }
+        log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
 
-        if (name.size()<4){
-            cursor=sqlQueries.retrieve_recent_place();
-            if (cursor!=null && cursor.getCount()>0){
-
-                while (cursor.moveToNext() && name.size()<4){
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("SavedLocations/"+log_id.getString("id",null));
+        ref.child("saved").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                name.clear();
+                for (DataSnapshot data:dataSnapshot.getChildren()){
                     SavePlace sp=new SavePlace();
-                    sp.setName(cursor.getString(cursor.getColumnIndex("name")));
-                    sp.setPlace(cursor.getString(cursor.getColumnIndex("place")));
-                    sp.setLat(cursor.getString(cursor.getColumnIndex("lat")));
-                    sp.setLng(cursor.getString(cursor.getColumnIndex("lng")));
+                    sp.setName(data.child("name").getValue(String.class));
+                    sp.setPlace(data.child("locname").getValue(String.class));
+                    sp.setLat(data.child("lat").getValue(String.class));
+                    sp.setLng(data.child("lng").getValue(String.class));
 
                     name.add(sp);
                 }
-               // Toast.makeText(this, String.valueOf(name.size()), Toast.LENGTH_SHORT).show();
+                list_places.setAdapter(new CustomAdapter());
             }
-        }
-        CustomAdapter customAdapter=new CustomAdapter();
-        list_places.setAdapter(customAdapter);
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         destination.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -149,6 +180,7 @@ public class PlaceSelector extends AppCompatActivity {
                             PlaceBufferResponse places = task.getResult();
                             Place myPlace = places.get(0);
                             destination.setText(myPlace.getName());
+//                            Toast.makeText(PlaceSelector.this, ""+myPlace.getLatLng().latitude, Toast.LENGTH_SHORT).show();
                             Intent intent=new Intent();
                             intent.putExtra("place", myPlace.getName());
                             intent.putExtra("lat",myPlace.getLatLng().latitude);
@@ -170,10 +202,11 @@ public class PlaceSelector extends AppCompatActivity {
         list_places.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(PlaceSelector.this, ""+name.get(position).getLat(), Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent();
                 intent.putExtra("place", name.get(position).getPlace());
-                intent.putExtra("lat", name.get(position).getLat());
-                intent.putExtra("lng", name.get(position).getLng());
+                intent.putExtra("lat", Double.parseDouble(name.get(position).getLat()));
+                intent.putExtra("lng", Double.parseDouble(name.get(position).getLng()));
                 setResult(RESULT_OK,intent);
                 finish();
             }
