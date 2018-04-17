@@ -25,6 +25,8 @@ import java.util.Map;
 
 public class SelectOffers extends AppCompatActivity {
     ArrayList<String> offers=new ArrayList<>();
+    ArrayList<String> discount=new ArrayList<>();
+    ArrayList<String> upto=new ArrayList<>();
     ArrayList<String> offers_code=new ArrayList<>();
     ListView list;
     DatabaseReference db;
@@ -75,6 +77,8 @@ public class SelectOffers extends AppCompatActivity {
                                 Map<String, Object> map = (Map<String, Object>) dt.getValue();
                                 String str = "Get " + map.get("discount").toString() + "% off upto Rs. " + map.get("upto").toString();
                                 offers.add(str);
+                                discount.add(map.get("discount").toString());
+                                upto.add(map.get("upto").toString());
                                 offers_code.add(map.get("code").toString());
                             }
                             list.setAdapter(new CustomAdapter());
@@ -99,6 +103,8 @@ public class SelectOffers extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent();
                 intent.putExtra("offer", offers.get(position));
+                intent.putExtra("discount", discount.get(position));
+                intent.putExtra("upto", upto.get(position));
                 intent.putExtra("offer_code", offers_code.get(position));
                 setResult(RESULT_OK,intent);
                 finish();

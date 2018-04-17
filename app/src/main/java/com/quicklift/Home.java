@@ -289,16 +289,16 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         payment_mode.add("Bhim Upi");
         payment_mode.add("Paytm");
 
-        seats_list.add("full");
-        seats_list.add("1");
-        seats_list.add("2");
-        seats_list.add("3");
-        seats_list.add("4");
-
-        ArrayAdapter<String> adapter1 =
-                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
-        adapter1.setDropDownViewResource(R.layout.payment_list);
-        seats.setAdapter(adapter1);
+//        seats_list.add("full");
+//        seats_list.add("1");
+//        seats_list.add("2");
+//        seats_list.add("3");
+//        seats_list.add("4");
+//
+//        ArrayAdapter<String> adapter1 =
+//                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
+//        adapter1.setDropDownViewResource(R.layout.payment_list);
+//        seats.setAdapter(adapter1);
 
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, payment_mode);
@@ -475,18 +475,20 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     public void dialogdisplay(){
         View view=getLayoutInflater().inflate(R.layout.waitingdialog,null);
         final ImageView img1=(ImageView)view.findViewById(R.id.image1);
-        final ImageView img2=(ImageView)view.findViewById(R.id.image2);
+//        final ImageView img2=(ImageView)view.findViewById(R.id.image2);
         findingridemsg=(TextView)view.findViewById(R.id.text);
 
         if (vehicletype.equals("car"))
-            img2.setImageResource(R.drawable.carfinal);
+            img1.setImageResource(R.drawable.carfinal);
         else if (vehicletype.equals("rickshaw"))
-            img2.setImageResource(R.drawable.rickshawfinal);
-        img1.setVisibility(View.GONE);
+            img1.setImageResource(R.drawable.rickshawfinal);
+//        img2.setVisibility(View.GONE);
+        img1.setScaleX(-1);
         final Animation left_to_right = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.welcome_animation);
         final Animation right_to_left = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.welcome_animation_right_to_left);
-        img2.setAnimation(right_to_left);
-//        img1.setAnimation(left_to_right);
+//        img2.setAnimation(right_to_left);
+        img1.startAnimation(left_to_right);
+//        img2.startAnimation(right_to_left);
 
         left_to_right.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -497,7 +499,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             @Override
             public void onAnimationEnd(Animation animation) {
 //                img1.setVisibility(View.GONE);
-//                img2.setVisibility(View.VISIBLE);
+                img1.setScaleX(1);
+                img1.startAnimation(right_to_left);
 //                img2.startAnimation(left_to_right);
             }
 
@@ -510,11 +513,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         right_to_left.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+//                img2.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                img1.setScaleX(-1);
+                img1.startAnimation(left_to_right);
 //                img2.setVisibility(View.GONE);
 //                img1.setVisibility(View.VISIBLE);
 //                img1.setAnimation(left_to_right);
@@ -819,6 +824,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         } else {
             screen_status=1;
             if (v == findViewById(R.id.bike)) {
+                seatfull();
                 vehicletype="bike";
                 final_price.setText(price_bike.getText());
                 final_time.setText(time_bike.getText());
@@ -831,6 +837,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                remove_drivers_car();
 //                remove_drivers_rickshaw();
             } else if (v == findViewById(R.id.car)) {
+                seatfull();
                 vehicletype="car";
                 final_price.setText(price_car.getText());
                 final_time.setText(time_car.getText());
@@ -844,6 +851,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                remove_drivers_bike();
 //                remove_drivers_rickshaw();
             } else if (v == findViewById(R.id.auto)) {
+                seatfull();
                 vehicletype="auto";
                 // Toast.makeText(this, "auto", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_auto.getText());
@@ -857,6 +865,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                remove_drivers_car();
 //                remove_drivers_rickshaw();
             } else if (v == findViewById(R.id.rickshaw)) {
+                seatfull();
                 vehicletype="rickshaw";
                 // Toast.makeText(this, "rickshaw", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_rickshaw.getText());
@@ -871,11 +880,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                remove_drivers_car();
 //                remove_drivers_bike();
             } else if (v == findViewById(R.id.shareCar)) {
+                seatshare();
                 vehicletype="car";
                 final_price.setText(price_shareCar.getText());
                 final_time.setText(time_shareCar.getText());
                 final_image.setImageResource(R.drawable.carfinal);
-                seats.setSelection(1);
+                seats.setSelection(0);
                 seats.setEnabled(true);
                 ridetype="share";
                 place_drivers();
@@ -884,12 +894,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                remove_drivers_bike();
 //                remove_drivers_rickshaw();
             } else if (v == findViewById(R.id.shareAuto)) {
+                seatshare();
                 vehicletype="auto";
                 // Toast.makeText(this, "auto", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_shareAuto.getText());
                 final_time.setText(time_shareAuto.getText());
                 final_image.setImageResource(R.drawable.erickshaw1);
-                seats.setSelection(1);
+                seats.setSelection(0);
                 seats.setEnabled(true);
                 ridetype="share";
                 place_drivers();
@@ -897,12 +908,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                remove_drivers_car();
 //                remove_drivers_rickshaw();
             } else if (v == findViewById(R.id.shareRickshaw)) {
+                seatshare();
                 vehicletype="rickshaw";
                 // Toast.makeText(this, "rickshaw", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_shareRickshaw.getText());
                 final_time.setText(time_shareRickshaw.getText());
                 final_image.setImageResource(R.drawable.rickshawfinal);
-                seats.setSelection(1);
+                seats.setSelection(0);
                 seats.setEnabled(true);
                 ridetype="share";
                 place_drivers();
@@ -2717,6 +2729,21 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             findViewById(R.id.fragmentTwo).setVisibility(View.VISIBLE);
 
         } else if (requestCode==3 && resultCode==RESULT_OK){
+            Double pr=Double.parseDouble(final_price.getText().toString().substring(4));
+            Double disc=Double.parseDouble(intent.getStringExtra("discount"));
+            Double upto=Double.parseDouble(intent.getStringExtra("upto"));
+
+            Double less=(pr*disc)/100;
+            if (less>upto)
+                less=upto;
+
+            if (pr<less)
+                pr=0.0;
+            else
+                pr=pr-less;
+
+            final_price.setText("Rs. "+pr);
+
             offer.setText(intent.getStringExtra("offer"));
         }
     }
@@ -2730,6 +2757,32 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     public void closelocationsave(View view){
         findViewById(R.id.location_card_view).setVisibility(View.GONE);
         findViewById(R.id.rating_bar).setVisibility(View.GONE);
+    }
+
+    public void showoptiondetail(View view){
+        findViewById(R.id.ridedetails).setVisibility(View.VISIBLE);
+    }
+
+    public void seatfull(){
+        seats_list.clear();
+        seats_list.add("full");
+
+        ArrayAdapter<String> adapter1 =
+                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
+        adapter1.setDropDownViewResource(R.layout.payment_list);
+        seats.setAdapter(adapter1);
+    }
+
+    public void seatshare(){
+        seats_list.clear();
+        seats_list.add("1");
+        seats_list.add("2");
+        seats_list.add("3");
+
+        ArrayAdapter<String> adapter1 =
+                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
+        adapter1.setDropDownViewResource(R.layout.payment_list);
+        seats.setAdapter(adapter1);
     }
 }
 
