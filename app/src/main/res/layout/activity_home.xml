@@ -503,7 +503,7 @@
                                  android:layout_height="25dp"
                                  android:id="@+id/bike_name"
                                  android:gravity="center"
-                                 android:text="Bike Name"
+                                 android:text=""
                                  android:textSize="16sp"
                                  android:textColor="#000000"/>
 
@@ -512,7 +512,7 @@
                                  android:layout_height="25dp"
                                  android:gravity="center"
                                  android:id="@+id/bike_no"
-                                 android:text="Bike No"
+                                 android:text=""
                                  android:textSize="16sp"
                                  android:textColor="#000000"/>
                          </LinearLayout>
@@ -527,20 +527,32 @@
                                  android:layout_width="match_parent"
                                  android:layout_height="25dp"
                                  android:gravity="center"
-                                 android:text="Driver Name"
+                                 android:text=""
                                  android:id="@+id/dname"
                                  android:textSize="16sp"
                                  android:textColor="#000000"/>
 
                              <TextView
+                                 android:id="@+id/driver_rating"
                                  android:layout_width="match_parent"
                                  android:layout_height="25dp"
                                  android:gravity="center"
-                                 android:text="Some Text"
+                                 android:text=""
                                  android:textSize="16sp"
                                  android:textColor="#000000"/>
                          </LinearLayout>
                      </LinearLayout>
+
+                     <Button
+                         android:id="@+id/canceltrip"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:onClick="cancel_trip"
+                         android:text="Cancel Trip"
+                         android:textColor="#fdfefe"
+                         android:textSize="20sp"
+                         android:background="@drawable/blue_margin"/>
+
                  </LinearLayout>
 
                  <LinearLayout
@@ -677,17 +689,6 @@
 
              </LinearLayout>
              </LinearLayout>
-
-    <Button
-        android:id="@+id/canceltrip"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:onClick="cancel_trip"
-        android:text="Cancel Trip"
-        android:textColor="#fdfefe"
-        android:layout_marginTop="50dp"
-        android:background="#850000ff"
-        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/rating_bar"

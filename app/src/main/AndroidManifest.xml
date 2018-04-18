@@ -89,7 +89,8 @@
         <activity android:name=".Payment" />
         <activity android:name=".Support" />
         <activity android:name=".Settings" />
-        <activity android:name=".SelectOffers"></activity>
+        <activity android:name=".SelectOffers" />
+        <activity android:name=".EmergencyContact"/>
     </application>
 
 </manifest>

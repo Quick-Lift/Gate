@@ -62,7 +62,7 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_call"
+                android:src="@drawable/ic_share_offer"
                 android:tint="#05affc"
                 android:onClick="share"
                 android:layout_marginLeft="20dp"/>
@@ -70,59 +70,85 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="WhatsApp"
+                android:text="Share App"
                 android:paddingLeft="30dp"
                 android:textSize="22sp"
                 android:onClick="share"
                 android:gravity="center_vertical"
                 android:textColor="#05affc"/>
+
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_sms"
-                android:onClick="share"
-                android:layout_marginLeft="20dp"/>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_marginTop="10dp">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="SMS"
-                android:paddingLeft="30dp"
-                android:textSize="22sp"
-                android:onClick="share"
-                android:gravity="center_vertical"
-                android:textColor="#05affc"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            <!--<ImageView-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:src="@drawable/ic_call"-->
+                <!--android:tint="#05affc"-->
+                <!--android:onClick="share"-->
+                <!--android:layout_marginLeft="20dp"/>-->
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_email"
-                android:onClick="share"
-                android:layout_marginLeft="20dp"/>
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:text="WhatsApp"-->
+                <!--android:paddingLeft="30dp"-->
+                <!--android:textSize="22sp"-->
+                <!--android:onClick="share"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:textColor="#05affc"/>-->
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_marginTop="10dp">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Email"
-                android:paddingLeft="30dp"
-                android:textSize="22sp"
-                android:onClick="share"
-                android:gravity="center_vertical"
-                android:textColor="#05affc"/>
-        </LinearLayout>
+            <!--<ImageView-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:src="@drawable/ic_sms"-->
+                <!--android:onClick="share"-->
+                <!--android:layout_marginLeft="20dp"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:text="SMS"-->
+                <!--android:paddingLeft="30dp"-->
+                <!--android:textSize="22sp"-->
+                <!--android:onClick="share"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:textColor="#05affc"/>-->
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_marginTop="10dp">-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:src="@drawable/ic_email"-->
+                <!--android:onClick="share"-->
+                <!--android:layout_marginLeft="20dp"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:text="Email"-->
+                <!--android:paddingLeft="30dp"-->
+                <!--android:textSize="22sp"-->
+                <!--android:onClick="share"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:textColor="#05affc"/>-->
+        <!--</LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"

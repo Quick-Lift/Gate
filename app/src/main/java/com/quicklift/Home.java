@@ -196,6 +196,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 destn_address.setVisibility(View.VISIBLE);
                 pickup_address.setVisibility(View.VISIBLE);
 
+                showoption=0;
+                findViewById(R.id.ridedetails).setVisibility(View.GONE);
                 findViewById(R.id.fragmentTwo).setVisibility(View.VISIBLE);
                 findViewById(R.id.layout3).setVisibility(View.GONE);
                 findViewById(R.id.layout4).setVisibility(View.GONE);
@@ -687,7 +689,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 }
                 else {
                     String key=save.push().getKey();
-                    save.child(key+"/name").setValue(((EditText)findViewById(R.id.locname)).getText().toString());
+                    save.child(key+"/name").setValue(((EditText)findViewById(R.id.locname)).getText().toString().toLowerCase());
                     save.child(key+"/locname").setValue(map.get("destination").toString());
                     save.child(key+"/lat").setValue(map.get("lat").toString());
                     save.child(key+"/lng").setValue(map.get("lng").toString());
@@ -984,6 +986,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     }
 
     private void check_status(){
+        findViewById(R.id.canceltrip).setVisibility(View.VISIBLE);
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Drivers/" + log_id.getString("driver",null));
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -2627,20 +2630,21 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         } else if (id == R.id.nav_drive_with_us) {
             startActivity(new Intent(Home.this,DriveWithUs.class));
         } else if (id == R.id.nav_emergency_contact) {
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:0000000000"));
-
-            if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return false;
-            }
-            startActivity(callIntent);
+            startActivity(new Intent(Home.this,EmergencyContact.class));
+//            Intent callIntent = new Intent(Intent.ACTION_CALL);
+//            callIntent.setData(Uri.parse("tel:0000000000"));
+//
+//            if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                // TODO: Consider calling
+//                //    ActivityCompat#requestPermissions
+//                // here to request the missing permissions, and then overriding
+//                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                //                                          int[] grantResults)
+//                // to handle the case where the user grants the permission. See the documentation
+//                // for ActivityCompat#requestPermissions for more details.
+//                return false;
+//            }
+//            startActivity(callIntent);
         } else if (id == R.id.nav_offers) {
             intent = new Intent(Home.this, OffersActivity.class);
             startActivity(intent);
@@ -2759,8 +2763,16 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         findViewById(R.id.rating_bar).setVisibility(View.GONE);
     }
 
+    int showoption=0;
     public void showoptiondetail(View view){
-        findViewById(R.id.ridedetails).setVisibility(View.VISIBLE);
+        if (showoption==0) {
+            findViewById(R.id.ridedetails).setVisibility(View.VISIBLE);
+            showoption = 1;
+        }
+        else {
+            findViewById(R.id.ridedetails).setVisibility(View.GONE);
+            showoption = 0;
+        }
     }
 
     public void seatfull(){

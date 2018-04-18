@@ -185,6 +185,8 @@ public class PlaceSelector extends AppCompatActivity {
                             intent.putExtra("place", myPlace.getName());
                             intent.putExtra("lat",myPlace.getLatLng().latitude);
                             intent.putExtra("lng",myPlace.getLatLng().longitude);
+                            if (myPlace.getAddress().toString().toLowerCase().contains("patna"))
+                            Toast.makeText(PlaceSelector.this, ""+myPlace.getAddress(), Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK,intent);
                             finish();
                             //Toast.makeText(PlaceSelector.this, myPlace.getName(), Toast.LENGTH_SHORT).show();

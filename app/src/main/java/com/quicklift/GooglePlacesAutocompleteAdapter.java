@@ -49,7 +49,6 @@ public class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Fil
         return resultList.get(index);
     }
 
-
     public ArrayList<String> autocomplete(String input) {
         ArrayList<String> resultList = null;
         ArrayList<String> descriptionList = null;
@@ -59,7 +58,7 @@ public class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Fil
             StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
             sb.append("?key=" + API_KEY);
             sb.append("&components=country:in");
-            sb.append("&location=12.972442,77.580643&radius=60000");
+            sb.append("&location=12.972442,77.580643&radius=30000");
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 
             URL url = new URL(sb.toString());
