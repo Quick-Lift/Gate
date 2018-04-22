@@ -27,6 +27,9 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.v("TAG","Service started");
+
         log = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
        // Toast.makeText(this, "Started", Toast.LENGTH_SHORT).show();
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("Response/"+log.getString("id",null));
@@ -37,15 +40,22 @@ public class NotificationService extends Service {
                     String text = dataSnapshot.getValue(String.class);
                     //Log.v("TAG","started");
                     if (text.equals("Accept")) {
+                        Log.v("TAG","accepted");
+
                         String str="Driver is on it's way ...\nOTP : "+log.getString("otp",null);
                         notification(text, str);
                     } else if (text.equals("Located")) {
+                        Log.v("TAG","located");
+
                         String str="Driver arrived at the pick up location ...\nOTP : "+log.getString("otp",null);
                         notification(text, str);
                     } else if (text.equals("Trip Started")) {
+                        Log.v("TAG","trip started");
                         String str="The trip has started ...";
                         notification(text, str);
                     } else if (text.equals("Trip Ended")) {
+                        Log.v("TAG","trip ended");
+
                         String str="You have arrived at your destination ...";
                         notification(text, str);
                         Handler handle = new Handler();
@@ -73,6 +83,8 @@ public class NotificationService extends Service {
     }
 
     public void removeservice(){
+        Log.v("TAG","service ended");
+
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/"+log.getString("driver",null)+"/"+log.getString("id",null));
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("Response/"+log.getString("id",null));
         db.removeValue();
@@ -85,6 +97,8 @@ public class NotificationService extends Service {
         editor.remove("status");
         editor.commit();
 
+        this.stopSelf();
+        stopService(new Intent(NotificationService.this,NotificationService.class));
         onDestroy();
     }
 
@@ -101,7 +115,6 @@ public class NotificationService extends Service {
 
     public void notification (String text,String message){
         String title="";
-
         String channelId = "channel-01";
         String channelName = "Channel Name";
         int importance = NotificationManager.IMPORTANCE_HIGH;

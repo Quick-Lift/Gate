@@ -22,6 +22,8 @@
         android:backgroundTint="#05affc"
         android:paddingLeft="10dp"
         android:elevation="20sp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_below="@+id/pickup"/>
 
     <ListView

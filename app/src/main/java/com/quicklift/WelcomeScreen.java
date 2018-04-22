@@ -144,7 +144,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             if(status1 && status2)
             {
                 appendLog(getCurrentTime()+"Gathering network information status:1");
-                Intent i = new Intent(this,Login.class);
+                Intent i = new Intent(this,PhoneAuthActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -217,7 +217,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                     boolean CallPhone = grantResults[5] == PackageManager.PERMISSION_GRANTED;
 
                     if (CameraPermission && RecordAudioPermission && WriteStoragePermission && ReadStorgaePermission && LocationService && CallPhone) {
-                        Intent i = new Intent(this,Login.class);
+                        Intent i = new Intent(this,PhoneAuthActivity.class);
                         startActivity(i);
                         finish();
                         //Toast.makeText(AnimationActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
@@ -225,7 +225,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                     else {
                         //Toast.makeText(WelcomeScreen.this,"Permission Denied",Toast.LENGTH_LONG).show();
                         appendLog(getCurrentTime()+"Few permissions denied status:0");
-                        Intent i = new Intent(this,Login.class);
+                        Intent i = new Intent(this,PhoneAuthActivity.class);
                         startActivity(i);
                         finish();
                     }

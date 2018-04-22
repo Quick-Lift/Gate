@@ -6,7 +6,9 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -16,11 +18,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,8 +45,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     TextView name,phone,nm,ph;
+    EditText location,location_name;
     CircleImageView image,photo;
     private SharedPreferences log_id;
+    private PlaceAutocompleteFragment autocompleteFragment;
+    private EditText address;
+    LinearLayout home,work;
+    String latitude,longitude;
 
     @Override
     public void onBackPressed() {
@@ -60,8 +77,23 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
         getSupportActionBar().setTitle("Settings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
+        location=(EditText)findViewById(R.id.location);
+        location_name=(EditText)findViewById(R.id.location_name);
+        home=(LinearLayout)findViewById(R.id.home);
+        work=(LinearLayout)findViewById(R.id.work);
+        autocompleteFragment = (PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.location_autocomplete);
+        address=(EditText)autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
+
+        autocompleteFragment.setHint("Search location ...");
+        address.setTextColor(Color.parseColor("#05affc"));
+        address.setHintTextColor(Color.parseColor("#9005affc"));
+        LatLngBounds latLngBounds = new LatLngBounds(
+                new LatLng(12.934533,77.626579),
+                new LatLng(12.934533,77.626579));
+        autocompleteFragment.setBoundsBias(latLngBounds);
 
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        toolbar.setTitle("Settings");
@@ -83,7 +115,6 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         nm = (TextView) findViewById(R.id.name);
         ph = (TextView) findViewById(R.id.phone);
         photo = (CircleImageView) findViewById(R.id.photo);
-//
 //        image.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -92,6 +123,40 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 //        });
 //
         updatenavbar();
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                location_name.setText("Home");
+                address.performClick();
+            }
+        });
+
+        work.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                location_name.setText("Work");
+                address.performClick();
+            }
+        });
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                //Log.i(TAG, "Place: " + place.getName());
+                //Toast.makeText(Home.this, place.getName(), Toast.LENGTH_SHORT).show();
+                latitude=String.valueOf(place.getLatLng().latitude);
+                longitude=String.valueOf(place.getLatLng().longitude);
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                // Log.i(TAG, "An error occurred: " + status);
+//                Toast.makeText(Home.this, status.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updatenavbar() {
@@ -117,6 +182,24 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
             }
         });
+    }
+
+    public void save_location(View view){
+        if (TextUtils.isEmpty(address.getText().toString()) || TextUtils.isEmpty(location_name.getText().toString())){
+            Toast.makeText(this, "Fill all the fields !", Toast.LENGTH_LONG).show();
+        }
+        else {
+            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("SavedLocations/"+log_id.getString("id",null)+"/saved");
+            String key=ref.push().getKey();
+            ref.child(key+"/name").setValue(location_name.getText().toString());
+            ref.child(key+"/locname").setValue(address.getText().toString());
+            ref.child(key+"/lat").setValue(latitude);
+            ref.child(key+"/lng").setValue(longitude);
+
+            Toast.makeText(this, "Location Saved !", Toast.LENGTH_SHORT).show();
+            address.setText("");
+            location_name.setText("");
+        }
     }
 
     @Override

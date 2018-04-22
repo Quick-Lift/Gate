@@ -53,10 +53,10 @@ public class CustomerRegistration extends AppCompatActivity {
     EditText name,email,phone,password,address,refcode;
     CircleImageView pic;
     ProgressDialog pdialog;
-    private FirebaseAuth mAuth;
     String upload_img="";
     Uri selectedImage=null;
     private StorageReference mStorageRef;
+    String key,phone_no;
     DatabaseReference user_db= FirebaseDatabase.getInstance().getReference("Users");
 
     @Override
@@ -82,13 +82,14 @@ public class CustomerRegistration extends AppCompatActivity {
         setContentView(R.layout.activity_customer_registration);
 
         getSupportActionBar().setTitle("Registration");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         pdialog=new ProgressDialog(this);
+        key=getIntent().getStringExtra("key");
+        phone_no=getIntent().getStringExtra("phone");
 
         // [START initialize_auth]
-        mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         name=(EditText)findViewById(R.id.name);
@@ -98,6 +99,10 @@ public class CustomerRegistration extends AppCompatActivity {
         address=(EditText)findViewById(R.id.address);
         refcode=(EditText)findViewById(R.id.refcode);
         pic=(CircleImageView) findViewById(R.id.image);
+
+        phone.setText(phone_no.substring(3));
+        phone.setInputType(0);
+        phone.setVisibility(View.GONE);
 
         pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,44 +114,44 @@ public class CustomerRegistration extends AppCompatActivity {
         });
     }
 
-    public void signup(View v){
-        if (!validateForm()){
+//    public void signup(View v){
+//        if (!validateForm()){
+//
+//        }
+//
+//        else {
+//            showProgressDialog();
+//            // [START create_user_with_email]
+//            String em=email.getText().toString();
+//            String pass=password.getText().toString();
+//            mAuth.createUserWithEmailAndPassword(em,pass )
+//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            if (task.isSuccessful()) {
+//                                // Sign in success, update UI with the signed-in user's information
+//                                //Log.d(TAG, "createUserWithEmail:success");
+//                                FirebaseUser user = mAuth.getCurrentUser();
+//                                sendEmailVerification();
+//                                updateUI(user);
+//                            } else {
+//                                // If sign in fails, display a message to the user.
+//                                //Log.w(TAG, "createUserWithEmail:failure", task.getException());
+//                                Toast.makeText(CustomerRegistration.this, "Authentication failed."+task.getException(), Toast.LENGTH_SHORT).show();
+//                                updateUI(null);
+//                            }
+//                            // [START_EXCLUDE]
+//                            hideProgressDialog();
+//                            // [END_EXCLUDE]
+//                        }
+//                    });
+//            // [END create_user_with_email]
+//        }
+//    }
 
-        }
-
-        else {
-            showProgressDialog();
-            // [START create_user_with_email]
-            String em=email.getText().toString();
-            String pass=password.getText().toString();
-            mAuth.createUserWithEmailAndPassword(em,pass )
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                //Log.d(TAG, "createUserWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                sendEmailVerification();
-                                updateUI(user);
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(CustomerRegistration.this, "Authentication failed."+task.getException(), Toast.LENGTH_SHORT).show();
-                                updateUI(null);
-                            }
-                            // [START_EXCLUDE]
-                            hideProgressDialog();
-                            // [END_EXCLUDE]
-                        }
-                    });
-            // [END create_user_with_email]
-        }
-    }
-
-    private void updateUI(FirebaseUser user) {
-        hideProgressDialog();
-        if (user != null) {
+    public void updateUI(View view) {
+//        hideProgressDialog();
+        if (validateForm()) {
             Customer customer=new Customer();
             customer.setName(name.getText().toString());
             customer.setEmail(email.getText().toString());
@@ -155,7 +160,7 @@ public class CustomerRegistration extends AppCompatActivity {
             customer.setThumb(upload_img);
 
             if (selectedImage!=null){
-                StorageReference riversRef = mStorageRef.child("Users/"+user.getUid());
+                StorageReference riversRef = mStorageRef.child("Users/"+key);
 
                 UploadTask uploadTask = riversRef.putFile(selectedImage);
                 uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -176,10 +181,10 @@ public class CustomerRegistration extends AppCompatActivity {
                 //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
             }
 
-            user_db.child(user.getUid()).setValue(customer);
+            user_db.child(key).setValue(customer);
             DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ReferalCode");
-            ref.child(user.getUid()+"/code").setValue(phone.getText().toString()+"@qik");
-            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+user.getUid());
+            ref.child(key+"/code").setValue(phone.getText().toString()+"@qik");
+            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
             dref.child("100").setValue("true");
 
             if (!refcode.getText().toString().equals("")){
@@ -203,40 +208,38 @@ public class CustomerRegistration extends AppCompatActivity {
             SharedPreferences.Editor editor=log_id.edit();
             //Toast.makeText(CustomerRegistration.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
             //Log.v("TAG",user.getUid());
-            editor.putString("id",user.getUid());
+            editor.putString("id",key);
             editor.putString("driver","");
             editor.commit();
             Toast.makeText(this, "Successfully Registered !", Toast.LENGTH_SHORT).show();
             //mAuth.signOut();
-
+            startActivity(new Intent(CustomerRegistration.this,Home.class));
             finish();
 
-        } else {
-            Toast.makeText(this, "Data not entered !", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void sendEmailVerification() {
-        // Send verification email
-        // [START send_email_verification]
-        final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // [START_EXCLUDE]
-                        if (task.isSuccessful()) {
-                            Toast.makeText(CustomerRegistration.this, "Verification email sent to " + user.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(CustomerRegistration.this, "Failed to send verification email.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        // [END_EXCLUDE]
-                    }
-                });
-        // [END send_email_verification]
-    }
+//    private void sendEmailVerification() {
+//        // Send verification email
+//        // [START send_email_verification]
+//        final FirebaseUser user = mAuth.getCurrentUser();
+//        user.sendEmailVerification()
+//                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        // [START_EXCLUDE]
+//                        if (task.isSuccessful()) {
+//                            Toast.makeText(CustomerRegistration.this, "Verification email sent to " + user.getEmail(),
+//                                    Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(CustomerRegistration.this, "Failed to send verification email.",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                        // [END_EXCLUDE]
+//                    }
+//                });
+//        // [END send_email_verification]
+//    }
 
     private void hideProgressDialog() {
         pdialog.dismiss();
@@ -251,13 +254,6 @@ public class CustomerRegistration extends AppCompatActivity {
 
     private boolean validateForm() {
         boolean valid = true;
-
-        if (TextUtils.isEmpty(email.getText().toString())) {
-            email.setError("Required.");
-            valid = false;
-        } else {
-            email.setError(null);
-        }
 
         if (TextUtils.isEmpty(name.getText().toString())) {
             name.setError("Required.");

@@ -110,7 +110,7 @@
                  android:layout_width="match_parent"
                  android:layout_height="match_parent"
                  android:orientation="vertical"
-                 android:gravity="bottom"
+                 android:gravity="bottom|center_horizontal"
                  android:layout_marginBottom="20dp">
 
                  <HorizontalScrollView
@@ -134,62 +134,90 @@
                              android:background="@android:color/transparent">
 
                              <LinearLayout
-                             android:layout_width="120dp"
-                             android:layout_height="120dp"
-                             android:gravity="center"
-                             android:orientation="vertical"
-                             android:onClick="select_vehicle"
-                             android:id="@+id/bike"
-                             android:visibility="gone"
-                             android:background="@drawable/round_button">
-                             <ImageView
-                             android:layout_width="60dp"
-                             android:layout_height="60dp"
-                             android:layout_gravity="center_horizontal"
-                             android:src="@drawable/bike1"/>
-                             <TextView
-                             android:id="@+id/time_bike"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Time"
-                             android:textSize="14sp"
-                             android:textColor="@android:color/black"/>
-                             <TextView
-                             android:id="@+id/price_bike"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Rs. 1500"
-                             android:textSize="14sp"
-                             android:textColor="@android:color/black"/>
+                                 android:layout_width="120dp"
+                                 android:layout_height="120dp"
+                                 android:gravity="center"
+                                 android:orientation="vertical"
+                                 android:onClick="select_vehicle"
+                                 android:id="@+id/bike"
+                                 android:visibility="gone"
+                                 android:background="@drawable/round_button">
+                                 <ImageView
+                                     android:layout_width="60dp"
+                                     android:layout_height="60dp"
+                                     android:layout_gravity="center_horizontal"
+                                     android:src="@drawable/bike1"/>
+                                 <TextView
+                                     android:id="@+id/time_bike"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Time"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
+                                 <TextView
+                                     android:id="@+id/price_bike"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Rs. 1500"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
                              </LinearLayout>
                              <LinearLayout
-                             android:layout_width="120dp"
-                             android:layout_height="120dp"
-                             android:gravity="center"
-                             android:orientation="vertical"
-                             android:id="@+id/auto"
-                             android:onClick="select_vehicle"
-                             android:visibility="gone"
-                             android:background="@drawable/round_button">
-                             <ImageView
-                             android:layout_width="60dp"
-                             android:layout_height="60dp"
-                             android:layout_gravity="center_horizontal"
-                             android:src="@drawable/auto1"/>
-                             <TextView
-                             android:id="@+id/time_auto"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Time"
-                             android:textSize="14sp"
-                             android:textColor="@android:color/black"/>
-                             <TextView
-                             android:id="@+id/price_auto"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Rs. 1500"
-                             android:textSize="14sp"
-                             android:textColor="@android:color/black"/>
+                                 android:layout_width="120dp"
+                                 android:layout_height="120dp"
+                                 android:gravity="center"
+                                 android:orientation="vertical"
+                                 android:id="@+id/auto"
+                                 android:onClick="select_vehicle"
+                                 android:visibility="gone"
+                                 android:background="@drawable/round_button">
+                                 <ImageView
+                                     android:layout_width="60dp"
+                                     android:layout_height="60dp"
+                                     android:layout_gravity="center_horizontal"
+                                     android:src="@drawable/auto1"/>
+                                 <TextView
+                                     android:id="@+id/time_auto"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Time"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
+                                 <TextView
+                                     android:id="@+id/price_auto"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Rs. 1500"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
+                             </LinearLayout>
+                             <LinearLayout
+                                 android:layout_width="120dp"
+                                 android:layout_height="120dp"
+                                 android:gravity="center"
+                                 android:orientation="vertical"
+                                 android:id="@+id/excel"
+                                 android:onClick="select_vehicle"
+                                 android:background="@drawable/round_button">
+                                 <ImageView
+                                     android:layout_width="90dp"
+                                     android:layout_height="60dp"
+                                     android:layout_gravity="center_horizontal"
+                                     android:src="@drawable/car1"/>
+                                 <TextView
+                                     android:id="@+id/time_excel"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Time"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
+                                 <TextView
+                                     android:id="@+id/price_excel"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Rs. 1500"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
                              </LinearLayout>
                              <LinearLayout
                                  android:layout_width="120dp"
@@ -200,7 +228,7 @@
                                  android:onClick="select_vehicle"
                                  android:background="@drawable/round_button">
                                  <ImageView
-                                     android:layout_width="60dp"
+                                     android:layout_width="90dp"
                                      android:layout_height="60dp"
                                      android:layout_gravity="center_horizontal"
                                      android:src="@drawable/erickshaw1"/>
@@ -228,7 +256,7 @@
                                  android:onClick="select_vehicle"
                                  android:background="@drawable/round_button">
                                  <ImageView
-                                     android:layout_width="60dp"
+                                     android:layout_width="90dp"
                                      android:layout_height="60dp"
                                      android:layout_gravity="center_horizontal"
                                      android:src="@drawable/car1"/>
@@ -248,33 +276,33 @@
                                      android:textColor="@android:color/black"/>
                              </LinearLayout>
                              <LinearLayout
-                             android:layout_width="120dp"
-                             android:layout_height="120dp"
-                             android:gravity="center"
-                             android:orientation="vertical"
-                             android:id="@+id/shareAuto"
-                             android:onClick="select_vehicle"
-                             android:visibility="gone"
-                             android:background="@drawable/round_button">
-                             <ImageView
-                             android:layout_width="60dp"
-                             android:layout_height="60dp"
-                             android:layout_gravity="center_horizontal"
-                             android:src="@drawable/auto1"/>
-                             <TextView
-                             android:id="@+id/time_shareAuto"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Time"
-                             android:textSize="14sp"
-                             android:textColor="@android:color/black"/>
-                             <TextView
-                             android:id="@+id/price_shareAuto"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Rs. 1500"
-                             android:textSize="14sp"
-                             android:textColor="@android:color/black"/>
+                                 android:layout_width="120dp"
+                                 android:layout_height="120dp"
+                                 android:gravity="center"
+                                 android:orientation="vertical"
+                                 android:id="@+id/shareAuto"
+                                 android:onClick="select_vehicle"
+                                 android:visibility="gone"
+                                 android:background="@drawable/round_button">
+                                 <ImageView
+                                     android:layout_width="60dp"
+                                     android:layout_height="60dp"
+                                     android:layout_gravity="center_horizontal"
+                                     android:src="@drawable/auto1"/>
+                                 <TextView
+                                     android:id="@+id/time_shareAuto"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Time"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
+                                 <TextView
+                                     android:id="@+id/price_shareAuto"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Rs. 1500"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
                              </LinearLayout>
                              <LinearLayout
                                  android:layout_width="120dp"
@@ -285,7 +313,7 @@
                                  android:onClick="select_vehicle"
                                  android:background="@drawable/round_button">
                                  <ImageView
-                                     android:layout_width="60dp"
+                                     android:layout_width="90dp"
                                      android:layout_height="60dp"
                                      android:layout_gravity="center_horizontal"
                                      android:src="@drawable/erickshaw1"/>
@@ -313,7 +341,7 @@
                                  android:onClick="select_vehicle"
                                  android:background="@drawable/round_button">
                                  <ImageView
-                                     android:layout_width="60dp"
+                                     android:layout_width="90dp"
                                      android:layout_height="60dp"
                                      android:layout_gravity="center_horizontal"
                                      android:src="@drawable/car1"/>
@@ -336,8 +364,22 @@
                          <LinearLayout
                              android:layout_width="match_parent"
                              android:layout_height="wrap_content">
+                             <TextView
+                                 android:id="@+id/excel_type"
+                                 android:layout_width="110dp"
+                                 android:layout_height="wrap_content"
+                                 android:text="XL"
+                                 android:textSize="22sp"
+                                 android:layout_marginTop="3dp"
+                                 android:layout_marginLeft="5dp"
+                                 android:layout_marginRight="5dp"
+                                 android:background="#05affc"
+                                 android:textStyle="bold"
+                                 android:padding="2dp"
+                                 android:gravity="center"/>
 
                              <TextView
+                                 android:id="@+id/rickshaw_type"
                                  android:layout_width="110dp"
                                  android:layout_height="wrap_content"
                                  android:text="Niji"
@@ -351,6 +393,7 @@
                                  android:gravity="center"/>
 
                              <TextView
+                                 android:id="@+id/car_type"
                                  android:layout_width="110dp"
                                  android:layout_height="wrap_content"
                                  android:text="Niji"
@@ -364,6 +407,7 @@
                                  android:gravity="center"/>
 
                              <TextView
+                                 android:id="@+id/shareRickshaw_type"
                                  android:layout_width="110dp"
                                  android:layout_height="wrap_content"
                                  android:text="Sajha"
@@ -377,6 +421,7 @@
                                  android:gravity="center"/>
 
                              <TextView
+                                 android:id="@+id/shareCar_type"
                                  android:layout_width="110dp"
                                  android:layout_height="wrap_content"
                                  android:text="Sajha"
@@ -623,6 +668,7 @@
                          android:layout_marginTop="5dp">
 
                          <LinearLayout
+                             android:id="@+id/layoutseat"
                              android:layout_width="0dp"
                              android:layout_weight="1"
                              android:layout_height="40dp"
@@ -644,6 +690,7 @@
                          </LinearLayout>
 
                          <LinearLayout
+                             android:id="@+id/layoutpaymode"
                              android:layout_width="0dp"
                              android:layout_weight="1"
                              android:layout_height="40dp"
@@ -858,4 +905,23 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_ride_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#05affc"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            android:text="You are on your way !!!"
+            android:gravity="center"/>
+
+    </LinearLayout>
 </RelativeLayout>

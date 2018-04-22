@@ -24,6 +24,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
@@ -220,39 +221,43 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
     public void save (View view){
         //user.remove("name");
         //user.put("name",name.getText().toString());
-        user.replace("name",name.getText().toString());
-        user.replace("phone",phone.getText().toString());
-        user.replace("email",email.getText().toString());
-        if (user.containsKey("address")){
-            user.replace("address",address.getText().toString());
+        if (!TextUtils.isEmpty(phone.getText().toString()) && !TextUtils.isEmpty(address.getText().toString())) {
+            user.replace("name", name.getText().toString());
+            user.replace("phone", phone.getText().toString());
+            user.replace("email", email.getText().toString());
+            if (user.containsKey("address")) {
+                user.replace("address", address.getText().toString());
+            } else {
+                user.put("address", address.getText().toString());
+            }
+            user.replace("thumb", upload_img);
+            db.child(log_id.getString("id", null)).setValue(user);
+
+            if (selectedImage != null) {
+                StorageReference riversRef = mStorageRef.child("Users/" + log_id.getString("id", null));
+
+                UploadTask uploadTask = riversRef.putFile(selectedImage);
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        Toast.makeText(EditProfile.this, "Failed to upload image !" + exception.toString(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(EditProfile.this, "Successful", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            Toast.makeText(this, "Profile Successfully Updated !", Toast.LENGTH_SHORT).show();
+            finish();
         }
         else {
-            user.put("address",address.getText().toString());
+            Toast.makeText(this, "Please fill the details", Toast.LENGTH_LONG).show();
         }
-        user.replace("thumb",upload_img);
-        db.child(log_id.getString("id",null)).setValue(user);
-
-        if (selectedImage!=null){
-            StorageReference riversRef = mStorageRef.child("Users/"+log_id.getString("id",null));
-
-            UploadTask uploadTask = riversRef.putFile(selectedImage);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    Toast.makeText(EditProfile.this, "Failed to upload image !"+exception.toString(), Toast.LENGTH_SHORT).show();
-
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(EditProfile.this, "Successful", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        Toast.makeText(this, "Profile Successfully Updated !", Toast.LENGTH_SHORT).show();
-        finish();
     }
 
     public void updatepic(View v){

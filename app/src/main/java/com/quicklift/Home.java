@@ -125,7 +125,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     GoogleApiClient gpc;
     Marker marker_pick, marker_drop, marker, driver_drop, driver;
     EditText pickup_address, destn_address;
-    TextView price_bike, price_car, price_auto, price_rickshaw, price_shareAuto, price_shareCar, price_shareRickshaw;
+    TextView price_bike,price_excel, price_car, price_auto, price_rickshaw, price_shareAuto, price_shareCar, price_shareRickshaw;
     TextView time;
     Float estimated_time;
     GeoQuery find_driver_bike,find_driver_car,find_driver_rickshaw,find_driver_auto,find_driver,find_driver_share;
@@ -147,6 +147,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     ArrayList<String> driver_list_car = new ArrayList<String>();
     ArrayList<String> driver_list_rickshaw = new ArrayList<String>();
     ArrayList<String> driver_list_auto = new ArrayList<String>();
+    ArrayList<String> driver_list_excel = new ArrayList<String>();
     ArrayList<String> share_driver_list = new ArrayList<String>();
     SharedPreferences log_id;
     Integer no_of_drivers = 0;
@@ -164,7 +165,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     ValueEventListener resplistener;
     DatabaseReference lastride;
     SharedPreferences.Editor editor;
-    TextView time_bike,time_car,time_auto,time_rickshaw,time_shareAuto,time_shareCar,time_shareRickshaw,final_time;
+    TextView time_bike,time_excel,time_car,time_auto,time_rickshaw,time_shareAuto,time_shareCar,time_shareRickshaw,final_time;
     boolean doubleBackToExitPressedOnce = false;
     DrawerLayout drawer;
     Spinner seats;
@@ -177,9 +178,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     List<Marker> driver_markers_auto = new ArrayList<>();
     private LatLng pick_loc;
     int show=0;
-    String ridetype=null,vehicletype="car";
+    String ridetype=null,vehicletype="car",prev_ride_case="";
     TextView findingridemsg,ridedetails;
     Dialog dialog;
+    int vehicle_case=0;
+    boolean isrunning=false;
+    Handler handle=new Handler();
 
     @Override
     public void onBackPressed() {
@@ -196,7 +200,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 destn_address.setVisibility(View.VISIBLE);
                 pickup_address.setVisibility(View.VISIBLE);
 
-                showoption=0;
+                showoption = 0;
                 findViewById(R.id.ridedetails).setVisibility(View.GONE);
                 findViewById(R.id.fragmentTwo).setVisibility(View.VISIBLE);
                 findViewById(R.id.layout3).setVisibility(View.GONE);
@@ -229,6 +233,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 }, 2000);
             }
         }
+
     }
 
     @Override
@@ -268,6 +273,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         hsv = (HorizontalScrollView) findViewById(R.id.fragmentTwo);
         price_auto = (TextView) findViewById(R.id.price_auto);
         price_bike = (TextView) findViewById(R.id.price_bike);
+        price_excel = (TextView) findViewById(R.id.price_excel);
         price_car = (TextView) findViewById(R.id.price_car);
         price_rickshaw = (TextView) findViewById(R.id.price_rickshaw);
         price_shareAuto = (TextView) findViewById(R.id.price_shareAuto);
@@ -275,6 +281,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         price_shareRickshaw = (TextView) findViewById(R.id.price_shareRickshaw);
         time_auto = (TextView) findViewById(R.id.time_auto);
         time_bike = (TextView) findViewById(R.id.time_bike);
+        time_excel = (TextView) findViewById(R.id.time_excel);
         time_car = (TextView) findViewById(R.id.time_car);
         time_rickshaw = (TextView) findViewById(R.id.time_rickshaw);
         time_shareAuto = (TextView) findViewById(R.id.time_shareAuto);
@@ -320,14 +327,18 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         pickup_address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(Home.this, PlaceSelector.class), 1);
+                Intent intent=new Intent(Home.this, PlaceSelector.class);
+                intent.putExtra("type","pickup");
+                startActivityForResult(intent, 1);
             }
         });
 
         destn_address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(Home.this, PlaceSelector.class), 2);
+                Intent intent=new Intent(Home.this, PlaceSelector.class);
+                intent.putExtra("type","destination");
+                startActivityForResult(intent, 2);
             }
         });
 
@@ -451,6 +462,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                find_driver_auto.removeAllListeners();
 //                find_driver_rickshaw.removeAllListeners();
                 findViewById(R.id.layout4).setVisibility(View.GONE);
+                if (vehicletype=="car" && ridetype=="full")
+                    prev_ride_case="car";
 
                 data.setCustomer_id(log_id.getString("id", null));
                 //find_driver.removeAllListeners();
@@ -539,6 +552,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         dialog.setContentView(view);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
 
@@ -770,6 +784,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     private void finddriver() {
         //Log.v("TAG",String.valueOf(i));
         //Toast.makeText(this, ""+String.valueOf(driver_list.size()), Toast.LENGTH_SHORT).show();;
+
+        find_driver.removeAllListeners();
         Random random = new Random();
         String id = String.format("%04d", random.nextInt(10000));
         data.setOtp(id);
@@ -786,17 +802,42 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             if (dialog.isShowing())
                 dialog.dismiss();
         }
-        else if (found == 0 && i < driver_list.size())
+        else if (found == 0 && i < driver_list.size()) {
+//            Toast.makeText(this, "close driver", Toast.LENGTH_SHORT).show();
             getClosestDriver();
+        }
         else {
-             screen_status=1;
-             findViewById(R.id.layout4).setVisibility(View.VISIBLE);
-             findViewById(R.id.layout3).setVisibility(View.GONE);
-             Toast.makeText(this, "No Ride Found", Toast.LENGTH_SHORT).show();
-             DatabaseReference data=FirebaseDatabase.getInstance().getReference("Share");
-             data.child(log_id.getString("id",null)).removeValue();
-             findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
-             findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+            if (vehicletype == "car" && ridetype == "full" && prev_ride_case=="car") {
+//                Log.v("TAG","if "+String.valueOf(isrunning));
+                found = 0;
+                i = 0;
+                driverid = "";
+                vehicletype = "excel";
+                place_drivers_excel();
+            } else if (vehicletype.equals("excel") && prev_ride_case.equals("car")) {
+//                Log.v("TAG","else if "+String.valueOf(isrunning));
+//                Toast.makeText(this, "else if condition", Toast.LENGTH_SHORT).show();
+                found = 0;
+                place_drivers();
+                prev_ride_case = "";
+                vehicletype = "car";
+
+                if (isrunning) {
+                    isrunning = false;
+
+                    driverid = "";
+                    Handler hd=new Handler();
+                    hd.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            screen_status = 1;
+                            findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+                            findViewById(R.id.layout3).setVisibility(View.GONE);
+                            Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
+                            DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
+                            data.child(log_id.getString("id", null)).removeValue();
+                            findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                            findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
 //             if (vehicletype.equals("bike"))
 //                place_drivers_bike();
 //             else if (vehicletype.equals("car"))
@@ -805,12 +846,44 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                 place_drivers_auto();
 //             else if (vehicletype.equals("rickshaw"))
 //                 place_drivers_rickshaw();
-            driverid="";
-            place_drivers();
 //            place_drivers_share();
 
-            if (dialog.isShowing())
-                dialog.dismiss();
+                            if (dialog.isShowing())
+                                dialog.dismiss();
+                        }
+                    }, 5000);
+                }
+            } else {
+                Log.v("TAG","else "+String.valueOf(isrunning));
+                if (isrunning) {
+                    isrunning = false;
+                    Toast.makeText(this, "else condition", Toast.LENGTH_SHORT).show();
+                    prev_ride_case = "";
+                    screen_status = 1;
+                    found = 0;
+                    findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+                    findViewById(R.id.layout3).setVisibility(View.GONE);
+                    Toast.makeText(this, "No Ride Found", Toast.LENGTH_SHORT).show();
+                    DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
+                    data.child(log_id.getString("id", null)).removeValue();
+                    findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                    findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+//             if (vehicletype.equals("bike"))
+//                place_drivers_bike();
+//             else if (vehicletype.equals("car"))
+//                 place_drivers_car();
+//             else if (vehicletype.equals("auto"))
+//                 place_drivers_auto();
+//             else if (vehicletype.equals("rickshaw"))
+//                 place_drivers_rickshaw();
+                    driverid = "";
+                    place_drivers();
+//            place_drivers_share();
+
+                    if (dialog.isShowing())
+                        dialog.dismiss();
+                }
+            }
         }
     }
 
@@ -849,6 +922,20 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 ridetype="full";
                 place_drivers();
                 ridedetails.setText("This option is for booking car. It allows you to book complete car for yourself.");
+//                remove_drivers_auto();
+//                remove_drivers_bike();
+//                remove_drivers_rickshaw();
+            } else if (v == findViewById(R.id.excel)) {
+                seatfull();
+                vehicletype="excel";
+                final_price.setText(price_excel.getText());
+                final_time.setText(time_excel.getText());
+                final_image.setImageResource(R.drawable.carfinal);
+                seats.setSelection(0);
+                seats.setEnabled(false);
+                ridetype="full";
+                place_drivers();
+                ridedetails.setText("This option is for booking excel car. It allows you to book complete car for yourself with passenger capacity more than 4.");
 //                remove_drivers_auto();
 //                remove_drivers_bike();
 //                remove_drivers_rickshaw();
@@ -935,54 +1022,65 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     DatabaseReference resp;
 
     private void getClosestDriver() {
-//        Log.v("TAG",String.valueOf(driver_list.size()));
-        driverid=driver_list.get(i);
-        cust_req = FirebaseDatabase.getInstance().getReference("CustomerRequests/" + driver_list.get(i));
-        cust_req.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
-                    DatabaseReference ref=null;
-                    if (vehicletype.equals("bike"))
-                        ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Bike");
-                    else if (vehicletype.equals("car"))
-                        ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Car");
-                    else if (vehicletype.equals("auto"))
-                        ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Auto");
-                    else if (vehicletype.equals("rickshaw"))
-                        ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Rickshaw");
-                    GeoFire geoFire = new GeoFire(ref);
-                    geoFire.removeLocation(driver_list.get(i));
-                    cust_req.child(log_id.getString("id",null)).setValue(data);
-                } else {
-                    ++i;
-                    finddriver();
+        Log.v("TAG","Close driver");
+        if (i<driver_list.size()) {
+            driverid = driver_list.get(i);
+            cust_req = FirebaseDatabase.getInstance().getReference("CustomerRequests/" + driver_list.get(i));
+            cust_req.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        Toast.makeText(Home.this, "Sent", Toast.LENGTH_SHORT).show();
+                        DatabaseReference ref = null;
+                        if (vehicletype.equals("bike"))
+                            ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Bike");
+                        if (vehicletype.equals("excel"))
+                            ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Excel");
+                        else if (vehicletype.equals("car"))
+                            ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Car");
+                        else if (vehicletype.equals("auto"))
+                            ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Auto");
+                        else if (vehicletype.equals("rickshaw"))
+                            ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Rickshaw");
+                        GeoFire geoFire = new GeoFire(ref);
+                        geoFire.removeLocation(driverid);
+                        cust_req.child(log_id.getString("id", null)).setValue(data);
+                    } else {
+                        ++i;
+                        Log.v("TAG","Find driver by customer req");
+                        Toast.makeText(Home.this, "Find driver by customer request", Toast.LENGTH_SHORT).show();
+                        finddriver();
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-        //Log.v("TAG",log_id.getString("driver",null)+"\njihij "+ driver_list.get(i));
-
-        response();
-
-        Handler handle = new Handler();
-        handle.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (found == 0 ) {
-                    i++;
-                    cust_req.child(log_id.getString("id",null)).removeValue();
-                    resp.removeValue();
-                    resp.removeEventListener(resplistener);
-                    finddriver();
-                    Toast.makeText(Home.this, "hi", Toast.LENGTH_SHORT).show();
                 }
-            }
-        }, 20000);
+            });
+            //Log.v("TAG",log_id.getString("driver",null)+"\njihij "+ driver_list.get(i));
+
+            response();
+        }
+            Handler handle = new Handler();
+            handle.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isrunning = true;
+                    if (found == 0 && i<=driver_list.size()) {
+                        ++i;
+                        cust_req.child(log_id.getString("id", null)).removeValue();
+                        resp.removeValue();
+                        resp.removeEventListener(resplistener);
+
+                        Log.v("TAG","Find driver by handler");
+                        Toast.makeText(Home.this, "Find driver by handler", Toast.LENGTH_SHORT).show();
+
+                        finddriver();
+                        Toast.makeText(Home.this, "hi", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }, 20000);
     }
 
     private void check_status(){
@@ -1059,6 +1157,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     }
                     else if (map.get("resp").toString().equals("Trip Started")){
                         findViewById(R.id.waiting).setVisibility(View.GONE);
+                        findViewById(R.id.layout3).setVisibility(View.GONE);
+                        findViewById(R.id.layout_ride_status).setVisibility(View.VISIBLE);
                         Toast.makeText(Home.this, "Trip Started !", Toast.LENGTH_LONG).show();
                         SharedPreferences.Editor editor=log_id.edit();
                         editor.putString("status","started");
@@ -1221,6 +1321,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     }
                     else if (map.get("resp").toString().equals("Trip Started")){
                         findViewById(R.id.waiting).setVisibility(View.GONE);
+                        findViewById(R.id.layout3).setVisibility(View.GONE);
+                        findViewById(R.id.layout_ride_status).setVisibility(View.VISIBLE);
                         Toast.makeText(Home.this, "Trip Started !", Toast.LENGTH_LONG).show();
                         SharedPreferences.Editor editor=log_id.edit();
                         editor.putString("status","started");
@@ -1255,6 +1357,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         driverid="";
                         ++i;
                         //if (i <= driver_list.size())
+                        Log.v("TAG","Find driver by reject");
+                        Toast.makeText(Home.this, "Find driver by reject", Toast.LENGTH_SHORT).show();
                             finddriver();
                     }
                     else if (map.get("resp").toString().equals("Cancel")){
@@ -1393,7 +1497,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 if (dataSnapshot.exists()) {
                     //mMap.clear();
                     ArrayList<Double> map = (ArrayList<Double>) dataSnapshot.getValue();
-                    if (Double.parseDouble(map.get(0).toString())!=0 && Double.parseDouble(map.get(0).toString())!=0) {
+                    if (Double.valueOf(map.get(0).toString())!=0 && Double.valueOf(map.get(1).toString())!=0) {
                         if (marker_drop != null) {
                             marker_drop.remove();
                         }
@@ -1401,6 +1505,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         if (vehicletype.equals("rickshaw"))
                             b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.rickshawfinal), 100,60, false);
                         else if (vehicletype.equals("car"))
+                            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.carfinal), 100,60, false);
+                        else if (vehicletype.equals("excel"))
                             b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.carfinal), 100,60, false);
 
                         final BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(b);
@@ -1682,6 +1788,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         DatabaseReference ref=null ;
         if (vehicletype.equals("bike"))
             ref= FirebaseDatabase.getInstance().getReference("DriversAvailable/Bike");
+        if (vehicletype.equals("excel"))
+            ref= FirebaseDatabase.getInstance().getReference("DriversAvailable/Excel");
         else if (vehicletype.equals("car"))
             ref= FirebaseDatabase.getInstance().getReference("DriversAvailable/Car");
         else if (vehicletype.equals("auto"))
@@ -1697,6 +1805,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         if (vehicletype.equals("rickshaw"))
            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.rickshawfinal),100,60,false);
         else if (vehicletype.equals("car"))
+            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.carfinal),100,60,false);
+        else if (vehicletype.equals("excel"))
             b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.carfinal),100,60,false);
 
         final BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(b);
@@ -1724,13 +1834,16 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
             @Override
             public void onKeyExited(String key) {
-                for (int i=0;i<driver_list.size();i++) {
-                    if (key.equals(driver_list.get(i))) {
-                        Marker mrk = driver_markers.get(i);
-                        mrk.remove();
-                        driver_list.remove(i);
-                        driver_markers.remove(i);
-                        break;
+                if (driver_markers.size()!=0) {
+                    Toast.makeText(Home.this, "" + "exited", Toast.LENGTH_SHORT).show();
+                    for (int i = 0; i < driver_list.size(); i++) {
+                        if (key.equals(driver_list.get(i))) {
+                            Marker mrk = driver_markers.get(i);
+                            mrk.remove();
+                            driver_list.remove(i);
+                            driver_markers.remove(i);
+                            break;
+                        }
                     }
                 }
             }
@@ -1740,7 +1853,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 for (int i=0;i<driver_list.size();i++){
                     if (key.equals(driver_list.get(i))){
                         MarkerOptions options = new MarkerOptions()
-                                .title("Bike")
+                                .title(vehicletype)
                                 .icon(icon)
                                 .position(new LatLng(location.latitude, location.longitude));
 
@@ -1764,11 +1877,60 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     dataTransfer[3] = time_car;
                     dataTransfer[4] = time_auto;
                     dataTransfer[5] = time_rickshaw;
-                    dataTransfer[6] = time_shareAuto;
+                    dataTransfer[6] = time_excel;
                     dataTransfer[7] = time_shareCar;
                     dataTransfer[8] = time_shareRickshaw;
                     getDirectionsData.execute(dataTransfer);
                 }
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
+
+//        if (!vehicletype.equals("bike"))
+//            place_drivers_share();
+    }
+
+    public void place_drivers_excel() {
+        for (int k = 0; k < driver_markers.size(); k++) {
+            driver_markers.get(k).remove();
+        }
+        driver_markers.clear();
+        driver_list.clear();
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("DriversAvailable/Excel");
+
+        GeoFire geoFire = new GeoFire(ref);
+        find_driver = geoFire.queryAtLocation(new GeoLocation(pickup.latitude, pickup.longitude), radius);
+        find_driver.removeAllListeners();
+
+        find_driver.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                driver_list.add(key);
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                for (int i=0;i<driver_list.size();i++) {
+                    if (key.equals(driver_list.get(i))) {
+                        driver_list.remove(i);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                Toast.makeText(Home.this, ""+driver_list.size(), Toast.LENGTH_SHORT).show();
+                finddriver();
             }
 
             @Override
@@ -2545,6 +2707,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         polylines.add(polyline);
 
         pricebike(route.get(shortestRouteIndex).getDistanceValue(),route.get(shortestRouteIndex).getDurationValue());
+        priceexcel(route.get(shortestRouteIndex).getDistanceValue(),route.get(shortestRouteIndex).getDurationValue());
         priceauto(route.get(shortestRouteIndex).getDistanceValue(),route.get(shortestRouteIndex).getDurationValue());
         pricecar(route.get(shortestRouteIndex).getDistanceValue(),route.get(shortestRouteIndex).getDurationValue());
         pricerickshaw(route.get(shortestRouteIndex).getDistanceValue(),route.get(shortestRouteIndex).getDurationValue());
@@ -2555,6 +2718,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //            time.setText(String.valueOf(route.get(shortestRouteIndex).getDurationValue()/60));
         //Toast.makeText(getApplicationContext(),String.valueOf(shortestRouteIndex)+"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
         //}
+    }
+
+    private void priceexcel(int distanceValue, int durationValue) {
+        if (vehicle_case==1)
+            price_excel.setText("Rs. " + String.valueOf((distanceValue * 15) / 1000));
+        else if (vehicle_case==2)
+            price_excel.setText("Rs. " + String.valueOf((2* distanceValue * 15) / 1000));
     }
 
     private void pricebike(int distanceValue,int time) {
@@ -2568,7 +2738,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     }
 
     private void pricecar(int distanceValue,int time) {
-        price_car.setText("Rs. " + String.valueOf(distanceValue * 6 / 1000));
+        if (vehicle_case==1)
+            price_car.setText("Rs. " + String.valueOf((distanceValue * 6) / 1000));
+        else if (vehicle_case==2)
+            price_car.setText("Rs. " + String.valueOf((2* distanceValue * 6) / 1000));
         //time_car.setText(String.valueOf(time/60)+" min");
     }
 
@@ -2706,6 +2879,25 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             latitude=intent.getDoubleExtra("lat",0);
             longitude=intent.getDoubleExtra("lng",0);
 
+            if (intent.getStringExtra("case").equals("1")) {
+                vehicle_case = 1;
+                findViewById(R.id.rickshaw).setVisibility(View.VISIBLE);
+                findViewById(R.id.shareRickshaw).setVisibility(View.VISIBLE);
+                findViewById(R.id.shareCar).setVisibility(View.VISIBLE);
+                findViewById(R.id.rickshaw_type).setVisibility(View.VISIBLE);
+                findViewById(R.id.shareRickshaw_type).setVisibility(View.VISIBLE);
+                findViewById(R.id.shareCar_type).setVisibility(View.VISIBLE);
+            }
+            else {
+                vehicle_case = 2;
+                findViewById(R.id.rickshaw).setVisibility(View.GONE);
+                findViewById(R.id.shareRickshaw).setVisibility(View.GONE);
+                findViewById(R.id.shareCar).setVisibility(View.GONE);
+                findViewById(R.id.rickshaw_type).setVisibility(View.GONE);
+                findViewById(R.id.shareRickshaw_type).setVisibility(View.GONE);
+                findViewById(R.id.shareCar_type).setVisibility(View.GONE);
+            }
+
             findViewById(R.id.rating_bar).setVisibility(View.GONE);
             destn_address.setText(name);
 
@@ -2761,6 +2953,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     public void closelocationsave(View view){
         findViewById(R.id.location_card_view).setVisibility(View.GONE);
         findViewById(R.id.rating_bar).setVisibility(View.GONE);
+        lastride.removeValue();
     }
 
     int showoption=0;
@@ -2783,9 +2976,14 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
         adapter1.setDropDownViewResource(R.layout.payment_list);
         seats.setAdapter(adapter1);
+
+        findViewById(R.id.layoutseat).setVisibility(View.GONE);
+        findViewById(R.id.layoutpaymode).getLayoutParams().width= LinearLayout.LayoutParams.MATCH_PARENT;
     }
 
     public void seatshare(){
+        findViewById(R.id.layoutseat).setVisibility(View.VISIBLE);
+        findViewById(R.id.layoutpaymode).getLayoutParams().width= LinearLayout.LayoutParams.MATCH_PARENT/2;
         seats_list.clear();
         seats_list.add("1");
         seats_list.add("2");
