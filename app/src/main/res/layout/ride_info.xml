@@ -54,6 +54,17 @@
                 android:textColor="#05affc"
                 android:text="Bike Model + Bike No"
                 android:paddingLeft="10dp"/>
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#05affc"
+                android:text=""
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textSize="18sp"/>
+
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

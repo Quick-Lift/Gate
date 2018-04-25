@@ -180,4 +180,15 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_margin="5dp"/>
 
+    <TextView
+        android:id="@+id/no_ride_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You have not taken any rides yet !"
+        android:textSize="22sp"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:textColor="#05affc"
+        android:visibility="gone"/>
+
 </RelativeLayout>

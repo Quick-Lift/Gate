@@ -1,6 +1,7 @@
 package com.quicklift;
 
 import android.*;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -48,6 +49,7 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
     Button ongoing;
     private SharedPreferences log_id;
     ArrayList<Map<String,Object>> ride_list=new ArrayList<Map<String,Object>>();
+    ProgressDialog progress;
 
     @Override
     public void onBackPressed() {
@@ -78,6 +80,12 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
         db= FirebaseDatabase.getInstance().getReference("Rides");
 
         list=(ListView)findViewById(R.id.list);
+        progress=new ProgressDialog(this);
+        progress.setCancelable(false);
+        progress.setIndeterminate(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.setMessage("Loading Ride Information !");
+        progress.show();
 
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        toolbar.setTitle("Rides");
@@ -181,7 +189,14 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
                     //Toast.makeText(CustomerRides.this, ride_list.get(ride_list.size()-1).get("time").toString(), Toast.LENGTH_SHORT).show();
                 }
                 //Toast.makeText(CustomerRides.this, String.valueOf(ride_list.size()), Toast.LENGTH_SHORT).show();
+                if (ride_list.size()==0){
+                    findViewById(R.id.no_ride_msg).setVisibility(View.VISIBLE);
+                }
+                else {
+                    findViewById(R.id.no_ride_msg).setVisibility(View.GONE);
+                }
                 list.setAdapter(new CustomAdapter());
+                progress.dismiss();
             }
 
             @Override
@@ -289,12 +304,18 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             TextView source=(TextView)view.findViewById(R.id.source);
             TextView destination=(TextView)view.findViewById(R.id.destination);
             TextView amount=(TextView)view.findViewById(R.id.amount);
+            TextView status=(TextView)view.findViewById(R.id.status);
             final TextView name=(TextView)view.findViewById(R.id.name);
 
             time.setText(ride_list.get(position).get("time").toString());
             source.setText(ride_list.get(position).get("source").toString());
             destination.setText(ride_list.get(position).get("destination").toString());
             amount.setText(ride_list.get(position).get("amount").toString());
+            if (ride_list.get(position).containsKey("status")){
+                if (ride_list.get(position).get("status").equals("Cancelled")){
+                    status.setText(ride_list.get(position).get("status").toString());
+                }
+            }
 
             DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers");
             dref.child(ride_list.get(position).get("driver").toString()).addListenerForSingleValueEvent(new ValueEventListener() {

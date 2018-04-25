@@ -24,16 +24,18 @@ import com.google.firebase.database.ValueEventListener;
 
 public class NotificationService extends Service {
     SharedPreferences log;
+    ValueEventListener replistener;
+    DatabaseReference db;
+    int i=1;
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Log.v("TAG","Service started");
+    public int onStartCommand(final Intent intent, int flags, int startId) {
+        Log.v("TAG","Service started"+i++);
 
         log = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
        // Toast.makeText(this, "Started", Toast.LENGTH_SHORT).show();
-        DatabaseReference db= FirebaseDatabase.getInstance().getReference("Response/"+log.getString("id",null));
-        db.child("resp").addValueEventListener(new ValueEventListener() {
+        db= FirebaseDatabase.getInstance().getReference("Response/"+log.getString("id",null));
+        replistener=db.child("resp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -86,9 +88,10 @@ public class NotificationService extends Service {
         Log.v("TAG","service ended");
 
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/"+log.getString("driver",null)+"/"+log.getString("id",null));
-        DatabaseReference db= FirebaseDatabase.getInstance().getReference("Response/"+log.getString("id",null));
-        db.removeValue();
+        DatabaseReference dref= FirebaseDatabase.getInstance().getReference("Response/"+log.getString("id",null));
+        dref.removeValue();
         ref.removeValue();
+        db.removeEventListener(replistener);
 
         SharedPreferences.Editor editor;
         editor=log.edit();
@@ -97,8 +100,7 @@ public class NotificationService extends Service {
         editor.remove("status");
         editor.commit();
 
-        this.stopSelf();
-        stopService(new Intent(NotificationService.this,NotificationService.class));
+        stopSelf();
         onDestroy();
     }
 

@@ -179,6 +179,9 @@ public class PlaceSelector extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             PlaceBufferResponse places = task.getResult();
                             Place myPlace = places.get(0);
+
+//
+//
 //                            if (myPlace.getLatLng().latitude >= 25.548596 && myPlace.getLatLng().latitude <= 25.701826
 //                                    && myPlace.getLatLng().longitude >= 84.854858 && myPlace.getLatLng().longitude <= 85.278055 ) {
 
@@ -189,6 +192,10 @@ public class PlaceSelector extends AppCompatActivity {
                                 intent.putExtra("lat", myPlace.getLatLng().latitude);
                                 intent.putExtra("lng", myPlace.getLatLng().longitude);
                                 intent.putExtra("case","1");
+
+//
+//
+//
 //                                if (myPlace.getLatLng().latitude >= 25.561272 && myPlace.getLatLng().latitude <= 25.654152
 //                                        && myPlace.getLatLng().longitude >= 85.020262 && myPlace.getLatLng().longitude <= 85.278055){
 //                                    intent.putExtra("case","1");
@@ -196,12 +203,18 @@ public class PlaceSelector extends AppCompatActivity {
 //                                else {
 //                                    intent.putExtra("case","2");
 //                                }
+//
+//
+//
                                 setResult(RESULT_OK, intent);
                                 finish();
 
 //                            } else {
 //                                Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
 //                            }
+//
+//
+//
                             //Toast.makeText(PlaceSelector.this, myPlace.getName(), Toast.LENGTH_SHORT).show();
                             //Log.i(TAG, "Place found: " + myPlace.getName());
                             places.release();
@@ -222,7 +235,9 @@ public class PlaceSelector extends AppCompatActivity {
                 intent.putExtra("place", name.get(position).getPlace());
                 intent.putExtra("lat", Double.parseDouble(name.get(position).getLat()));
                 intent.putExtra("lng", Double.parseDouble(name.get(position).getLng()));
-                intent.putExtra("case","1");
+//                intent.putExtra("case","1");
+//
+//
 //                if (Double.parseDouble(name.get(position).getLat()) >= 25.561272 && Double.parseDouble(name.get(position).getLat()) <= 25.654152
 //                        && Double.parseDouble(name.get(position).getLng()) >= 85.020262 && Double.parseDouble(name.get(position).getLng()) <= 85.278055){
 //                    intent.putExtra("case","1");
@@ -234,6 +249,10 @@ public class PlaceSelector extends AppCompatActivity {
 //                else {
 //                    Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
 //                }
+//
+//
+//
+
                     setResult(RESULT_OK,intent);
                 finish();
             }

@@ -5,9 +5,26 @@ package com.quicklift;
  */
 
 public class Ride {
-    String customerid,source,destination,amount,time,driver;
+    String customerid,source,destination,amount,time,driver,status,cancelledby;
 
     public Ride() {
+
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getCancelledby() {
+        return cancelledby;
+    }
+
+    public void setCancelledby(String cancelledby) {
+        this.cancelledby = cancelledby;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getCustomerid() {

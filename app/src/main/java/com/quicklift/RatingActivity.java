@@ -31,6 +31,7 @@ public class RatingActivity extends AppCompatActivity {
     private DatabaseReference lastride;
     private SharedPreferences log_id;
     RatingBar ratingBar;
+    String driverid;
     Map<String,Object> map;
 
     @Override
@@ -68,6 +69,7 @@ public class RatingActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 map=(Map<String, Object>) dataSnapshot.getValue();
+                driverid=map.get("driver").toString();
                 if (map.get("status").toString().equals("")){
                     displayrideinfo(map);
                 }
@@ -141,6 +143,38 @@ public class RatingActivity extends AppCompatActivity {
         if (box6.isChecked()){
             db.push().setValue(box6.getText().toString());
         }
+
+        final DatabaseReference reference=FirebaseDatabase.getInstance().getReference("DriversRating/"+driverid);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    Integer rides=Integer.parseInt(map.get("no").toString());
+                    Float rating=Float.parseFloat(map.get("rate").toString());
+
+                    rating=(rides*rating)+ratingBar.getRating();
+                    rating=rating/(rides+1);
+
+                    reference.child("no").setValue(String.valueOf(rides+1));
+                    reference.child("rate").setValue(String.valueOf(rating));
+
+                    DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers/"+driverid);
+                    dref.child("rate").setValue(String.valueOf(rating));
+                }
+                else {
+                    reference.child("no").setValue(String.valueOf(1));
+                    reference.child("rate").setValue(String.valueOf(ratingBar.getRating()));
+                    DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers/"+driverid);
+                    dref.child("rate").setValue(String.valueOf(ratingBar.getRating()));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         lastride.child("status").setValue("rated");
         Toast.makeText(this, "Thank you for your feedback !", Toast.LENGTH_SHORT).show();

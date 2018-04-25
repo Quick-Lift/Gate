@@ -34,7 +34,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_phone_auth);
 
         getSupportActionBar().setTitle("Phone Verification");
-
         // ...
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
@@ -53,6 +52,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
         }
         else {
             startActivity(new Intent(PhoneAuthActivity.this,Home.class));
+            finish();
         }
     }
 

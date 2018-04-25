@@ -140,6 +140,7 @@ public class PhoneAuthentication extends AppCompatActivity implements
 
             @Override
             public void onVerificationCompleted(PhoneAuthCredential credential) {
+
                 Toast.makeText(PhoneAuthentication.this, "Verification Success...", Toast.LENGTH_SHORT).show();
             }
 

@@ -36,6 +36,7 @@ public class TripCompleted extends AppCompatActivity {
     RatingBar rating;
     Ride ride=new Ride();
     Button save,cancel;
+    String driverid;
     SharedPreferences.Editor editor;
 
     @Override
@@ -56,6 +57,7 @@ public class TripCompleted extends AppCompatActivity {
 
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
         editor=log_id.edit();
+        driverid=getIntent().getStringExtra("id");
         db= FirebaseDatabase.getInstance().getReference("Drivers/"+getIntent().getStringExtra("id"));
         photo=(CircleImageView)findViewById(R.id.photo);
         rating=(RatingBar)findViewById(R.id.rating);
@@ -134,7 +136,7 @@ public class TripCompleted extends AppCompatActivity {
             }
         });
 
-        stopService(new Intent(this, NotificationService.class));
+//        stopService(new Intent(this, NotificationService.class));
 //        rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 //            @Override
 //            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -152,6 +154,38 @@ public class TripCompleted extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final DatabaseReference reference=FirebaseDatabase.getInstance().getReference("DriversRating/"+driverid);
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                            Integer rides=Integer.parseInt(map.get("no").toString());
+                            Float rate=Float.parseFloat(map.get("rate").toString());
+
+                            rate=(rides*rate)+rating.getRating();
+                            rate=rate/(rides+1);
+
+                            reference.child("no").setValue(String.valueOf(rides+1));
+                            reference.child("rate").setValue(String.valueOf(rate));
+
+                            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers/"+driverid);
+                            dref.child("rate").setValue(String.valueOf(rate));
+                        }
+                        else {
+                            reference.child("no").setValue(String.valueOf(1));
+                            reference.child("rate").setValue(String.valueOf(rating.getRating()));
+                            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers/"+driverid);
+                            dref.child("rate").setValue(String.valueOf(rating.getRating()));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 DatabaseReference ref=FirebaseDatabase.getInstance().getReference("LastRide");
                 ref.child(log_id.getString("id",null)+"/status").setValue("rated");
 

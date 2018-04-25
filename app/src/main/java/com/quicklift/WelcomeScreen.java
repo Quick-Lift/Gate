@@ -8,6 +8,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,6 +38,11 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -44,6 +50,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -79,6 +86,53 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 //        dataTransfer[0] = url;
 //        getDirectionsData.execute(dataTransfer);
 
+        final SQLQueries sqlQueries=new SQLQueries(this);
+        sqlQueries.deletefare();
+        sqlQueries.deletelocation();
+        DatabaseReference db= FirebaseDatabase.getInstance().getReference("Fare/Patna");
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
+                    ArrayList<String> price=new ArrayList<String>();
+                    price.add(data.child("Latitude").getValue(String.class));
+                    price.add(data.child("Longitude").getValue(String.class));
+                    price.add(data.child("Amount").getValue(String.class));
+                    price.add(data.child("Distance").getValue(String.class));
+
+                    sqlQueries.savelocation(price);
+                }
+                for (DataSnapshot data:dataSnapshot.child("Price").getChildren()){
+                    ArrayList<String> price=new ArrayList<String>();
+                    price.add(data.child("NormalTime/BaseFare/Amount").getValue(String.class));
+                    price.add(data.child("NormalTime/BaseFare/Distance").getValue(String.class));
+                    price.add(data.child("NormalTime/BeyondLimit/FirstLimit/Amount").getValue(String.class));
+                    price.add(data.child("NormalTime/BeyondLimit/FirstLimit/Distance").getValue(String.class));
+                    price.add(data.child("NormalTime/BeyondLimit/SecondLimit/Amount").getValue(String.class));
+                    price.add(data.child("NormalTime/Time").getValue(String.class));
+
+                    sqlQueries.savefare(price);
+//                    Log.v("TAG",price.get(0)+" "+price.get(1)+" "+price.get(2)+" "+price.get(3)+" "+price.get(4)+" "+price.get(5)+" ");
+
+                    price.clear();
+                    price.add(data.child("PeakTime/BaseFare/Amount").getValue(String.class));
+                    price.add(data.child("PeakTime/BaseFare/Distance").getValue(String.class));
+                    price.add(data.child("PeakTime/BeyondLimit/FirstLimit/Amount").getValue(String.class));
+                    price.add(data.child("PeakTime/BeyondLimit/FirstLimit/Distance").getValue(String.class));
+                    price.add(data.child("PeakTime/BeyondLimit/SecondLimit/Amount").getValue(String.class));
+                    price.add(data.child("PeakTime/Time").getValue(String.class));
+
+                    sqlQueries.savefare(price);
+//                    Toast.makeText(WelcomeScreen.this, ""+"hi", Toast.LENGTH_SHORT).show();
+//                    Log.v("TAG",price.get(0)+" "+price.get(1)+" "+price.get(2)+" "+price.get(3)+" "+price.get(4)+" "+price.get(5)+" ");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
@@ -136,6 +190,28 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             else{
                 requestPermission();
                 Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+                builder.setMessage("No internet connection")
+                        .setCancelable(true)
+                        .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //  Action for 'NO' Button
+                                dialog.cancel();
+                            }
+                        });
+
+                //Creating dialog box
+                AlertDialog alert = builder.create();
+                //Setting the title manually
+                alert.setTitle("Account Action !");
+                alert.show();
+                alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+                alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
             }
         }
         else {
@@ -150,6 +226,28 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             }
             else{
                 Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+                builder.setMessage("No internet connection")
+                        .setCancelable(true)
+                        .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //  Action for 'NO' Button
+                                dialog.cancel();
+                            }
+                        });
+
+                //Creating dialog box
+                AlertDialog alert = builder.create();
+                //Setting the title manually
+                alert.setTitle("Account Action !");
+                alert.show();
+                alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+                alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
             }
         }
     }
