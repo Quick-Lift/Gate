@@ -23,7 +23,7 @@
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">#05affc</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="ThemeOverlay.MyNoTitleActivity" parent="AppTheme">

@@ -68,6 +68,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 //        StringBuilder googleDirectionsUrl=new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
 //        googleDirectionsUrl.append("origin=12.8284773,77.70238379999999");
 //        googleDirectionsUrl.append("&destination=12.950288500000001,77.69906259999999");
@@ -170,9 +172,6 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 //            dialog.show();
             EnableGPSAutoMatically();
         }
-
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 //         variables storing function values returned by network connection functions
         boolean status1 = haveNetworkConnection();
         boolean status2 = hasActiveInternetConnection();

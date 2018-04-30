@@ -307,18 +307,21 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             TextView status=(TextView)view.findViewById(R.id.status);
             final TextView name=(TextView)view.findViewById(R.id.name);
 
-            time.setText(ride_list.get(position).get("time").toString());
-            source.setText(ride_list.get(position).get("source").toString());
-            destination.setText(ride_list.get(position).get("destination").toString());
-            amount.setText(ride_list.get(position).get("amount").toString());
-            if (ride_list.get(position).containsKey("status")){
-                if (ride_list.get(position).get("status").equals("Cancelled")){
-                    status.setText(ride_list.get(position).get("status").toString());
+            time.setText(ride_list.get(ride_list.size()-1-position).get("time").toString());
+            source.setText(ride_list.get(ride_list.size()-1-position).get("source").toString());
+            destination.setText(ride_list.get(ride_list.size()-1-position).get("destination").toString());
+            amount.setText("Rs. "+ride_list.get(ride_list.size()-1-position).get("amount").toString());
+            if (ride_list.get(ride_list.size()-1-position).containsKey("status")){
+                if (ride_list.get(ride_list.size()-1-position).get("status").equals("Cancelled")){
+                    status.setText(ride_list.get(ride_list.size()-1-position).get("status").toString());
+                }
+                else if (ride_list.get(ride_list.size()-1-position).get("status").equals("Canceled By Driver")){
+                    status.setText("Cancelled");
                 }
             }
 
             DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers");
-            dref.child(ride_list.get(position).get("driver").toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+            dref.child(ride_list.get(ride_list.size()-1-position).get("driver").toString()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();

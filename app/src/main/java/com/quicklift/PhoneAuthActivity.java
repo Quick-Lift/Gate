@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,6 +85,54 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                     .setCancelable(true)
                                     .setPositiveButton("Continue ...", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
+                                            final SQLQueries sqlQueries=new SQLQueries(PhoneAuthActivity.this);
+                                            sqlQueries.deletefare();
+                                            sqlQueries.deletelocation();
+                                            DatabaseReference db= FirebaseDatabase.getInstance().getReference("Fare/Patna");
+                                            db.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
+                                                        ArrayList<String> price=new ArrayList<String>();
+                                                        price.add(data.child("Latitude").getValue(String.class));
+                                                        price.add(data.child("Longitude").getValue(String.class));
+                                                        price.add(data.child("Amount").getValue(String.class));
+                                                        price.add(data.child("Distance").getValue(String.class));
+
+                                                        sqlQueries.savelocation(price);
+                                                    }
+                                                    for (DataSnapshot data:dataSnapshot.child("Price").getChildren()){
+                                                        ArrayList<String> price=new ArrayList<String>();
+                                                        price.add(data.child("NormalTime/BaseFare/Amount").getValue(String.class));
+                                                        price.add(data.child("NormalTime/BaseFare/Distance").getValue(String.class));
+                                                        price.add(data.child("NormalTime/BeyondLimit/FirstLimit/Amount").getValue(String.class));
+                                                        price.add(data.child("NormalTime/BeyondLimit/FirstLimit/Distance").getValue(String.class));
+                                                        price.add(data.child("NormalTime/BeyondLimit/SecondLimit/Amount").getValue(String.class));
+                                                        price.add(data.child("NormalTime/Time").getValue(String.class));
+
+                                                        sqlQueries.savefare(price);
+//                    Log.v("TAG",price.get(0)+" "+price.get(1)+" "+price.get(2)+" "+price.get(3)+" "+price.get(4)+" "+price.get(5)+" ");
+
+                                                        price.clear();
+                                                        price.add(data.child("PeakTime/BaseFare/Amount").getValue(String.class));
+                                                        price.add(data.child("PeakTime/BaseFare/Distance").getValue(String.class));
+                                                        price.add(data.child("PeakTime/BeyondLimit/FirstLimit/Amount").getValue(String.class));
+                                                        price.add(data.child("PeakTime/BeyondLimit/FirstLimit/Distance").getValue(String.class));
+                                                        price.add(data.child("PeakTime/BeyondLimit/SecondLimit/Amount").getValue(String.class));
+                                                        price.add(data.child("PeakTime/Time").getValue(String.class));
+
+                                                        sqlQueries.savefare(price);
+//                    Toast.makeText(WelcomeScreen.this, ""+"hi", Toast.LENGTH_SHORT).show();
+//                    Log.v("TAG",price.get(0)+" "+price.get(1)+" "+price.get(2)+" "+price.get(3)+" "+price.get(4)+" "+price.get(5)+" ");
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+
                                             editor.putString("id",user.getUid());
                                             editor.putString("driver","");
                                             editor.commit();

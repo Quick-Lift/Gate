@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#05affc</color>
     <color name="colorPrimaryDark">#05affc</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#0000ff</color>
     <color name="button_background">#CC05affc</color>
     <color name="frame_background">#FF05affc</color>
 </resources>

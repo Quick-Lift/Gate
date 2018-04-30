@@ -24,12 +24,12 @@ public class GetDirectionsData extends AsyncTask<Object,String,String>{
         mmap=(GoogleMap)objects[0];
         url=(String)objects[1];
         editText=(TextView) objects[2];
-        editText1=(TextView) objects[3];
-        editText2=(TextView) objects[4];
-        editText3=(TextView) objects[5];
-        editText4=(TextView) objects[6];
-        editText5=(TextView) objects[7];
-        editText6=(TextView) objects[8];
+//        editText1=(TextView) objects[3];
+//        editText2=(TextView) objects[4];
+//        editText3=(TextView) objects[5];
+//        editText4=(TextView) objects[6];
+//        editText5=(TextView) objects[7];
+//        editText6=(TextView) objects[8];
         //duration=(String) objects[2];
 
         DownloadUrl downloadUrl=new DownloadUrl();
@@ -53,11 +53,11 @@ public class GetDirectionsData extends AsyncTask<Object,String,String>{
 
         //editText.setText(distance + " : "+duration);
         editText.setText(duration);
-        editText1.setText(duration);
-        editText2.setText(duration);
-        editText3.setText(duration);
-        editText4.setText(duration);
-        editText5.setText(duration);
-        editText6.setText(duration);
+//        editText1.setText(duration);
+//        editText2.setText(duration);
+//        editText3.setText(duration);
+//        editText4.setText(duration);
+//        editText5.setText(duration);
+//        editText6.setText(duration);
     }
 }

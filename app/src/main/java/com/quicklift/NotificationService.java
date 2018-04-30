@@ -57,7 +57,7 @@ public class NotificationService extends Service {
                         notification(text, str);
                     } else if (text.equals("Trip Ended")) {
                         Log.v("TAG","trip ended");
-
+                        handleoffer();
                         String str="You have arrived at your destination ...";
                         notification(text, str);
                         Handler handle = new Handler();
@@ -69,6 +69,12 @@ public class NotificationService extends Service {
                         }, 2000);
                     } else if (text.equals("Cancel")) {
                         String str="The trip is cancelled by driver ...";
+                        if (log.contains("offer")){
+                            SharedPreferences.Editor ed=log.edit();
+                            ed.remove("offer");
+                            ed.commit();
+                        }
+
                         notification(text, str);
                         removeservice();
                     }
@@ -82,6 +88,76 @@ public class NotificationService extends Service {
         });
 
         return START_STICKY;
+    }
+
+    private void handleoffer() {
+        final DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ReferalCode/"+log.getString("id",null));
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("referredby")){
+                    String str=dataSnapshot.child("referredby").getValue(String.class);
+                    final DatabaseReference db=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+str);
+                    db.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                if (dataSnapshot.hasChild("101")) {
+                                    Integer val=Integer.parseInt(dataSnapshot.child("101").getValue(String.class));
+                                    db.child("101").setValue(String.valueOf(val+1));
+                                    ref.child("referredby").removeValue();
+                                }
+                                else {
+                                    db.child("101").setValue("1");
+                                    ref.child("referredby").removeValue();
+                                }
+                            }
+                            else {
+                                db.child("101").setValue("1");
+                                ref.child("referredby").removeValue();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        if (log.contains("offer")){
+            final DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+log.getString("id",null));
+            dref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()){
+                        if (dataSnapshot.hasChild(log.getString("offer",null))){
+
+                            Integer val=Integer.parseInt(dataSnapshot.child(log.getString("offer",null)).getValue(String.class));
+                            if (val==1)
+                                dref.child(log.getString("offer",null)).removeValue();
+                            else
+                                dref.child(log.getString("offer",null)).setValue(String.valueOf(val-1));
+                            SharedPreferences.Editor ed=log.edit();
+                            ed.remove("offer");
+                            ed.commit();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     public void removeservice(){

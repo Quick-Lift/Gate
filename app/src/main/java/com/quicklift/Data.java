@@ -6,7 +6,7 @@ package com.quicklift;
 
 public class Data {
     double st_lat,st_lng,en_lat,en_lng,d_lat,d_lng;
-    String customer_id,source,destination,price,otp,seat;
+    String customer_id,source,destination,price,otp,seat,offer;
     Integer accept=0;
 
     public Data() {
@@ -14,6 +14,14 @@ public class Data {
 
     public String getOtp() {
         return otp;
+    }
+
+    public String getOffer() {
+        return offer;
+    }
+
+    public void setOffer(String offer) {
+        this.offer = offer;
     }
 
     public void setOtp(String otp) {

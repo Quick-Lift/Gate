@@ -141,7 +141,7 @@ public class PhoneAuthentication extends AppCompatActivity implements
             @Override
             public void onVerificationCompleted(PhoneAuthCredential credential) {
 
-                Toast.makeText(PhoneAuthentication.this, "Verification Success...", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(PhoneAuthentication.this, "Verification Success...", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -155,7 +155,7 @@ public class PhoneAuthentication extends AppCompatActivity implements
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     // Invalid request
                     // [START_EXCLUDE]
-                    Toast.makeText(PhoneAuthentication.this, "Invalid Phone Number !", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(PhoneAuthentication.this, "Invalid Phone Number !", Toast.LENGTH_SHORT).show();
                     // [END_EXCLUDE]
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
@@ -181,7 +181,7 @@ public class PhoneAuthentication extends AppCompatActivity implements
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
                 mResendToken = token;
-                Toast.makeText(PhoneAuthentication.this, verificationId, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(PhoneAuthentication.this, verificationId, Toast.LENGTH_SHORT).show();
 
                 // [START_EXCLUDE]
                 // Update UI

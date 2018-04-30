@@ -48,6 +48,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -174,6 +175,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     DrawerLayout drawer;
     Spinner seats;
     TextView offer;
+    String offercode="";
+    Integer offervalue=0,realprice=0;
     List<Marker> driver_markers = new ArrayList<>();
     List<Marker> driver_markers_share = new ArrayList<>();
     List<Marker> driver_markers_bike = new ArrayList<>();
@@ -211,6 +214,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 findViewById(R.id.layout3).setVisibility(View.GONE);
                 findViewById(R.id.layout4).setVisibility(View.GONE);
                 findViewById(R.id.rating_bar).setVisibility(View.GONE);
+
+                offer.setText("");
+                offercode="";
+                offervalue=0;
 
 //                place_drivers_bike();
 //                place_drivers_auto();
@@ -261,7 +268,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             setContentView(R.layout.activity_home_screen);
             initMap();
         } else {
-            Toast.makeText(this, "Unable to load map ! Please turn on location !", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Unable to load map ! Please turn on location !", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -415,6 +422,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         otp.setText("OTP\n"+dataSnapshot.child("otp").getValue(String.class));
                         destn_address.setText(dataSnapshot.child("destination").getValue(String.class));
                         pickup_address.setText(dataSnapshot.child("source").getValue(String.class));
+                        final_price.setText("Rs. "+dataSnapshot.child("price").getValue(String.class));
                         pick_loc=new LatLng(dataSnapshot.child("st_lat").getValue(Double.class),dataSnapshot.child("st_lng").getValue(Double.class));
                         editor.remove("show");
                         editor.commit();
@@ -554,12 +562,17 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             }
         });
 
-        RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+//        RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         dialog=new Dialog(this);
         dialog.setContentView(view);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(lp);
         dialog.show();
     }
 
@@ -571,6 +584,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         editor.putString("otp",id);
         editor.commit();
         data.setPrice(final_price.getText().toString().substring(4));
+        data.setOffer(String.valueOf(offervalue));
         data.setSource(pickup_address.getText().toString());
         data.setDestination(destn_address.getText().toString());
         data.setSeat(seats.getSelectedItem().toString());
@@ -651,7 +665,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //        }
             screen_status=1;
         if (found == 1) {
-            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
             if (dialog.isShowing())
                 dialog.dismiss();
         }
@@ -667,7 +681,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        Toast.makeText(Home.this, "hello", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Home.this, "hello", Toast.LENGTH_SHORT).show();
                         String seat = dataSnapshot.getValue(String.class);
                         if (!seat.equals("full") && (Integer.parseInt(seat) + Integer.parseInt(seats.getSelectedItem().toString())) <= 4) {
                             cust_req = FirebaseDatabase.getInstance().getReference("CustomerRequests/" + share_driver_list.get(sharedriver));
@@ -800,12 +814,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         editor.putString("otp",id);
         editor.commit();
         data.setPrice(final_price.getText().toString().substring(4));
+        data.setOffer(String.valueOf(offervalue));
         data.setSource(pickup_address.getText().toString());
         data.setDestination(destn_address.getText().toString());
         data.setSeat(seats.getSelectedItem().toString());
         //Toast.makeText(this, ""+String.valueOf(i), Toast.LENGTH_SHORT).show();
         if (found == 1) {
-            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
             if (dialog.isShowing())
                 dialog.dismiss();
         }
@@ -837,14 +852,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     hd.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            screen_status = 1;
-                            findViewById(R.id.layout4).setVisibility(View.VISIBLE);
-                            findViewById(R.id.layout3).setVisibility(View.GONE);
-                            Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
-                            DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
-                            data.child(log_id.getString("id", null)).removeValue();
-                            findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
-                            findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+                            Handler hd=new Handler();
+                            hd.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+
 //             if (vehicletype.equals("bike"))
 //                place_drivers_bike();
 //             else if (vehicletype.equals("car"))
@@ -855,8 +867,33 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                 place_drivers_rickshaw();
 //            place_drivers_share();
 
-                            if (dialog.isShowing())
-                                dialog.dismiss();
+                                    if (dialog.isShowing())
+                                        dialog.dismiss();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                                    builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    screen_status = 1;
+                                                    findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+                                                    findViewById(R.id.layout3).setVisibility(View.GONE);
+//                                                    Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
+                                                    DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
+                                                    data.child(log_id.getString("id", null)).removeValue();
+                                                    findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                                                    findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+                                                }
+                                            });
+
+                                    //Creating dialog box
+                                    AlertDialog alert = builder.create();
+                                    //Setting the title manually
+                                    alert.setTitle("Try Again !");
+                                    alert.show();
+                                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+                                    alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+                                }
+                            }, 20000);
                         }
                     }, 5000);
 //                }
@@ -864,17 +901,33 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 Log.v("TAG","else "+String.valueOf(isrunning));
 //                if (isrunning) {
 //                    isrunning = false;
-                    Toast.makeText(this, "else condition", Toast.LENGTH_SHORT).show();
-                    prev_ride_case = "";
-                    screen_status = 1;
-                    found = 0;
-                    findViewById(R.id.layout4).setVisibility(View.VISIBLE);
-                    findViewById(R.id.layout3).setVisibility(View.GONE);
-                    Toast.makeText(this, "No Ride Found", Toast.LENGTH_SHORT).show();
-                    DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
-                    data.child(log_id.getString("id", null)).removeValue();
-                    findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
-                    findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+//                    Toast.makeText(this, "else condition", Toast.LENGTH_SHORT).show();
+
+                Handler hd=new Handler();
+                hd.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+//            place_drivers_share();
+
+                        if (dialog.isShowing())
+                            dialog.dismiss();
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
+                                .setCancelable(false)
+                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        prev_ride_case = "";
+                                        screen_status = 1;
+                                        found = 0;
+                                        findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+                                        findViewById(R.id.layout3).setVisibility(View.GONE);
+//                                        Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
+                                        DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
+                                        data.child(log_id.getString("id", null)).removeValue();
+                                        findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                                        findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
 //             if (vehicletype.equals("bike"))
 //                place_drivers_bike();
 //             else if (vehicletype.equals("car"))
@@ -883,12 +936,20 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                 place_drivers_auto();
 //             else if (vehicletype.equals("rickshaw"))
 //                 place_drivers_rickshaw();
-                    driverid = "";
-                    place_drivers();
-//            place_drivers_share();
+                                        driverid = "";
+                                        place_drivers();
+                                    }
+                                });
 
-                    if (dialog.isShowing())
-                        dialog.dismiss();
+                        //Creating dialog box
+                        AlertDialog alert = builder.create();
+                        //Setting the title manually
+                        alert.setTitle("Try Again !");
+                        alert.show();
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+                    }
+                }, 20000);
 //                }
             }
         }
@@ -909,11 +970,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 seatfull();
                 vehicletype="bike";
                 final_price.setText(price_bike.getText());
-                final_time.setText(time_bike.getText());
+//                final_time.setText(time_bike.getText());
                 final_image.setImageResource(R.drawable.bike1);
                 seats.setSelection(0);
                 seats.setEnabled(false);
                 ridetype="full";
+                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
                 place_drivers();
 //                remove_drivers_auto();
 //                remove_drivers_car();
@@ -922,11 +984,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 seatfull();
                 vehicletype="car";
                 final_price.setText(price_car.getText());
-                final_time.setText(time_car.getText());
+//                final_time.setText(time_car.getText());
                 final_image.setImageResource(R.drawable.carfinal);
                 seats.setSelection(0);
                 seats.setEnabled(false);
                 ridetype="full";
+                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
                 place_drivers();
                 ridedetails.setText("This option is for booking car. It allows you to book complete car for yourself.");
 //                remove_drivers_auto();
@@ -936,11 +999,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 seatfull();
                 vehicletype="excel";
                 final_price.setText(price_excel.getText());
-                final_time.setText(time_excel.getText());
+//                final_time.setText(time_excel.getText());
                 final_image.setImageResource(R.drawable.carfinal);
                 seats.setSelection(0);
                 seats.setEnabled(false);
                 ridetype="full";
+                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
                 place_drivers();
                 ridedetails.setText("This option is for booking excel car. It allows you to book complete car for yourself with passenger capacity more than 4.");
 //                remove_drivers_auto();
@@ -951,11 +1015,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 vehicletype="auto";
                 // Toast.makeText(this, "auto", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_auto.getText());
-                final_time.setText(time_auto.getText());
+//                final_time.setText(time_auto.getText());
                 final_image.setImageResource(R.drawable.erickshaw1);
                 seats.setSelection(0);
                 seats.setEnabled(false);
                 ridetype="full";
+                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
                 place_drivers();
 //                remove_drivers_bike();
 //                remove_drivers_car();
@@ -965,11 +1030,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 vehicletype="rickshaw";
                 // Toast.makeText(this, "rickshaw", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_rickshaw.getText());
-                final_time.setText(time_rickshaw.getText());
+//                final_time.setText(time_rickshaw.getText());
                 final_image.setImageResource(R.drawable.rickshawfinal);
                 seats.setSelection(0);
                 seats.setEnabled(false);
                 ridetype="full";
+                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
                 place_drivers();
                 ridedetails.setText("This option is for booking rickshaw. It allows you to book full rickshaw for yourself.");
 //                remove_drivers_auto();
@@ -979,11 +1045,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 seatshare();
                 vehicletype="car";
                 final_price.setText(price_shareCar.getText());
-                final_time.setText(time_shareCar.getText());
+//                final_time.setText(time_shareCar.getText());
                 final_image.setImageResource(R.drawable.carfinal);
                 seats.setSelection(0);
                 seats.setEnabled(true);
                 ridetype="share";
+                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
                 place_drivers();
                 ridedetails.setText("This option is for booking share car. It allows you to book only required number of seats for yourself.");
 //                remove_drivers_auto();
@@ -994,11 +1061,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 vehicletype="auto";
                 // Toast.makeText(this, "auto", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_shareAuto.getText());
-                final_time.setText(time_shareAuto.getText());
+//                final_time.setText(time_shareAuto.getText());
                 final_image.setImageResource(R.drawable.erickshaw1);
                 seats.setSelection(0);
                 seats.setEnabled(true);
                 ridetype="share";
+                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
                 place_drivers();
 //                remove_drivers_bike();
 //                remove_drivers_car();
@@ -1008,11 +1076,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 vehicletype="rickshaw";
                 // Toast.makeText(this, "rickshaw", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_shareRickshaw.getText());
-                final_time.setText(time_shareRickshaw.getText());
+//                final_time.setText(time_shareRickshaw.getText());
                 final_image.setImageResource(R.drawable.rickshawfinal);
                 seats.setSelection(0);
                 seats.setEnabled(true);
                 ridetype="share";
+                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
                 place_drivers();
                 ridedetails.setText("This option is for booking share rickshaw. It allows you to book only required number of seats for yourself.");
 //                remove_drivers_auto();
@@ -1037,7 +1106,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (!dataSnapshot.exists()) {
-                        Toast.makeText(Home.this, "Sent", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Home.this, "Sent", Toast.LENGTH_SHORT).show();
                         DatabaseReference ref = null;
                         if (vehicletype.equals("bike"))
                             ref = FirebaseDatabase.getInstance().getReference("DriversAvailable/Bike");
@@ -1055,7 +1124,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     } else {
                         ++i;
                         Log.v("TAG","Find driver by customer req");
-                        Toast.makeText(Home.this, "Find driver by customer request", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Home.this, "Find driver by customer request", Toast.LENGTH_SHORT).show();
                         finddriver();
                     }
                 }
@@ -1081,10 +1150,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         resp.removeEventListener(resplistener);
 
                         Log.v("TAG","Find driver by handler");
-                        Toast.makeText(Home.this, "Find driver by handler", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Home.this, "Find driver by handler", Toast.LENGTH_SHORT).show();
 
                         finddriver();
-                        Toast.makeText(Home.this, "hi", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Home.this, "hi", Toast.LENGTH_SHORT).show();
                     }
                 }
             }, 20000);
@@ -1103,6 +1172,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 ((TextView)findViewById(R.id.bike_name)).setText(drive.get("veh_type").toString());
                 ((TextView)findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
                 ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
+                if (drive.containsKey("rate"))
+                    ((TextView)findViewById(R.id.driver_rating)).setText(drive.get("rate").toString()+"/5");
+                else
+                    ((TextView)findViewById(R.id.driver_rating)).setText("");
+                ((TextView)findViewById(R.id.amount)).setText(final_price.getText().toString());
 
                 if (!drive.get("thumb").toString().equals("")) {
                     byte[] dec = Base64.decode(drive.get("thumb").toString(), Base64.DEFAULT);
@@ -1139,6 +1213,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
             }
         });
+
         resp = FirebaseDatabase.getInstance().getReference("Response/" + log_id.getString("id",null));
         resplistener=resp.addValueEventListener(new ValueEventListener() {
             @Override
@@ -1149,9 +1224,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     if (map.get("resp").toString().equals("Accept")) {
                         startService(new Intent(Home.this,NotificationService.class));
                         editor.putString("status","accepted");
+                        editor.remove("offer");
+                        if (!offercode.equals(""))
+                            editor.putString("offer",offercode);
                         editor.commit();
 
-                        Toast.makeText(Home.this, "Driver is on its way !", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Home.this, "Driver is on its way !", Toast.LENGTH_SHORT).show();
                         tracktripstatus();
                         handler_time.removeCallbacks(runnable);
                         handler_time.postDelayed(runnable,1000);
@@ -1164,7 +1242,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         findViewById(R.id.waiting).setVisibility(View.VISIBLE);
                         editor.putString("status","located");
                         editor.commit();
-                        Toast.makeText(Home.this, "Driver is waiting at the pickup location !", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(Home.this, "Driver is waiting at the pickup location !", Toast.LENGTH_LONG).show();
                     }
                     else if (map.get("resp").toString().equals("Trip Started")){
                         handler_time.removeCallbacks(runnable);
@@ -1172,7 +1250,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         findViewById(R.id.waiting).setVisibility(View.GONE);
                         findViewById(R.id.layout3).setVisibility(View.GONE);
                         findViewById(R.id.layout_ride_status).setVisibility(View.VISIBLE);
-                        Toast.makeText(Home.this, "Trip Started !", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(Home.this, "Trip Started !", Toast.LENGTH_LONG).show();
                         SharedPreferences.Editor editor=log_id.edit();
                         editor.putString("status","started");
                         editor.commit();
@@ -1191,7 +1269,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         marker_pick.hideInfoWindow();
                         editor.putString("status","ended");
                         editor.commit();
-                        Toast.makeText(Home.this, "Trip Ended !", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(Home.this, "Trip Ended !", Toast.LENGTH_LONG).show();
                         Intent intent=new Intent(Home.this,TripCompleted.class);
                         intent.putExtra("id",log_id.getString("driver",null));
                         finish();
@@ -1200,8 +1278,24 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     else if (map.get("resp").toString().equals("Cancel")){
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
-                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
-                        cancel_current_trip();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder.setCancelable(false);
+                        builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
+                                .setCancelable(true)
+                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+//                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
+                                        cancel_current_trip();
+                                    }
+                                });
+
+                        //Creating dialog box
+                        AlertDialog alert = builder.create();
+                        //Setting the title manually
+                        alert.setTitle("Trip Cancelled !");
+                        alert.show();
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
 //                        // Log.v("TAG","cancel");
 //
 //                        if (driver != null) {
@@ -1270,11 +1364,14 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                     if (map.get("resp").toString().equals("Accept")) {
                         startService(new Intent(Home.this,NotificationService.class));
-                        Toast.makeText(Home.this, "Driver is on its way !", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Home.this, "Driver is on its way !", Toast.LENGTH_SHORT).show();
                         //((Button)findViewById(R.id.canceltrip)).setVisibility(View.VISIBLE);
                         found = 1;
                         SharedPreferences.Editor editor=log_id.edit();
                         editor.putString("amount",final_price.getText().toString());
+                        editor.remove("offer");
+                        if (!offercode.equals(""))
+                            editor.putString("offer",offercode);
                         editor.commit();
                         //Toast.makeText(Home.this, ""+log_id.getString("driver",null), Toast.LENGTH_SHORT).show();
                         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Drivers/" + driverid);
@@ -1288,6 +1385,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                 ((TextView)findViewById(R.id.bike_name)).setText(drive.get("veh_type").toString());
                                 ((TextView)findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
                                 ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
+                                if (drive.containsKey("rate"))
+                                    ((TextView)findViewById(R.id.driver_rating)).setText(drive.get("rate").toString()+"/5");
+                                else
+                                    ((TextView)findViewById(R.id.driver_rating)).setText("");
+                                ((TextView)findViewById(R.id.amount)).setText(final_price.getText().toString());
 
                                 if (!drive.get("thumb").toString().equals("")) {
                                     byte[] dec = Base64.decode(drive.get("thumb").toString(), Base64.DEFAULT);
@@ -1338,13 +1440,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         editor.commit();
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
-                        Toast.makeText(Home.this, "Driver is waiting at the pickup location !", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(Home.this, "Driver is waiting at the pickup location !", Toast.LENGTH_LONG).show();
                     }
                     else if (map.get("resp").toString().equals("Trip Started")){
                         findViewById(R.id.waiting).setVisibility(View.GONE);
                         findViewById(R.id.layout3).setVisibility(View.GONE);
                         findViewById(R.id.layout_ride_status).setVisibility(View.VISIBLE);
-                        Toast.makeText(Home.this, "Trip Started !", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(Home.this, "Trip Started !", Toast.LENGTH_LONG).show();
                         SharedPreferences.Editor editor=log_id.edit();
                         editor.putString("status","started");
                         editor.commit();
@@ -1362,7 +1464,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                        stopService(new Intent(Home.this,NotificationService.class));
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
-                        Toast.makeText(Home.this, "Trip Ended !", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(Home.this, "Trip Ended !", Toast.LENGTH_LONG).show();
                         Intent intent=new Intent(Home.this,TripCompleted.class);
                         intent.putExtra("id",log_id.getString("driver",null));
                         startActivity(intent);
@@ -1390,8 +1492,25 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     else if (map.get("resp").toString().equals("Cancel")){
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
-                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
-                        cancel_current_trip();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder.setCancelable(false);
+                        builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
+                                .setCancelable(true)
+                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+//                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
+                                        cancel_current_trip();
+                                    }
+                                });
+
+                        //Creating dialog box
+                        AlertDialog alert = builder.create();
+                        //Setting the title manually
+                        alert.setTitle("Trip Cancelled !");
+                        alert.show();
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+
 //                        stopService(new Intent(Home.this, NotificationService.class));
                         // Log.v("TAG","cancel");
 
@@ -1450,7 +1569,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     }
 
     private void cancel_current_trip() {
-        Toast.makeText(this, "Cancelling trip", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Trip Cancelled !", Toast.LENGTH_SHORT).show();
 //        DatabaseReference tripstatus = FirebaseDatabase.getInstance().getReference("Status/" + log_id.getString("driver", null));
 //        tripstatus.removeValue();
         resp.removeValue();
@@ -1626,6 +1745,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     ((TextView) findViewById(R.id.bike_name)).setText(drive.get("veh_type").toString());
                     ((TextView) findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
                     ((TextView) findViewById(R.id.dname)).setText(drive.get("name").toString());
+                    if (drive.containsKey("rate"))
+                        ((TextView)findViewById(R.id.driver_rating)).setText(drive.get("rate").toString()+"/5");
+                    else
+                        ((TextView)findViewById(R.id.driver_rating)).setText("");
+                    ((TextView)findViewById(R.id.amount)).setText(final_price.getText().toString());
 
                     if (!drive.get("thumb").toString().equals("")) {
                         byte[] dec = Base64.decode(drive.get("thumb").toString(), Base64.DEFAULT);
@@ -1662,52 +1786,76 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     }
 
     public void cancel_trip(View v) {
-        final ProgressDialog progress=new ProgressDialog(this);
-        progress.setMessage("Cancelling Trip !");
-        progress.setIndeterminate(true);
-        progress.setCanceledOnTouchOutside(false);
-        progress.setCancelable(false);
-        progress.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+        builder.setCancelable(false);
+        builder.setMessage("Are you sure to cancel the ride ??")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        final ProgressDialog progress=new ProgressDialog(Home.this);
+                        progress.setMessage("Cancelling Trip !");
+                        progress.setIndeterminate(true);
+                        progress.setCanceledOnTouchOutside(false);
+                        progress.setCancelable(false);
+                        progress.show();
 
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/" + log_id.getString("driver",null)+"/Info");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                Ride ride=new Ride();
-                ride.setDestination(map.get("destination").toString());
-                ride.setSource(map.get("source").toString());
-                ride.setAmount(map.get("price").toString());
-                ride.setCustomerid(map.get("customer_id").toString());
-                ride.setDriver(log_id.getString("driver",null));
-                Date dt=new Date();
-                ride.setTime(dt.toString());
-                ride.setStatus("Cancelled");
-                ride.setCancelledby("Customer");
+                        handler_time.removeCallbacks(runnable);
+                        marker_pick.hideInfoWindow();
 
-                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Rides");
-                String key=ref.push().getKey();
-                ref.child(key).setValue(ride);
+                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/" + log_id.getString("driver",null)+"/"+log_id.getString("id",null));
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
+                                Ride ride=new Ride();
+                                ride.setDestination(map.get("destination").toString());
+                                ride.setSource(map.get("source").toString());
+                                ride.setAmount(map.get("price").toString());
+                                ride.setCustomerid(map.get("customer_id").toString());
+                                ride.setDriver(log_id.getString("driver",null));
+                                Date dt=new Date();
+                                ride.setTime(dt.toString());
+                                ride.setStatus("Cancelled");
+                                ride.setCancelledby("Customer");
 
-                progress.dismiss();
-                Toast.makeText(Home.this, "Trip Cancelled !", Toast.LENGTH_SHORT).show();
-                resp.removeValue();
-                resp.removeEventListener(resplistener);
-                cust_req.child(log_id.getString("id",null)).removeValue();
-                SharedPreferences.Editor editor=log_id.edit();
-                editor.putString("driver","");
-                editor.remove("ride");
-                editor.remove("status");
-                editor.commit();
-                finish();
-                startActivity(getIntent());
-            }
+                                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Rides");
+                                String key=ref.push().getKey();
+                                ref.child(key).setValue(ride);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                                progress.dismiss();
+//                                Toast.makeText(Home.this, "Trip Cancelled !", Toast.LENGTH_SHORT).show();
+                                resp.removeValue();
+                                resp.removeEventListener(resplistener);
+                                cust_req.child(log_id.getString("id",null)).removeValue();
+                                SharedPreferences.Editor editor=log_id.edit();
+                                editor.putString("driver","");
+                                editor.remove("ride");
+                                editor.remove("status");
+                                editor.commit();
+                                finish();
+                                startActivity(getIntent());
+                            }
 
-            }
-        });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                })
+                .setNeutralButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        //Creating dialog box
+        AlertDialog alert = builder.create();
+        //Setting the title manually
+        alert.setTitle("Cancel Trip !");
+        alert.show();
+        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
 
 //        DatabaseReference tripstatus = FirebaseDatabase.getInstance().getReference("Status/" + log_id.getString("driver", null));
 //        tripstatus.removeValue();
@@ -1805,7 +1953,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     @Override
     public void onLocationChanged(Location location) {
         if (location == null) {
-            Toast.makeText(this, "Cannot get current location !", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Cannot get current location !", Toast.LENGTH_SHORT).show();
         } else {
             Geocoder gc = new Geocoder(this);
             List<Address> list = null;
@@ -1883,6 +2031,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         find_driver = geoFire.queryAtLocation(new GeoLocation(pickup.latitude, pickup.longitude), radius);
         find_driver.removeAllListeners();
 
+        final_time.setText("...");
+        loc=null;
         find_driver.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
@@ -1890,6 +2040,21 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                 if (driver_list.size()==1){
                     loc=location;
+                    if (!pickup_address.getText().toString().equals("") && !destn_address.getText().toString().equals("") && loc!=null) {
+                        Object[] dataTransfer = new Object[9];
+                        String url = getDirectionsUrl(loc);
+                        GetDirectionsData getDirectionsData = new GetDirectionsData();
+                        dataTransfer[0] = mMap;
+                        dataTransfer[1] = url;
+                        dataTransfer[2] = final_time;
+//                    dataTransfer[3] = time_car;
+//                    dataTransfer[4] = time_auto;
+//                    dataTransfer[5] = time_rickshaw;
+//                    dataTransfer[6] = time_excel;
+//                    dataTransfer[7] = time_shareCar;
+//                    dataTransfer[8] = time_shareRickshaw;
+                        getDirectionsData.execute(dataTransfer);
+                    }
                 }
 
                 MarkerOptions options = new MarkerOptions()
@@ -1903,7 +2068,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             @Override
             public void onKeyExited(String key) {
                 if (driver_markers.size()!=0) {
-                    Toast.makeText(Home.this, "" + "exited", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Home.this, "" + "exited", Toast.LENGTH_SHORT).show();
                     for (int i = 0; i < driver_list.size(); i++) {
                         if (key.equals(driver_list.get(i))) {
                             Marker mrk = driver_markers.get(i);
@@ -1935,21 +2100,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
             @Override
             public void onGeoQueryReady() {
-                if (!pickup_address.getText().toString().equals("") && !destn_address.getText().toString().equals("") && loc!=null) {
-                    Object[] dataTransfer = new Object[9];
-                    String url = getDirectionsUrl(loc);
-                    GetDirectionsData getDirectionsData = new GetDirectionsData();
-                    dataTransfer[0] = mMap;
-                    dataTransfer[1] = url;
-                    dataTransfer[2] = time_bike;
-                    dataTransfer[3] = time_car;
-                    dataTransfer[4] = time_auto;
-                    dataTransfer[5] = time_rickshaw;
-                    dataTransfer[6] = time_excel;
-                    dataTransfer[7] = time_shareCar;
-                    dataTransfer[8] = time_shareRickshaw;
-                    getDirectionsData.execute(dataTransfer);
-                }
+
             }
 
             @Override
@@ -1997,7 +2148,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
             @Override
             public void onGeoQueryReady() {
-                Toast.makeText(Home.this, ""+driver_list.size(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Home.this, ""+driver_list.size(), Toast.LENGTH_SHORT).show();
                 finddriver();
             }
 
@@ -2740,6 +2891,14 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         return googleDirectionsUrl.toString();
     }
 
+    private String getDirectionsUrltwoplaces() {
+        StringBuilder googleDirectionsUrl=new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+        googleDirectionsUrl.append("origin="+marker_pick.getPosition().latitude+","+marker_pick.getPosition().longitude);
+        googleDirectionsUrl.append("&destination="+marker_drop.getPosition().latitude+","+marker_drop.getPosition().longitude);
+        googleDirectionsUrl.append("&key="+"AIzaSyAicFor08br3-Jl-xwUc0bZHC2KMdcGRNo");
+        return googleDirectionsUrl.toString();
+    }
+
     private List<Polyline> polylines = new ArrayList<>();
     ProgressDialog prgdlg;
 
@@ -2781,54 +2940,54 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         Polyline polyline = mMap.addPolyline(polyOptions);
         polylines.add(polyline);
 
-        SQLQueries sqlQueries=new SQLQueries(this);
-        int spec_package=-1;
-
-        Cursor spec_location=sqlQueries.retrievelocation();
-        Cursor cursor=sqlQueries.retrievefare();
-        Location lc=new Location(LocationManager.GPS_PROVIDER);
-        lc.setLatitude(marker_drop.getPosition().latitude);
-        lc.setLongitude(marker_drop.getPosition().longitude);
-        while(spec_location.moveToNext()){
-            Location l=new Location(LocationManager.GPS_PROVIDER);
-            l.setLatitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
-            l.setLongitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("longitude"))));
-//            GeoLocation l=new GeoLocation(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))),
-//                    Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
-
-            if (l.distanceTo(lc)<800){
-                spec_package++;
-                if (spec_package==2){
-                    hide_share_vehicles();
-                }
-                break;
-            }
-        }
-//        Toast.makeText(this, ""+cursor.getCount()+" , "+cursor.getColumnCount(), Toast.LENGTH_SHORT).show();
-
-        SimpleDateFormat dt=new SimpleDateFormat("HH:mm");
-        int index=1;
-        try {
-            if ((dt.parse("11:00").after(dt.parse(dt.format(new Date()))) && dt.parse("08:00").before(dt.parse(dt.format(new Date())))) ||
-                    (dt.parse("23:59").after(dt.parse(dt.format(new Date()))) && dt.parse("17:00").before(dt.parse(dt.format(new Date())))) ||
-                    (dt.parse("05:00").after(dt.parse(dt.format(new Date()))) && dt.parse("00:00").before(dt.parse(dt.format(new Date()))))){
-                index=2;
-            }
-            else {
-                index=1;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        pricebike(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
-        priceexcel(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
-        priceauto(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
-        pricecar(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
-        pricerickshaw(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
-        priceshareauto(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
-        pricesharecar(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
-        pricesharerickshaw(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
+//        SQLQueries sqlQueries=new SQLQueries(this);
+//        int spec_package=-1;
+//
+//        Cursor spec_location=sqlQueries.retrievelocation();
+//        Cursor cursor=sqlQueries.retrievefare();
+//        Location lc=new Location(LocationManager.GPS_PROVIDER);
+//        lc.setLatitude(marker_drop.getPosition().latitude);
+//        lc.setLongitude(marker_drop.getPosition().longitude);
+//        while(spec_location.moveToNext()){
+//            Location l=new Location(LocationManager.GPS_PROVIDER);
+//            l.setLatitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
+//            l.setLongitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("longitude"))));
+////            GeoLocation l=new GeoLocation(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))),
+////                    Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
+//
+//            if (l.distanceTo(lc)<800){
+//                spec_package++;
+//                if (spec_package==2){
+//                    hide_share_vehicles();
+//                }
+//                break;
+//            }
+//        }
+////        Toast.makeText(this, ""+cursor.getCount()+" , "+cursor.getColumnCount(), Toast.LENGTH_SHORT).show();
+//
+//        SimpleDateFormat dt=new SimpleDateFormat("HH:mm");
+//        int index=1;
+//        try {
+//            if ((dt.parse("11:00").after(dt.parse(dt.format(new Date()))) && dt.parse("08:00").before(dt.parse(dt.format(new Date())))) ||
+//                    (dt.parse("23:59").after(dt.parse(dt.format(new Date()))) && dt.parse("17:00").before(dt.parse(dt.format(new Date())))) ||
+//                    (dt.parse("05:00").after(dt.parse(dt.format(new Date()))) && dt.parse("00:00").before(dt.parse(dt.format(new Date()))))){
+//                index=2;
+//            }
+//            else {
+//                index=1;
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        pricebike(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
+//        priceexcel(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
+//        priceauto(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
+//        pricecar(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
+//        pricerickshaw(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
+//        priceshareauto(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
+//        pricesharecar(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
+//        pricesharerickshaw(spec_package,spec_location,index, cursor,route.get(shortestRouteIndex).getDistanceValue()/1000,route.get(shortestRouteIndex).getDurationValue()/60);
 
 //            time.setText(String.valueOf(route.get(shortestRouteIndex).getDurationValue()/60));
         //Toast.makeText(getApplicationContext(),String.valueOf(shortestRouteIndex)+"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
@@ -2836,300 +2995,300 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         prgdlg.dismiss();
     }
 
-    private void priceexcel(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue, int time) {
-//        Toast.makeText(this, ""+distanceValue+" "+time, Toast.LENGTH_SHORT).show();
-
-            cursor.moveToFirst();
-            for (int x=0;x<8;x++){
-                cursor.moveToNext();
-            }
-//            Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
-//                    +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
-            float fare=0;
-            if (index==2)
-                cursor.moveToNext();
-
-        if (pckg==-1) {
-            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-        else {
-            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-//            Log.v("TAG",""+fare);
-
-        if (vehicle_case==1) {
-            price_excel.setText("Rs. " + fare);
-        }
-        else if (vehicle_case==2) {
-            price_excel.setText("Rs. " + 2*fare);
-        }
-    }
-
-    private void pricebike(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
-        price_bike.setText("Rs. " + String.valueOf(distanceValue * 5 / 1000));
-        //time_bike.setText(String.valueOf(time/60)+" min");
-    }
-
-    private void priceauto(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
-        price_auto.setText("Rs. " + String.valueOf(distanceValue * 4 / 1000));
-        //time_auto.setText(String.valueOf(time/60)+" min");
-    }
-
-    private void pricecar(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
-            cursor.moveToFirst();
-//            for (int x=0;x<1;x++){
+//    private void priceexcel(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue, int time) {
+////        Toast.makeText(this, ""+distanceValue+" "+time, Toast.LENGTH_SHORT).show();
+//
+//            cursor.moveToFirst();
+//            for (int x=0;x<8;x++){
 //                cursor.moveToNext();
 //            }
-
-//            Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
-//                    +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
-            float fare=0;
-            if (index==2)
-                cursor.moveToNext();
-
-        if (pckg==-1) {
-            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-        else {
-            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-
-        if (vehicle_case==1){
-            price_car.setText("Rs. " + fare);
-        }
-        else if (vehicle_case==2)
-            price_car.setText("Rs. " + 2*fare);
-        //time_car.setText(String.valueOf(time/60)+" min");
-    }
-
-    private void pricerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
-        cursor.moveToFirst();
-        for (int x=0;x<2;x++){
-            cursor.moveToNext();
-        }
-
-//        Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
-//                +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
-        float fare=0;
-        if (index==2)
-            cursor.moveToNext();
-
-        if (pckg==-1) {
-            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-        else {
-            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-        price_rickshaw.setText("Rs. " + fare);
-        //time_rickshaw.setText(String.valueOf(time/60)+" min");
-    }
-
-    private void priceshareauto(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
-        price_shareAuto.setText("Rs. " + String.valueOf(distanceValue * 3 / 1000));
-        //time_shareAuto.setText(String.valueOf(time/60)+" min");
-    }
-
-    private void pricesharecar(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
-        cursor.moveToFirst();
-        for (int x=0;x<4;x++){
-            cursor.moveToNext();
-        }
-//        Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
-//                +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
-        float fare=0;
-        if (index==2)
-            cursor.moveToNext();
-
-        if (pckg==-1) {
-            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-        else {
-            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-        price_shareCar.setText("Rs. " + fare);
-        //time_shareCar.setText(String.valueOf(time/60)+" min");
-    }
-
-    private void pricesharerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
-        cursor.moveToFirst();
-        for (int x=0;x<6;x++){
-            cursor.moveToNext();
-        }
-//        Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
-//                +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
-        float fare=0;
-        if (index==2)
-            cursor.moveToNext();
-
-        if (pckg==-1) {
-            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-        else {
-            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-            } else {
-                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-            }
-            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-        }
-        price_shareRickshaw.setText("Rs. " + fare);
-        //time_shareRickshaw.setText(String.valueOf(time/60)+" min");
-    }
+////            Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
+////                    +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
+//            float fare=0;
+//            if (index==2)
+//                cursor.moveToNext();
+//
+//        if (pckg==-1) {
+//            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//        else {
+//            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+////            Log.v("TAG",""+fare);
+//
+//        if (vehicle_case==1) {
+//            price_excel.setText("Rs. " + fare);
+//        }
+//        else if (vehicle_case==2) {
+//            price_excel.setText("Rs. " + 2*fare);
+//        }
+//    }
+//
+//    private void pricebike(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+//        price_bike.setText("Rs. " + String.valueOf(distanceValue * 5 / 1000));
+//        //time_bike.setText(String.valueOf(time/60)+" min");
+//    }
+//
+//    private void priceauto(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+//        price_auto.setText("Rs. " + String.valueOf(distanceValue * 4 / 1000));
+//        //time_auto.setText(String.valueOf(time/60)+" min");
+//    }
+//
+//    private void pricecar(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+//            cursor.moveToFirst();
+////            for (int x=0;x<1;x++){
+////                cursor.moveToNext();
+////            }
+//
+////            Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
+////                    +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
+//            float fare=0;
+//            if (index==2)
+//                cursor.moveToNext();
+//
+//        if (pckg==-1) {
+//            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//        else {
+//            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//
+//        if (vehicle_case==1){
+//            price_car.setText("Rs. " + fare);
+//        }
+//        else if (vehicle_case==2)
+//            price_car.setText("Rs. " + 2*fare);
+//        //time_car.setText(String.valueOf(time/60)+" min");
+//    }
+//
+//    private void pricerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+//        cursor.moveToFirst();
+//        for (int x=0;x<2;x++){
+//            cursor.moveToNext();
+//        }
+//
+////        Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
+////                +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
+//        float fare=0;
+//        if (index==2)
+//            cursor.moveToNext();
+//
+//        if (pckg==-1) {
+//            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//        else {
+//            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//        price_rickshaw.setText("Rs. " + fare);
+//        //time_rickshaw.setText(String.valueOf(time/60)+" min");
+//    }
+//
+//    private void priceshareauto(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+//        price_shareAuto.setText("Rs. " + String.valueOf(distanceValue * 3 / 1000));
+//        //time_shareAuto.setText(String.valueOf(time/60)+" min");
+//    }
+//
+//    private void pricesharecar(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+//        cursor.moveToFirst();
+//        for (int x=0;x<4;x++){
+//            cursor.moveToNext();
+//        }
+////        Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
+////                +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
+//        float fare=0;
+//        if (index==2)
+//            cursor.moveToNext();
+//
+//        if (pckg==-1) {
+//            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//        else {
+//            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//        price_shareCar.setText("Rs. " + fare);
+//        //time_shareCar.setText(String.valueOf(time/60)+" min");
+//    }
+//
+//    private void pricesharerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+//        cursor.moveToFirst();
+//        for (int x=0;x<6;x++){
+//            cursor.moveToNext();
+//        }
+////        Log.v("TAG",cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getString(2)
+////                +" "+cursor.getString(3)+" "+cursor.getString(4)+" "+cursor.getString(5)+" ");
+//        float fare=0;
+//        if (index==2)
+//            cursor.moveToNext();
+//
+//        if (pckg==-1) {
+//            if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//        else {
+//            if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//            } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//            } else {
+//                fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
+////                Log.v("TAG",""+fare);
+//                fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
+////                Log.v("TAG",""+fare);
+//            }
+//            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//        }
+//        price_shareRickshaw.setText("Rs. " + fare);
+//        //time_shareRickshaw.setText(String.valueOf(time/60)+" min");
+//    }
 
     @Override
     public void onRoutingCancelled() {
@@ -3214,7 +3373,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             longitude=intent.getDoubleExtra("lng",0);
 
             pickup_address.setText(name);
-            goToLocationZoom(latitude, longitude, 15);
+//            goToLocationZoom(latitude, longitude, 15);
 
             if (marker_pick!=null){
                 marker_pick.remove();
@@ -3229,8 +3388,58 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             pickup=marker_pick.getPosition();
             cur_loc=marker_pick.getPosition();
 
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(marker_pick.getPosition());
+            builder.include(marker_drop.getPosition());
+            LatLngBounds bounds = builder.build();
+
+            int padding = 40;
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.animateCamera(cu);
+
             data.setSt_lat(latitude);
             data.setSt_lng(longitude);
+
+            SQLQueries sqlQueries=new SQLQueries(this);
+            int spec_package=-1;
+
+            Cursor spec_location=sqlQueries.retrievelocation();
+            Cursor cursor=sqlQueries.retrievefare();
+            Location lc=new Location(LocationManager.GPS_PROVIDER);
+            lc.setLatitude(marker_drop.getPosition().latitude);
+            lc.setLongitude(marker_drop.getPosition().longitude);
+            while(spec_location.moveToNext()){
+                Location l=new Location(LocationManager.GPS_PROVIDER);
+                l.setLatitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
+                l.setLongitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("longitude"))));
+//            GeoLocation l=new GeoLocation(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))),
+//                    Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
+
+                if (l.distanceTo(lc)<800){
+                    spec_package++;
+                    if (spec_package==2){
+                        hide_share_vehicles();
+                    }
+                    break;
+                }
+            }
+
+            Object[] dataTransfer = new Object[13];
+            String url = getDirectionsUrltwoplaces();
+            GetPriceData getDirectionsData = new GetPriceData();
+            dataTransfer[0] = mMap;
+            dataTransfer[1] = url;
+            dataTransfer[2] = price_excel;
+            dataTransfer[3] = price_car;
+            dataTransfer[4] = price_rickshaw;
+            dataTransfer[5] = price_shareCar;
+            dataTransfer[6] = price_shareRickshaw;
+            dataTransfer[7] = marker_drop;
+            dataTransfer[8] = cursor;
+            dataTransfer[9] = spec_location;
+            dataTransfer[10] = spec_package;
+            dataTransfer[11] = vehicle_case;
+            getDirectionsData.execute(dataTransfer);
 
             find_driver.removeAllListeners();
 //            find_driver_share.removeAllListeners();
@@ -3272,6 +3481,56 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     .snippet("Destination");
             marker_drop=mMap.addMarker(options);
 
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(marker_pick.getPosition());
+            builder.include(marker_drop.getPosition());
+            LatLngBounds bounds = builder.build();
+
+            int padding = 40;
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.animateCamera(cu);
+
+            SQLQueries sqlQueries=new SQLQueries(this);
+            int spec_package=-1;
+
+            Cursor spec_location=sqlQueries.retrievelocation();
+            Cursor cursor=sqlQueries.retrievefare();
+            Location lc=new Location(LocationManager.GPS_PROVIDER);
+            lc.setLatitude(marker_drop.getPosition().latitude);
+            lc.setLongitude(marker_drop.getPosition().longitude);
+            while(spec_location.moveToNext()){
+                Location l=new Location(LocationManager.GPS_PROVIDER);
+                l.setLatitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
+                l.setLongitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("longitude"))));
+//            GeoLocation l=new GeoLocation(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))),
+//                    Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
+
+                if (l.distanceTo(lc)<800){
+                    spec_package++;
+                    if (spec_package==2){
+                        hide_share_vehicles();
+                    }
+                    break;
+                }
+            }
+
+            Object[] dataTransfer = new Object[13];
+            String url = getDirectionsUrltwoplaces();
+            GetPriceData getDirectionsData = new GetPriceData();
+            dataTransfer[0] = mMap;
+            dataTransfer[1] = url;
+            dataTransfer[2] = price_excel;
+            dataTransfer[3] = price_car;
+            dataTransfer[4] = price_rickshaw;
+            dataTransfer[5] = price_shareCar;
+            dataTransfer[6] = price_shareRickshaw;
+            dataTransfer[7] = marker_drop;
+            dataTransfer[8] = cursor;
+            dataTransfer[9] = spec_location;
+            dataTransfer[10] = spec_package;
+            dataTransfer[11] = vehicle_case;
+            getDirectionsData.execute(dataTransfer);
+
             data.setEn_lat(marker_drop.getPosition().latitude);
             data.setEn_lng(marker_drop.getPosition().longitude);
             findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
@@ -3281,21 +3540,23 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             findViewById(R.id.fragmentTwo).setVisibility(View.VISIBLE);
 
         } else if (requestCode==3 && resultCode==RESULT_OK){
-            Double pr=Double.parseDouble(final_price.getText().toString().substring(4));
-            Double disc=Double.parseDouble(intent.getStringExtra("discount"));
-            Double upto=Double.parseDouble(intent.getStringExtra("upto"));
+//            Double pr=Double.parseDouble(final_price.getText().toString().substring(4));
+            offercode=intent.getStringExtra("offer_code");
+            double pr=realprice;
+            double disc=(double) Double.parseDouble(intent.getStringExtra("discount"));
+            double upto=(double) Double.parseDouble(intent.getStringExtra("upto"));
 
-            Double less=(pr*disc)/100;
+            double less=(pr*disc)/100;
             if (less>upto)
                 less=upto;
 
+            offervalue=(int)less;
             if (pr<less)
                 pr=0.0;
             else
                 pr=pr-less;
 
             final_price.setText("Rs. "+pr);
-
             offer.setText(intent.getStringExtra("offer"));
         }
     }
@@ -3343,7 +3604,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         seats_list.clear();
         seats_list.add("1");
         seats_list.add("2");
-        seats_list.add("3");
 
         ArrayAdapter<String> adapter1 =
                 new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);

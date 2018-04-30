@@ -241,13 +241,13 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle unsuccessful uploads
-                        Toast.makeText(EditProfile.this, "Failed to upload image !" + exception.toString(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(EditProfile.this, "Failed to upload image !" + exception.toString(), Toast.LENGTH_SHORT).show();
 
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(EditProfile.this, "Successful", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(EditProfile.this, "Successful", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -182,8 +183,8 @@ public class PlaceSelector extends AppCompatActivity {
 
 //
 //
-//                            if (myPlace.getLatLng().latitude >= 25.548596 && myPlace.getLatLng().latitude <= 25.701826
-//                                    && myPlace.getLatLng().longitude >= 84.854858 && myPlace.getLatLng().longitude <= 85.278055 ) {
+                            if (myPlace.getLatLng().latitude >= 25.548596 && myPlace.getLatLng().latitude <= 25.701826
+                                    && myPlace.getLatLng().longitude >= 84.854858 && myPlace.getLatLng().longitude <= 85.278055 ) {
 
                                 destination.setText(myPlace.getName());
 //                            Toast.makeText(PlaceSelector.this, ""+myPlace.getLatLng().latitude, Toast.LENGTH_SHORT).show();
@@ -191,27 +192,27 @@ public class PlaceSelector extends AppCompatActivity {
                                 intent.putExtra("place", myPlace.getName());
                                 intent.putExtra("lat", myPlace.getLatLng().latitude);
                                 intent.putExtra("lng", myPlace.getLatLng().longitude);
-                                intent.putExtra("case","1");
+//                                intent.putExtra("case","1");
 
 //
 //
 //
-//                                if (myPlace.getLatLng().latitude >= 25.561272 && myPlace.getLatLng().latitude <= 25.654152
-//                                        && myPlace.getLatLng().longitude >= 85.020262 && myPlace.getLatLng().longitude <= 85.278055){
-//                                    intent.putExtra("case","1");
-//                                }
-//                                else {
-//                                    intent.putExtra("case","2");
-//                                }
+                                if (myPlace.getLatLng().latitude >= 25.561272 && myPlace.getLatLng().latitude <= 25.654152
+                                        && myPlace.getLatLng().longitude >= 85.020262 && myPlace.getLatLng().longitude <= 85.278055){
+                                    intent.putExtra("case","1");
+                                }
+                                else {
+                                    intent.putExtra("case","2");
+                                }
 //
 //
 //
                                 setResult(RESULT_OK, intent);
                                 finish();
 
-//                            } else {
-//                                Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
-//                            }
+                            } else {
+                                Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
+                            }
 //
 //
 //
@@ -238,23 +239,27 @@ public class PlaceSelector extends AppCompatActivity {
 //                intent.putExtra("case","1");
 //
 //
-//                if (Double.parseDouble(name.get(position).getLat()) >= 25.561272 && Double.parseDouble(name.get(position).getLat()) <= 25.654152
-//                        && Double.parseDouble(name.get(position).getLng()) >= 85.020262 && Double.parseDouble(name.get(position).getLng()) <= 85.278055){
-//                    intent.putExtra("case","1");
-//                }
-//                else if (Double.parseDouble(name.get(position).getLat()) >= 25.548596 && Double.parseDouble(name.get(position).getLat()) <= 25.701826
-//                        && Double.parseDouble(name.get(position).getLng()) >= 84.854858 && Double.parseDouble(name.get(position).getLng()) <= 85.278055 ) {
-//                    intent.putExtra("case","2");
-//                }
-//                else {
-//                    Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
-//                }
-//
-//
-//
-
+                if (Double.parseDouble(name.get(position).getLat()) >= 25.561272 && Double.parseDouble(name.get(position).getLat()) <= 25.654152
+                        && Double.parseDouble(name.get(position).getLng()) >= 85.020262 && Double.parseDouble(name.get(position).getLng()) <= 85.278055){
+                    intent.putExtra("case","1");
                     setResult(RESULT_OK,intent);
-                finish();
+                    finish();
+                }
+                else if (Double.parseDouble(name.get(position).getLat()) >= 25.548596 && Double.parseDouble(name.get(position).getLat()) <= 25.701826
+                        && Double.parseDouble(name.get(position).getLng()) >= 84.854858 && Double.parseDouble(name.get(position).getLng()) <= 85.278055 ) {
+                    intent.putExtra("case","2");
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }
+                else {
+                    Log.v("TAG","outside");
+                    Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
+                }
+//
+//
+//
+//                setResult(RESULT_OK,intent);
+//                finish();
             }
         });
     }

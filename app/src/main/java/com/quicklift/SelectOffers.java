@@ -68,7 +68,7 @@ public class SelectOffers extends AppCompatActivity {
                 offers.clear();
                 offers_code.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
-                    Toast.makeText(SelectOffers.this, ""+data.getKey(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SelectOffers.this, ""+data.getKey(), Toast.LENGTH_SHORT).show();
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Offers");
                     ref.orderByChild("code").equalTo(data.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

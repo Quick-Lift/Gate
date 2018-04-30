@@ -44,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
@@ -182,10 +183,8 @@ public class CustomerRegistration extends AppCompatActivity {
             }
 
             user_db.child(key).setValue(customer);
-            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ReferalCode");
+            final DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ReferalCode");
             ref.child(key+"/code").setValue(phone.getText().toString()+"@qik");
-            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
-            dref.child("100").setValue("true");
 
             if (!refcode.getText().toString().equals("")){
                 DatabaseReference reference=FirebaseDatabase.getInstance().getReference("ReferalCode");
@@ -193,8 +192,11 @@ public class CustomerRegistration extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot dt:dataSnapshot.getChildren()){
-                            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+dt.getKey());
-                            dref.child("101").setValue("true");
+//                            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+dt.getKey());
+//                            dref.child("101").setValue("true");
+                            ref.child(key+"/referredby").setValue(dt.getKey());
+                            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
+                            ref.child("100").setValue("1");
                         }
                     }
 
@@ -212,6 +214,54 @@ public class CustomerRegistration extends AppCompatActivity {
             editor.putString("driver","");
             editor.commit();
             Toast.makeText(this, "Successfully Registered !", Toast.LENGTH_SHORT).show();
+
+            final SQLQueries sqlQueries=new SQLQueries(CustomerRegistration.this);
+            sqlQueries.deletefare();
+            sqlQueries.deletelocation();
+            DatabaseReference db= FirebaseDatabase.getInstance().getReference("Fare/Patna");
+            db.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
+                        ArrayList<String> price=new ArrayList<String>();
+                        price.add(data.child("Latitude").getValue(String.class));
+                        price.add(data.child("Longitude").getValue(String.class));
+                        price.add(data.child("Amount").getValue(String.class));
+                        price.add(data.child("Distance").getValue(String.class));
+
+                        sqlQueries.savelocation(price);
+                    }
+                    for (DataSnapshot data:dataSnapshot.child("Price").getChildren()){
+                        ArrayList<String> price=new ArrayList<String>();
+                        price.add(data.child("NormalTime/BaseFare/Amount").getValue(String.class));
+                        price.add(data.child("NormalTime/BaseFare/Distance").getValue(String.class));
+                        price.add(data.child("NormalTime/BeyondLimit/FirstLimit/Amount").getValue(String.class));
+                        price.add(data.child("NormalTime/BeyondLimit/FirstLimit/Distance").getValue(String.class));
+                        price.add(data.child("NormalTime/BeyondLimit/SecondLimit/Amount").getValue(String.class));
+                        price.add(data.child("NormalTime/Time").getValue(String.class));
+
+                        sqlQueries.savefare(price);
+//                    Log.v("TAG",price.get(0)+" "+price.get(1)+" "+price.get(2)+" "+price.get(3)+" "+price.get(4)+" "+price.get(5)+" ");
+
+                        price.clear();
+                        price.add(data.child("PeakTime/BaseFare/Amount").getValue(String.class));
+                        price.add(data.child("PeakTime/BaseFare/Distance").getValue(String.class));
+                        price.add(data.child("PeakTime/BeyondLimit/FirstLimit/Amount").getValue(String.class));
+                        price.add(data.child("PeakTime/BeyondLimit/FirstLimit/Distance").getValue(String.class));
+                        price.add(data.child("PeakTime/BeyondLimit/SecondLimit/Amount").getValue(String.class));
+                        price.add(data.child("PeakTime/Time").getValue(String.class));
+
+                        sqlQueries.savefare(price);
+//                    Toast.makeText(WelcomeScreen.this, ""+"hi", Toast.LENGTH_SHORT).show();
+//                    Log.v("TAG",price.get(0)+" "+price.get(1)+" "+price.get(2)+" "+price.get(3)+" "+price.get(4)+" "+price.get(5)+" ");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
             //mAuth.signOut();
             startActivity(new Intent(CustomerRegistration.this,Home.class));
             finish();
