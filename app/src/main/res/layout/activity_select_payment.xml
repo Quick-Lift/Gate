@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.quicklift.SelectPayment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="Select Payment Mode"
+        android:textColor="#05affc"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/cash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:gravity="center"
+        android:text="Cash"
+        android:textColor="#05affc"
+        android:textSize="22sp"
+        android:onClick="selectmode"
+        android:background="@drawable/all_margin"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:id="@+id/paytm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:gravity="center"
+        android:text="Paytm"
+        android:textColor="#05affc"
+        android:textSize="22sp"
+        android:onClick="selectmode"
+        android:background="@drawable/all_margin"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:id="@+id/bhim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:gravity="center"
+        android:text="Bhim Upi"
+        android:textColor="#05affc"
+        android:textSize="22sp"
+        android:onClick="selectmode"
+        android:background="@drawable/all_margin"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:id="@+id/qikmoney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:gravity="center"
+        android:text="QuickLift Money"
+        android:textColor="#05affc"
+        android:textSize="22sp"
+        android:onClick="selectmode"
+        android:background="@drawable/all_margin"
+        android:layout_margin="5dp"/>
+
+</LinearLayout>

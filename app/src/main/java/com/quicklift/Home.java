@@ -24,6 +24,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -134,10 +136,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     TextView time;
     Float estimated_time;
     GeoQuery find_driver_bike,find_driver_car,find_driver_rickshaw,find_driver_auto,find_driver,find_driver_share;
-    ArrayList<String> payment_mode = new ArrayList<>();
     ArrayList<String> seats_list = new ArrayList<>();
     ArrayList<String> offer_list = new ArrayList<>();
-    Spinner payment;
+    TextView payment;
     Button confirm;
     Data data = new Data();
     Polyline line;
@@ -266,7 +267,27 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         if (googleServicesAvailable()) {
             //Toast.makeText(this, "Perfect !", Toast.LENGTH_SHORT).show();
             setContentView(R.layout.activity_home_screen);
-            initMap();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date strDate = null;
+            try {
+                strDate = sdf.parse("04/05/2018");
+                if ((new Date()).after(strDate)) {
+                    initMap();
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                    builder.setMessage("This app is coming soon for your area .")
+                            .setCancelable(false);
+
+                    //Creating dialog box
+                    AlertDialog alert = builder.create();
+                    //Setting the title manually
+                    alert.setTitle("Coming Soon !");
+                    alert.show();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else {
 //            Toast.makeText(this, "Unable to load map ! Please turn on location !", Toast.LENGTH_SHORT).show();
         }
@@ -279,7 +300,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         pickup_address = (EditText) findViewById(R.id.pickup);
         destn_address = (EditText) findViewById(R.id.destination);
         confirm = (Button) findViewById(R.id.confirm);
-        payment = (Spinner) findViewById(R.id.pay_mode);
+        payment = (TextView) findViewById(R.id.pay_mode);
         seats = (Spinner) findViewById(R.id.seats);
         offer = (TextView) findViewById(R.id.offer);
         hsv = (HorizontalScrollView) findViewById(R.id.fragmentTwo);
@@ -305,13 +326,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         ridedetails = (TextView) findViewById(R.id.ridedetails);
         final_image = (ImageView) findViewById(R.id.final_image);
 
-        payment_mode.add("Cash");
-        payment_mode.add("QuickLift Money");
-        payment_mode.add("Bhim Upi");
-        payment_mode.add("Paytm");
-
         getTime();
-
+        checkinternetconnection();
+        handler_time.postDelayed(runnable,0);
 //        seats_list.add("full");
 //        seats_list.add("1");
 //        seats_list.add("2");
@@ -322,11 +339,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
 //        adapter1.setDropDownViewResource(R.layout.payment_list);
 //        seats.setAdapter(adapter1);
-
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, payment_mode);
-        adapter.setDropDownViewResource(R.layout.payment_list);
-        payment.setAdapter(adapter);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.getBackground().setAlpha(0);
@@ -587,7 +599,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         data.setOffer(String.valueOf(offervalue));
         data.setSource(pickup_address.getText().toString());
         data.setDestination(destn_address.getText().toString());
-        data.setSeat(seats.getSelectedItem().toString());
+        data.setSeat(seats.getSelectedItem().toString().substring(0,1));
 
         final DatabaseReference share=FirebaseDatabase.getInstance().getReference("Share");
         ShareClass shareClass=new ShareClass();
@@ -595,7 +607,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         shareClass.setSt_lng(marker_pick.getPosition().longitude);
         shareClass.setEn_lat(marker_drop.getPosition().latitude);
         shareClass.setEn_lng(marker_drop.getPosition().longitude);
-        shareClass.setSeats(seats.getSelectedItem().toString());
+        shareClass.setSeats(seats.getSelectedItem().toString().substring(0,1));
         share.child(log_id.getString("id",null)).setValue(shareClass);
 
 //        if (found == 1)
@@ -817,7 +829,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         data.setOffer(String.valueOf(offervalue));
         data.setSource(pickup_address.getText().toString());
         data.setDestination(destn_address.getText().toString());
-        data.setSeat(seats.getSelectedItem().toString());
+        if (seats.getSelectedItem().toString().equals("full"))
+            data.setSeat(seats.getSelectedItem().toString());
+        else
+            data.setSeat(seats.getSelectedItem().toString().substring(0,1));
         //Toast.makeText(this, ""+String.valueOf(i), Toast.LENGTH_SHORT).show();
         if (found == 1) {
 //            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
@@ -1173,9 +1188,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 ((TextView)findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
                 ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
                 if (drive.containsKey("rate"))
-                    ((TextView)findViewById(R.id.driver_rating)).setText(drive.get("rate").toString()+"/5");
+                    ((RatingBar)findViewById(R.id.driver_rating)).setRating(Float.valueOf(drive.get("rate").toString()));
                 else
-                    ((TextView)findViewById(R.id.driver_rating)).setText("");
+                    ((RatingBar)findViewById(R.id.driver_rating)).setRating(0);
                 ((TextView)findViewById(R.id.amount)).setText(final_price.getText().toString());
 
                 if (!drive.get("thumb").toString().equals("")) {
@@ -1279,9 +1294,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
                         AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                        builder.setCancelable(false);
                         builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
-                                .setCancelable(true)
+                                .setCancelable(false)
                                 .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 //                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
@@ -1386,9 +1400,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                 ((TextView)findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
                                 ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
                                 if (drive.containsKey("rate"))
-                                    ((TextView)findViewById(R.id.driver_rating)).setText(drive.get("rate").toString()+"/5");
+                                    ((RatingBar)findViewById(R.id.driver_rating)).setRating(Float.valueOf(drive.get("rate").toString()));
                                 else
-                                    ((TextView)findViewById(R.id.driver_rating)).setText("");
+                                    ((RatingBar)findViewById(R.id.driver_rating)).setRating(0);
                                 ((TextView)findViewById(R.id.amount)).setText(final_price.getText().toString());
 
                                 if (!drive.get("thumb").toString().equals("")) {
@@ -1493,9 +1507,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
                         AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                        builder.setCancelable(false);
                         builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
-                                .setCancelable(true)
+                                .setCancelable(false)
                                 .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 //                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
@@ -1746,9 +1759,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     ((TextView) findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
                     ((TextView) findViewById(R.id.dname)).setText(drive.get("name").toString());
                     if (drive.containsKey("rate"))
-                        ((TextView)findViewById(R.id.driver_rating)).setText(drive.get("rate").toString()+"/5");
+                        ((RatingBar)findViewById(R.id.driver_rating)).setRating(Float.valueOf(drive.get("rate").toString()));
                     else
-                        ((TextView)findViewById(R.id.driver_rating)).setText("");
+                        ((RatingBar)findViewById(R.id.driver_rating)).setRating(0);
                     ((TextView)findViewById(R.id.amount)).setText(final_price.getText().toString());
 
                     if (!drive.get("thumb").toString().equals("")) {
@@ -1787,9 +1800,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
     public void cancel_trip(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-        builder.setCancelable(false);
         builder.setMessage("Are you sure to cancel the ride ??")
-                .setCancelable(true)
+                .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         final ProgressDialog progress=new ProgressDialog(Home.this);
@@ -2031,7 +2043,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         find_driver = geoFire.queryAtLocation(new GeoLocation(pickup.latitude, pickup.longitude), radius);
         find_driver.removeAllListeners();
 
-        final_time.setText("...");
+        final_time.setText("NA");
         loc=null;
         find_driver.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -3322,7 +3334,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
         if (id == R.id.nav_rides) {
             intent = new Intent(Home.this, CustomerRides.class);
-            startActivity(intent);
+            startActivityForResult(intent,4);
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(Home.this,Settings.class));
         } else if (id == R.id.nav_drive_with_us) {
@@ -3558,6 +3570,17 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
             final_price.setText("Rs. "+pr);
             offer.setText(intent.getStringExtra("offer"));
+
+        } else if (requestCode==4 && resultCode==RESULT_OK){
+//            Double pr=Double.parseDouble(final_price.getText().toString().substring(4));
+            if (intent.getStringExtra("currentride").equals("true")){
+                finish();
+                startActivity(getIntent());
+            }
+
+        } else if (requestCode==5 && resultCode==RESULT_OK){
+//            Double pr=Double.parseDouble(final_price.getText().toString().substring(4));
+                payment.setText(intent.getStringExtra("mode"));
         }
     }
 
@@ -3602,8 +3625,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         findViewById(R.id.layoutseat).setVisibility(View.VISIBLE);
         findViewById(R.id.layoutpaymode).getLayoutParams().width= LinearLayout.LayoutParams.MATCH_PARENT/2;
         seats_list.clear();
-        seats_list.add("1");
-        seats_list.add("2");
+        seats_list.add("1 seat");
+        seats_list.add("2 seat");
 
         ArrayAdapter<String> adapter1 =
                 new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
@@ -3645,6 +3668,75 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         findViewById(R.id.shareRickshaw).setVisibility(View.VISIBLE);
         findViewById(R.id.shareCar).setVisibility(View.VISIBLE);
         findViewById(R.id.sanjha).setVisibility(View.VISIBLE);
+    }
+
+    public void checkinternetconnection(){
+        handler_time = new Handler();
+        runnable = new Runnable() {
+            public void run() {
+//                Toast.makeText(Home.this, "checking connection...", Toast.LENGTH_SHORT).show();
+                boolean status1 = haveNetworkConnection();
+                boolean status2 = hasActiveInternetConnection();
+
+                if (!status1 || !status2){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                    builder.setMessage("Turn on your internet connection and try again.")
+                            .setCancelable(false)
+                            .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    finish();
+                                    startActivity(getIntent());
+                                }
+                            });
+
+                    //Creating dialog box
+                    AlertDialog alert = builder.create();
+                    //Setting the title manually
+                    alert.setTitle("No Internet !");
+                    alert.show();
+                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+                }
+                else {
+                    handler_time.postDelayed(runnable,15000);
+                }
+            }
+        };
+    }
+
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    public boolean hasActiveInternetConnection() {
+        // TCP/HTTP/DNS (depending on the port, 53=DNS, 80=HTTP, etc.)
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void selectpayment(View view) {
+        startActivityForResult(new Intent(Home.this,SelectPayment.class),5);
     }
 }
 

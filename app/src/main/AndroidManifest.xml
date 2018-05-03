@@ -91,7 +91,8 @@
         <activity android:name=".Settings" />
         <activity android:name=".SelectOffers" />
         <activity android:name=".EmergencyContact" />
-        <activity android:name=".PhoneAuthActivity"/>
+        <activity android:name=".PhoneAuthActivity" />
+        <activity android:name=".SelectPayment"></activity>
     </application>
 
 </manifest>

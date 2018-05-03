@@ -62,6 +62,8 @@ import static android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS;
 
 public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public static final int RequestPermissionCode = 1;
+    SharedPreferences log_id;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,11 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_welcome_screen);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
+        editor=log_id.edit();
+        //Toast.makeText(Login.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
+        //Log.v("TAG",user.getUid());
 
 //        StringBuilder googleDirectionsUrl=new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
 //        googleDirectionsUrl.append("origin=12.8284773,77.70238379999999");
@@ -95,6 +102,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                editor.putString("cancelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge").getValue(Integer.class)));
+                editor.commit();
                 for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                     ArrayList<String> price=new ArrayList<String>();
                     price.add(data.child("Latitude").getValue(String.class));
@@ -176,79 +185,108 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         boolean status1 = haveNetworkConnection();
         boolean status2 = hasActiveInternetConnection();
 
-        // checking user permission
-        if(!checkPermission())
-        {
-            appendLog(getCurrentTime()+"Gathering permissions status:0");
-            //requesting permission to access mobile resources
-            if(status1 && status2)
-            {
-                appendLog(getCurrentTime()+"Gathering network information status:1");
+        if (status1 && status2){
+            if (!checkPermission()){
                 requestPermission();
             }
-            else{
-                requestPermission();
-                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
-                builder.setMessage("No internet connection")
-                        .setCancelable(true)
-                        .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        })
-                        .setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //  Action for 'NO' Button
-                                dialog.cancel();
-                            }
-                        });
-
-                //Creating dialog box
-                AlertDialog alert = builder.create();
-                //Setting the title manually
-                alert.setTitle("Account Action !");
-                alert.show();
-                alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
-                alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
-            }
-        }
-        else {
-            appendLog(getCurrentTime() + "Gathered permissions status:1");
-
-            if(status1 && status2)
-            {
-                appendLog(getCurrentTime()+"Gathering network information status:1");
+            else {
                 Intent i = new Intent(this,PhoneAuthActivity.class);
                 startActivity(i);
                 finish();
             }
-            else{
-                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
-                builder.setMessage("No internet connection")
-                        .setCancelable(true)
-                        .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        })
-                        .setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //  Action for 'NO' Button
-                                dialog.cancel();
-                            }
-                        });
-
-                //Creating dialog box
-                AlertDialog alert = builder.create();
-                //Setting the title manually
-                alert.setTitle("Account Action !");
-                alert.show();
-                alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
-                alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
-            }
         }
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+            builder.setMessage("Turn on your internet connection and try again.")
+                    .setCancelable(false)
+                    .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    });
+
+            //Creating dialog box
+            AlertDialog alert = builder.create();
+            //Setting the title manually
+            alert.setTitle("No Internet !");
+            alert.show();
+            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+        }
+
+        // checking user permission
+//        if(!checkPermission())
+//        {
+//            appendLog(getCurrentTime()+"Gathering permissions status:0");
+//            //requesting permission to access mobile resources
+//            if(status1 && status2)
+//            {
+//                appendLog(getCurrentTime()+"Gathering network information status:1");
+//                requestPermission();
+//            }
+//            else{
+//                requestPermission();
+//                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+//                builder.setMessage("No internet connection")
+//                        .setCancelable(true)
+//                        .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                dialog.cancel();
+//                            }
+//                        })
+//                        .setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                //  Action for 'NO' Button
+//                                dialog.cancel();
+//                            }
+//                        });
+//
+//                //Creating dialog box
+//                AlertDialog alert = builder.create();
+//                //Setting the title manually
+//                alert.setTitle("Account Action !");
+//                alert.show();
+//                alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+//                alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+//            }
+//        }
+//        else {
+//            appendLog(getCurrentTime() + "Gathered permissions status:1");
+//
+//            if(status1 && status2)
+//            {
+//                appendLog(getCurrentTime()+"Gathering network information status:1");
+//                Intent i = new Intent(this,PhoneAuthActivity.class);
+//                startActivity(i);
+//                finish();
+//            }
+//            else{
+//                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+//                builder.setMessage("No internet connection")
+//                        .setCancelable(true)
+//                        .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                dialog.cancel();
+//                            }
+//                        })
+//                        .setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                //  Action for 'NO' Button
+//                                dialog.cancel();
+//                            }
+//                        });
+//
+//                //Creating dialog box
+//                AlertDialog alert = builder.create();
+//                //Setting the title manually
+//                alert.setTitle("Account Action !");
+//                alert.show();
+//                alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
+//                alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+//            }
+//        }
     }
 
     private boolean haveNetworkConnection() {

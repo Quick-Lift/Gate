@@ -117,7 +117,7 @@
                      android:layout_height="wrap_content"
                      android:scrollbars="none"
                      android:id="@+id/fragmentTwo"
-                     android:visibility="visible"
+                     android:visibility="gone"
                      android:background="#aa05affc">
 
                      <LinearLayout
@@ -492,7 +492,7 @@
                                      android:text="OTP\n1500"
                                      android:textSize="18sp"
                                      android:gravity="center"
-                                     android:textColor="#ffffff"/>
+                                     android:textColor="#05affc"/>
                              </LinearLayout>
                          </LinearLayout>
                          <LinearLayout
@@ -528,8 +528,9 @@
                                  android:id="@+id/bike_name"
                                  android:gravity="center"
                                  android:text=""
+                                 android:textStyle="bold"
                                  android:textSize="16sp"
-                                 android:textColor="#000000"/>
+                                 android:textColor="#ffffff"/>
 
                              <TextView
                                  android:layout_width="match_parent"
@@ -537,8 +538,9 @@
                                  android:gravity="center"
                                  android:id="@+id/bike_no"
                                  android:text=""
+                                 android:textStyle="bold"
                                  android:textSize="16sp"
-                                 android:textColor="#000000"/>
+                                 android:textColor="#ffffff"/>
                          </LinearLayout>
                          <LinearLayout
                              android:layout_width="0dp"
@@ -552,18 +554,19 @@
                                  android:layout_height="25dp"
                                  android:gravity="center"
                                  android:text=""
+                                 android:textStyle="bold"
                                  android:id="@+id/dname"
                                  android:textSize="16sp"
-                                 android:textColor="#000000"/>
+                                 android:textColor="#ffffff"/>
 
-                             <TextView
+                             <RatingBar
                                  android:id="@+id/driver_rating"
-                                 android:layout_width="match_parent"
-                                 android:layout_height="25dp"
-                                 android:gravity="center"
-                                 android:text=""
-                                 android:textSize="16sp"
-                                 android:textColor="#000000"/>
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 style="@style/foodRatingBar"
+                                 android:isIndicator="true"
+                                 android:layout_gravity="center_horizontal"
+                                 android:numStars="5"/>
                          </LinearLayout>
                      </LinearLayout>
                     <LinearLayout
@@ -590,8 +593,9 @@
                             android:gravity="center"
                             android:text=""
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:background="@drawable/blue_margin"
-                            android:textColor="#000000"/>
+                            android:textColor="#ffffff"/>
 
                     </LinearLayout>
                  </LinearLayout>
@@ -610,7 +614,7 @@
                          android:orientation="vertical"
                          android:onClick="showoptiondetail"
                          android:layout_gravity="center_horizontal"
-                         android:background="@drawable/round_button">
+                         android:background="@drawable/round_button_blue">
                          <ImageView
                              android:id="@+id/final_image"
                              android:layout_width="90dp"
@@ -674,13 +678,17 @@
                                  android:text="Seats"
                                  android:paddingLeft="5dp"
                                  android:textSize="20sp"
+                                 android:visibility="gone"
                                  android:textColor="@android:color/black"
                                  android:layout_gravity="center_vertical"/>
 
                              <Spinner
                                  android:id="@+id/seats"
                                  android:layout_width="match_parent"
-                                 android:layout_height="40dp"/>
+                                 android:layout_height="40dp"
+                                 android:spinnerMode="dialog"
+                                 android:prompt="@string/seat"
+                                 android:backgroundTint="#000000"/>
                          </LinearLayout>
 
                          <LinearLayout
@@ -688,22 +696,39 @@
                              android:layout_width="0dp"
                              android:layout_weight="1"
                              android:layout_height="40dp"
+                             android:onClick="selectpayment"
                              android:background="#8805affc">
 
-                             <Spinner
-                                 android:id="@+id/pay_mode"
+                             <RelativeLayout
                                  android:layout_width="match_parent"
-                                 android:layout_height="40dp" />
-                         </LinearLayout>
+                                 android:layout_height="match_parent">
 
+                                 <TextView
+                                     android:id="@+id/pay_mode"
+                                     android:layout_width="match_parent"
+                                     android:layout_height="match_parent"
+                                     android:text="Cash"
+                                     android:gravity="center"
+                                     android:textSize="18sp"
+                                     android:textColor="#000000"
+                                     android:layout_marginEnd="40dp"/>
+
+                                 <ImageView
+                                     android:layout_width="20dp"
+                                     android:layout_height="20dp"
+                                     android:src="@drawable/ic_dropdown"
+                                     android:layout_alignParentEnd="true"
+                                     android:layout_marginEnd="10dp"
+                                     android:layout_centerVertical="true"/>
+                             </RelativeLayout>
+                         </LinearLayout>
                      </LinearLayout>
 
                      <LinearLayout
                          android:layout_width="match_parent"
                          android:layout_height="40dp"
                          android:layout_marginBottom="10dp"
-                         android:layout_marginTop="5dp"
-                         android:background="#8805affc">
+                         android:background="@drawable/blue_margin_background">
 
                          <TextView
                              android:id="@+id/offer"

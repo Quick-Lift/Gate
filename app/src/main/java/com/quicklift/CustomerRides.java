@@ -54,6 +54,9 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent intent=new Intent();
+        intent.putExtra("currentride","false");
+        setResult(RESULT_OK,intent);
         finish();
     }
 
@@ -62,6 +65,9 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
+                Intent intent=new Intent();
+                intent.putExtra("currentride","false");
+                setResult(RESULT_OK,intent);
                 finish();
                 return true;
         }
@@ -81,7 +87,7 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
 
         list=(ListView)findViewById(R.id.list);
         progress=new ProgressDialog(this);
-        progress.setCancelable(false);
+        progress.setCancelable(true);
         progress.setIndeterminate(true);
         progress.setCanceledOnTouchOutside(false);
         progress.setMessage("Loading Ride Information !");
@@ -163,7 +169,9 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
                 SharedPreferences.Editor editor=log_id.edit();
                 editor.putString("show","ride");
                 editor.commit();
-                startActivity(new Intent(CustomerRides.this,Home.class));
+                Intent intent=new Intent();
+                intent.putExtra("currentride","true");
+                setResult(RESULT_OK,intent);
                 finish();
             }
         });
@@ -174,7 +182,9 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
                 SharedPreferences.Editor editor=log_id.edit();
                 editor.putString("show","ride");
                 editor.commit();
-                startActivity(new Intent(CustomerRides.this,Home.class));
+                Intent intent=new Intent();
+                intent.putExtra("currentride","true");
+                setResult(RESULT_OK,intent);
                 finish();
             }
         });

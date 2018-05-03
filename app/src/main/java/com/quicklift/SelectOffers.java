@@ -81,6 +81,10 @@ public class SelectOffers extends AppCompatActivity {
                                 upto.add(map.get("upto").toString());
                                 offers_code.add(map.get("code").toString());
                             }
+                            if (offers.size()==0)
+                                findViewById(R.id.nooffer).setVisibility(View.VISIBLE);
+                            else
+                                findViewById(R.id.nooffer).setVisibility(View.GONE);
                             list.setAdapter(new CustomAdapter());
                         }
 

@@ -10,12 +10,33 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.quicklift.EmergencyContact">
 
+    <ImageView
+        android:id="@+id/image_location"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/carfinal"/>
+
     <TextView
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:gravity="center"
+        android:text="Office Address"
+        android:textSize="22sp"
+        android:textColor="#05affc"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="10dp"/>
+
+    <ListView
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="EMERGENCY CONTACT"
-        android:textSize="22sp"
-        android:textColor="#05affc"/>
+        android:layout_margin="5dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="5dp"/>
 
 </LinearLayout>
