@@ -905,8 +905,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                     //Setting the title manually
                                     alert.setTitle("Try Again !");
                                     alert.show();
-                                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
-                                    alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+                                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+                                    alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
                                 }
                             }, 20000);
                         }
@@ -961,8 +961,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         //Setting the title manually
                         alert.setTitle("Try Again !");
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
                     }
                 }, 20000);
 //                }
@@ -1308,8 +1308,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         //Setting the title manually
                         alert.setTitle("Trip Cancelled !");
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
 //                        // Log.v("TAG","cancel");
 //
 //                        if (driver != null) {
@@ -1521,8 +1521,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         //Setting the title manually
                         alert.setTitle("Trip Cancelled !");
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
 
 //                        stopService(new Intent(Home.this, NotificationService.class));
                         // Log.v("TAG","cancel");
@@ -1866,8 +1866,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         //Setting the title manually
         alert.setTitle("Cancel Trip !");
         alert.show();
-        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
-        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
 
 //        DatabaseReference tripstatus = FirebaseDatabase.getInstance().getReference("Status/" + log_id.getString("driver", null));
 //        tripstatus.removeValue();

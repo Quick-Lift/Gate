@@ -156,8 +156,8 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             //Setting the title manually
                             alert.setTitle("Account Action !");
                             alert.show();
-                            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("red"));
-                            alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
+                            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+                            alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
                         }
                         else {
                             progress.dismiss();
