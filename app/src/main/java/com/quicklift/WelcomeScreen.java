@@ -196,9 +196,10 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             }
         }
         else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this,R.style.myBackgroundStyle);
             builder.setMessage("Turn on your internet connection and try again.")
                     .setCancelable(false)
+                    .setTitle("No Internet !")
                     .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             finish();
@@ -209,9 +210,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             //Creating dialog box
             AlertDialog alert = builder.create();
             //Setting the title manually
-            alert.setTitle("No Internet !");
             alert.show();
-            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
         }
 
         // checking user permission

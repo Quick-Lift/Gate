@@ -80,9 +80,10 @@ public class PhoneAuthActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()){
                             progress.dismiss();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(PhoneAuthActivity.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(PhoneAuthActivity.this,R.style.myBackgroundStyle);
                             builder.setMessage("This number belongs to "+dataSnapshot.child("name").getValue(String.class))
                                     .setCancelable(true)
+                                    .setTitle("Account Action !")
                                     .setPositiveButton("Continue ...", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             final SQLQueries sqlQueries=new SQLQueries(PhoneAuthActivity.this);
@@ -154,10 +155,9 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             //Creating dialog box
                             AlertDialog alert = builder.create();
                             //Setting the title manually
-                            alert.setTitle("Account Action !");
                             alert.show();
-                            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
-                            alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
+                            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                            alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
                         }
                         else {
                             progress.dismiss();

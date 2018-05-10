@@ -92,7 +92,17 @@
         <activity android:name=".SelectOffers" />
         <activity android:name=".EmergencyContact" />
         <activity android:name=".PhoneAuthActivity" />
-        <activity android:name=".SelectPayment"></activity>
+        <activity android:name=".SelectPayment" />
+
+        <receiver android:name=".CheckConnectivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".DisplayAlertbox"></activity>
     </application>
 
 </manifest>

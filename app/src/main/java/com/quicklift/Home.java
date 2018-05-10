@@ -9,9 +9,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -126,6 +128,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.provider.ContactsContract.Intents.Insert.ACTION;
 
 public class Home extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, RoutingListener, NavigationView.OnNavigationItemSelectedListener {
     private GoogleMap mMap;
@@ -275,14 +279,14 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     initMap();
                 }
                 else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
                     builder.setMessage("This app is coming soon for your area .")
+                            .setTitle("Coming Soon !")
                             .setCancelable(false);
 
                     //Creating dialog box
                     AlertDialog alert = builder.create();
                     //Setting the title manually
-                    alert.setTitle("Coming Soon !");
                     alert.show();
                 }
             } catch (ParseException e) {
@@ -695,7 +699,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     if (dataSnapshot.exists()) {
 //                        Toast.makeText(Home.this, "hello", Toast.LENGTH_SHORT).show();
                         String seat = dataSnapshot.getValue(String.class);
-                        if (!seat.equals("full") && (Integer.parseInt(seat) + Integer.parseInt(seats.getSelectedItem().toString())) <= 4) {
+                        if (!seat.equals("full") && (Integer.parseInt(seat) + Integer.parseInt(seats.getSelectedItem().toString().substring(0,1))) <= 4) {
                             cust_req = FirebaseDatabase.getInstance().getReference("CustomerRequests/" + share_driver_list.get(sharedriver));
                             cust_req.child(log_id.getString("id", null)).setValue(data);
                             found=1;
@@ -884,9 +888,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                                     if (dialog.isShowing())
                                         dialog.dismiss();
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
                                     builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
                                             .setCancelable(false)
+                                            .setTitle("Try Again !")
                                             .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
                                                     screen_status = 1;
@@ -903,10 +908,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                     //Creating dialog box
                                     AlertDialog alert = builder.create();
                                     //Setting the title manually
-                                    alert.setTitle("Try Again !");
                                     alert.show();
-                                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
-                                    alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
+                                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                                    alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
                                 }
                             }, 20000);
                         }
@@ -928,9 +932,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         if (dialog.isShowing())
                             dialog.dismiss();
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
                         builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
                                 .setCancelable(false)
+                                .setTitle("Trip Cancelled !")
                                 .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         prev_ride_case = "";
@@ -959,10 +964,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         //Creating dialog box
                         AlertDialog alert = builder.create();
                         //Setting the title manually
-                        alert.setTitle("Try Again !");
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
                     }
                 }, 20000);
 //                }
@@ -1293,9 +1297,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     else if (map.get("resp").toString().equals("Cancel")){
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
                         builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
                                 .setCancelable(false)
+                                .setTitle("Trip Cancelled !")
                                 .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 //                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
@@ -1306,10 +1311,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         //Creating dialog box
                         AlertDialog alert = builder.create();
                         //Setting the title manually
-                        alert.setTitle("Trip Cancelled !");
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
 //                        // Log.v("TAG","cancel");
 //
 //                        if (driver != null) {
@@ -1506,9 +1510,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     else if (map.get("resp").toString().equals("Cancel")){
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
                         builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
                                 .setCancelable(false)
+                                .setTitle("Trip Cancelled !")
                                 .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 //                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
@@ -1519,10 +1524,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         //Creating dialog box
                         AlertDialog alert = builder.create();
                         //Setting the title manually
-                        alert.setTitle("Trip Cancelled !");
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
+                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
 
 //                        stopService(new Intent(Home.this, NotificationService.class));
                         // Log.v("TAG","cancel");
@@ -1799,9 +1803,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     }
 
     public void cancel_trip(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
         builder.setMessage("Are you sure to cancel the ride ??")
                 .setCancelable(false)
+                .setTitle("Cancel Trip !")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         final ProgressDialog progress=new ProgressDialog(Home.this);
@@ -1864,10 +1869,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         //Creating dialog box
         AlertDialog alert = builder.create();
         //Setting the title manually
-        alert.setTitle("Cancel Trip !");
         alert.show();
-        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
-        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#05affc"));
+        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
 
 //        DatabaseReference tripstatus = FirebaseDatabase.getInstance().getReference("Status/" + log_id.getString("driver", null));
 //        tripstatus.removeValue();
@@ -3427,7 +3431,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //            GeoLocation l=new GeoLocation(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))),
 //                    Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
 
-                if (l.distanceTo(lc)<800){
+                if (l.distanceTo(lc)<300){
                     spec_package++;
                     if (spec_package==2){
                         hide_share_vehicles();
@@ -3517,7 +3521,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //            GeoLocation l=new GeoLocation(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))),
 //                    Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
 
-                if (l.distanceTo(lc)<800){
+                if (l.distanceTo(lc)<300){
                     spec_package++;
                     if (spec_package==2){
                         hide_share_vehicles();
@@ -3679,9 +3683,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 boolean status2 = hasActiveInternetConnection();
 
                 if (!status1 || !status2){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
                     builder.setMessage("Turn on your internet connection and try again.")
                             .setCancelable(false)
+                            .setTitle("No Internet !")
                             .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     finish();
@@ -3692,9 +3697,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     //Creating dialog box
                     AlertDialog alert = builder.create();
                     //Setting the title manually
-                    alert.setTitle("No Internet !");
                     alert.show();
-                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#05affc"));
+                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
                 }
                 else {
                     handler_time.postDelayed(runnable,15000);
