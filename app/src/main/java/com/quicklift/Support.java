@@ -160,4 +160,20 @@ public class Support extends AppCompatActivity implements NavigationView.OnNavig
         drawer.closeDrawer(GravityCompat.START);
         return false;
     }
+
+    public void about (View view){
+        startActivity(new Intent(this,AboutUs.class));
+    }
+
+    public void rideoptions (View view){
+        startActivity(new Intent(this,RideOptions.class));
+    }
+
+    public void faresandcharges (View view){
+        startActivity(new Intent(this,FaresandCharges.class));
+    }
+
+    public void faq (View view){
+        startActivity(new Intent(this,FAQ.class));
+    }
 }

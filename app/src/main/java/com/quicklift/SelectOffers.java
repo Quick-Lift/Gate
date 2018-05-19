@@ -1,15 +1,18 @@
 package com.quicklift;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class SelectOffers extends AppCompatActivity {
+    EditText promocode;
     ArrayList<String> offers=new ArrayList<>();
     ArrayList<String> discount=new ArrayList<>();
     ArrayList<String> upto=new ArrayList<>();
@@ -61,6 +65,7 @@ public class SelectOffers extends AppCompatActivity {
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
         db= FirebaseDatabase.getInstance().getReference("CustomerOffers/"+log_id.getString("id",null));
         list=(ListView)findViewById(R.id.list);
+        promocode=(EditText) findViewById(R.id.promocode);
 
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -114,6 +119,46 @@ public class SelectOffers extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void apply(View view){
+        if (TextUtils.isEmpty(promocode.getText().toString())){
+            Toast.makeText(this, "Please Enter Promocode.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            final ProgressDialog dialog=new ProgressDialog(this);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setMessage("Please Wait ...");
+            dialog.setIndeterminate(true);
+            dialog.show();
+
+            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Promocode/"+promocode.getText().toString());
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    dialog.dismiss();
+                    if (dataSnapshot.exists()){
+                        String str = "Get " + dataSnapshot.child("discount").getValue().toString() + "% off upto Rs. " + dataSnapshot.child("upto").getValue().toString();
+                        Intent intent=new Intent();
+                        intent.putExtra("offer", str);
+                        intent.putExtra("discount", dataSnapshot.child("discount").getValue().toString());
+                        intent.putExtra("upto", dataSnapshot.child("upto").getValue().toString());
+                        intent.putExtra("offer_code", dataSnapshot.child("code").getValue().toString());
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(SelectOffers.this, "Invalid Promocode !", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     public class CustomAdapter extends BaseAdapter{

@@ -15,17 +15,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#05affc"
-        android:text="Contact Us"
+        android:text="Contact Us :-"
         android:textSize="18sp"
         android:paddingLeft="20dp"
         android:paddingBottom="2dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#05affc"
-        android:text="Quick Lift"
+        android:text="QuickLift Solutions Private Limited"
         android:textSize="18sp"
         android:paddingBottom="2dp"
         android:paddingLeft="20dp"/>
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#05affc"
-        android:text="Gola Road"
+        android:text="1st Floor,"
         android:textSize="18sp"
         android:paddingBottom="2dp"
         android:paddingLeft="20dp"/>
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#05affc"
-        android:text="Patna - 1234566"
+        android:text="Lemon’s Shanti Plaza"
         android:textSize="18sp"
         android:paddingBottom="2dp"
         android:paddingLeft="20dp"/>
@@ -52,28 +52,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#05affc"
-        android:text="Phone  +918765432100"
+        android:text="Goal Road,"
+        android:textSize="18sp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#05affc"
+        android:text="Patna"
         android:textSize="18sp"
         android:paddingBottom="2dp"
         android:paddingLeft="20dp"/>
 
     <Button
+        android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:textColor="#05affc"
-        android:text="Last Trip"
-        android:textSize="20sp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/margin"
         android:gravity="left|center_vertical"
         android:paddingLeft="40dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/margin"/>
+        android:text="Last Trip"
+        android:visibility="gone"
+        android:textColor="#05affc"
+        android:textSize="20sp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:textColor="#05affc"
+        android:layout_marginTop="30dp"
         android:text="Frequently Asked Questions"
         android:textSize="20sp"
+        android:onClick="faq"
         android:gravity="left|center_vertical"
         android:paddingLeft="40dp"
         android:background="@drawable/margin"/>
@@ -84,6 +97,7 @@
         android:textColor="#05affc"
         android:text="Fares and Charges"
         android:textSize="20sp"
+        android:onClick="faresandcharges"
         android:gravity="left|center_vertical"
         android:paddingLeft="40dp"
         android:background="@drawable/margin"/>
@@ -94,6 +108,7 @@
         android:textColor="#05affc"
         android:text="Ride Options"
         android:textSize="20sp"
+        android:onClick="rideoptions"
         android:gravity="left|center_vertical"
         android:paddingLeft="40dp"
         android:background="@drawable/margin"/>
@@ -104,6 +119,7 @@
         android:textColor="#05affc"
         android:text="About Us"
         android:textSize="20sp"
+        android:onClick="about"
         android:gravity="left|center_vertical"
         android:paddingLeft="40dp"
         android:background="@drawable/margin"/>

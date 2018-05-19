@@ -201,7 +201,7 @@ public class NotificationService extends Service {
                 .setContentTitle("Driver")
                 .setContentText(message)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.logo))
-                .setSmallIcon(R.drawable.carfinal)
+                .setSmallIcon(R.drawable.niji)
                 .setAutoCancel(false)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(message))

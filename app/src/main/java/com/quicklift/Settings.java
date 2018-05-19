@@ -22,8 +22,11 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +42,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -50,8 +54,10 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     private SharedPreferences log_id;
     private PlaceAutocompleteFragment autocompleteFragment;
     private EditText address;
-    LinearLayout home,work;
+//    LinearLayout home,work;
     String latitude,longitude;
+    ListView list;
+    ArrayList<String> loc_name=new ArrayList<>();
 
     @Override
     public void onBackPressed() {
@@ -82,8 +88,9 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
         location=(EditText)findViewById(R.id.location);
         location_name=(EditText)findViewById(R.id.location_name);
-        home=(LinearLayout)findViewById(R.id.home);
-        work=(LinearLayout)findViewById(R.id.work);
+        list=(ListView) findViewById(R.id.list);
+//        home=(LinearLayout)findViewById(R.id.home);
+//        work=(LinearLayout)findViewById(R.id.work);
         autocompleteFragment = (PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.location_autocomplete);
         address=(EditText)autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
 
@@ -124,21 +131,39 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 //
         updatenavbar();
 
-        home.setOnClickListener(new View.OnClickListener() {
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("SavedLocations/"+log_id.getString("id",null)+"/saved");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                location_name.setText("Home");
-                address.performClick();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    loc_name.clear();
+                    for (DataSnapshot data:dataSnapshot.getChildren()){
+                        loc_name.add(data.child("name").getValue().toString()+" ("+data.child("locname").getValue().toString()+")");
+                    }
+                    list.setAdapter(new CustomAdapter());
+                }
             }
-        });
 
-        work.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                location_name.setText("Work");
-                address.performClick();
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
+//        home.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                location_name.setText("Home");
+//                address.performClick();
+//            }
+//        });
+//
+//        work.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                location_name.setText("Work");
+//                address.performClick();
+//            }
+//        });
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -249,5 +274,34 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
         drawer.closeDrawer(GravityCompat.START);
         return false;
+    }
+
+    public class CustomAdapter extends BaseAdapter{
+
+        @Override
+        public int getCount() {
+            return loc_name.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup parent) {
+            view=getLayoutInflater().inflate(R.layout.place_text_view,null);
+            TextView name=(TextView)view.findViewById(R.id.name);
+
+            name.setTextColor(Color.parseColor("#05affc"));
+            name.setText(loc_name.get(position));
+
+            return view;
+        }
     }
 }

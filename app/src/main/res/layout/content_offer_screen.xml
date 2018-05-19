@@ -168,7 +168,7 @@
                 android:id="@+id/offer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Use Promocode: Ride20\nGet Rs. 20 off instantly"
+                android:text="Use Promocode and get instant discount on fare."
                 android:paddingLeft="20dp"
                 android:textSize="18sp"
                 android:gravity="center_vertical"

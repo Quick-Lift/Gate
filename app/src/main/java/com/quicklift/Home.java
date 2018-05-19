@@ -197,6 +197,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     boolean isrunning=false;
     Handler handler_time;
     Runnable runnable;
+    View view;
+    TextView title,message;
+    Button left,right;
 
     @Override
     public void onBackPressed() {
@@ -268,6 +271,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         pdialog.setCanceledOnTouchOutside(false);
         pdialog.setIndeterminate(true);
 
+        view=getLayoutInflater().inflate(R.layout.notification_layout,null);
+        title=(TextView)view.findViewById(R.id.title);
+        message=(TextView)view.findViewById(R.id.message);
+        left=(Button) view.findViewById(R.id.left_btn);
+        right=(Button) view.findViewById(R.id.right_btn);
+
         if (googleServicesAvailable()) {
             //Toast.makeText(this, "Perfect !", Toast.LENGTH_SHORT).show();
             setContentView(R.layout.activity_home_screen);
@@ -279,15 +288,15 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     initMap();
                 }
                 else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
-                    builder.setMessage("This app is coming soon for your area .")
-                            .setTitle("Coming Soon !")
-                            .setCancelable(false);
-
-                    //Creating dialog box
-                    AlertDialog alert = builder.create();
-                    //Setting the title manually
-                    alert.show();
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
+//                    builder.setMessage("This app is coming soon for your area .")
+//                            .setTitle("Coming Soon !")
+//                            .setCancelable(false);
+//
+//                    //Creating dialog box
+//                    AlertDialog alert = builder.create();
+//                    //Setting the title manually
+//                    alert.show();
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -452,6 +461,32 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 }
             });
         }
+
+//        data.setCancel_charge("0");
+        DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerPendingCharges/"+log_id.getString("id",null));
+        dref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    int val=0;
+                    if (dataSnapshot.hasChild("cancel_req/excel")){
+                        val=val+(Integer.parseInt(dataSnapshot.child("cancel_req/excel").getValue().toString())*Integer.parseInt(log_id.getString("excelcharge",null)));
+                    }
+                    if (dataSnapshot.hasChild("cancel_req/full")){
+                        val=val+(Integer.parseInt(dataSnapshot.child("cancel_req/full").getValue().toString())*Integer.parseInt(log_id.getString("fullcharge",null)));
+                    }
+                    if (dataSnapshot.hasChild("cancel_req/share")){
+                        val=val+(Integer.parseInt(dataSnapshot.child("cancel_req/share").getValue().toString())*Integer.parseInt(log_id.getString("sharecharge",null)));
+                    }
+                    data.setCancel_charge(String.valueOf(val));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     //    }
         //sqlQueries.lastride("HQMFVDHAu8WwjLqLW0qWLHKbm183","2017-02-20","Huskur Gate");
 //        Cursor cursor = sqlQueries.retrievelastride();
@@ -466,47 +501,91 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                i = 0;
-//                driver_list.clear();
-//                if (vehicletype.equals("bike")){
-//                    for (int i=0;i<driver_list_bike.size();i++){
-//                        driver_list.add(driver_list_bike.get(i));
-//                    }
-//                } else if (vehicletype.equals("car")){
-//                    for (int i=0;i<driver_list_car.size();i++){
-//                        driver_list.add(driver_list_car.get(i));
-//                    }
-//                } else if (vehicletype.equals("auto")){
-//                    for (int i=0;i<driver_list_auto.size();i++){
-//                        driver_list.add(driver_list_auto.get(i));
-//                    }
-//                } else if (vehicletype.equals("rickshaw")){
-//                    for (int i=0;i<driver_list_rickshaw.size();i++){
-//                        driver_list.add(driver_list_rickshaw.get(i));
-//                    }
-//                }
-                dialogdisplay();
-                find_driver.removeAllListeners();
-//                find_driver_share.removeAllListeners();
-//                find_driver_bike.removeAllListeners();
-//                find_driver_car.removeAllListeners();
-//                find_driver_auto.removeAllListeners();
-//                find_driver_rickshaw.removeAllListeners();
-                findViewById(R.id.layout4).setVisibility(View.GONE);
-                if (vehicletype=="car" && ridetype=="full")
-                    prev_ride_case="car";
+                if (!data.getCancel_charge().equals("0")) {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
+//                    builder.setMessage("You have pending cancellation charge Rs. "+data.getCancel_charge()+
+//                            "\nThe amount will be collected by the driver on trip completion.")
+//                            .setCancelable(false)
+//                            .setTitle("Pending Charge")
+//                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    i = 0;
+//                                    dialogdisplay();
+//                                    find_driver.removeAllListeners();
+//                                    findViewById(R.id.layout4).setVisibility(View.GONE);
+//                                    if (vehicletype == "car" && ridetype == "full")
+//                                        prev_ride_case = "car";
+//
+//                                    data.setCustomer_id(log_id.getString("id", null));
+//                                    screen_status = 0;
+//                                    findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+//                                    findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+//                                    if (ridetype.equals("full"))
+//                                        finddriver();
+//                                    else
+//                                        findsharedriver();
+//                                }
+//                            });
+//
+//                    //Creating dialog box
+//                    AlertDialog alert = builder.create();
+//                    //Setting the title manually
+//                    alert.show();
+//                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
 
-                data.setCustomer_id(log_id.getString("id", null));
-                //find_driver.removeAllListeners();
-                //findViewById(R.id.layout3).setVisibility(View.VISIBLE);
-               // Toast.makeText(Home.this, "2", Toast.LENGTH_SHORT).show();
-                screen_status=0;
-                findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
-                findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
-                if (ridetype.equals("full"))
-                    finddriver();
-                else
-                    findsharedriver();
+                    title.setText("Pending Charge !");
+                    message.setText("You have pending cancellation charge Rs. "+data.getCancel_charge()+
+                            "\nThe amount will be collected by the driver on trip completion.");
+                    left.setVisibility(View.GONE);
+                    right.setText("Ok");
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                    builder .setView(view)
+                            .setCancelable(false);
+
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+
+                    right.setOnClickListener(null);
+                    right.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            i = 0;
+                            dialogdisplay();
+                            find_driver.removeAllListeners();
+                            findViewById(R.id.layout4).setVisibility(View.GONE);
+                            if (vehicletype == "car" && ridetype == "full")
+                                prev_ride_case = "car";
+
+                            data.setCustomer_id(log_id.getString("id", null));
+                            screen_status = 0;
+                            findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                            findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+                            alert.dismiss();
+                            if (ridetype.equals("full"))
+                                finddriver();
+                            else
+                                findsharedriver();
+                        }
+                    });
+                }
+                else {
+                    i = 0;
+                    dialogdisplay();
+                    find_driver.removeAllListeners();
+                    findViewById(R.id.layout4).setVisibility(View.GONE);
+                    if (vehicletype == "car" && ridetype == "full")
+                        prev_ride_case = "car";
+
+                    data.setCustomer_id(log_id.getString("id", null));
+                    screen_status = 0;
+                    findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                    findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+                    if (ridetype.equals("full"))
+                        finddriver();
+                    else
+                        findsharedriver();
+                }
             }
         });
 
@@ -888,29 +967,56 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                                     if (dialog.isShowing())
                                         dialog.dismiss();
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
-                                    builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
-                                            .setCancelable(false)
-                                            .setTitle("Try Again !")
-                                            .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    screen_status = 1;
-                                                    findViewById(R.id.layout4).setVisibility(View.VISIBLE);
-                                                    findViewById(R.id.layout3).setVisibility(View.GONE);
-//                                                    Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
-                                                    DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
-                                                    data.child(log_id.getString("id", null)).removeValue();
-                                                    findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
-                                                    findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
-                                                }
-                                            });
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
+//                                    builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
+//                                            .setCancelable(false)
+//                                            .setTitle("Try Again !")
+//                                            .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+//                                                public void onClick(DialogInterface dialog, int id) {
+//                                                    screen_status = 1;
+//                                                    findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+//                                                    findViewById(R.id.layout3).setVisibility(View.GONE);
+////                                                    Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
+//                                                    DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
+//                                                    data.child(log_id.getString("id", null)).removeValue();
+//                                                    findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+//                                                    findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+//                                                }
+//                                            });
 
-                                    //Creating dialog box
+//                                    //Creating dialog box
+//                                    AlertDialog alert = builder.create();
+//                                    //Setting the title manually
+//                                    alert.show();
+//                                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+//                                    alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+
+                                    title.setText("No Ride Found !");
+                                    message.setText("Sorry we are facing congestion ! Please try again later ! ");
+                                    left.setVisibility(View.GONE);
+                                    right.setText("Try Again");
+
+                                    right.setOnClickListener(null);
+                                    right.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            screen_status = 1;
+                                            findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+                                            findViewById(R.id.layout3).setVisibility(View.GONE);
+//                                                    Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
+                                            DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
+                                            data.child(log_id.getString("id", null)).removeValue();
+                                            findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                                            findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+                                        }
+                                    });
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                                    builder .setView(view)
+                                            .setCancelable(false);
+
                                     AlertDialog alert = builder.create();
-                                    //Setting the title manually
                                     alert.show();
-                                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                                    alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
                                 }
                             }, 20000);
                         }
@@ -932,22 +1038,61 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         if (dialog.isShowing())
                             dialog.dismiss();
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
-                        builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
-                                .setCancelable(false)
-                                .setTitle("Trip Cancelled !")
-                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        prev_ride_case = "";
-                                        screen_status = 1;
-                                        found = 0;
-                                        findViewById(R.id.layout4).setVisibility(View.VISIBLE);
-                                        findViewById(R.id.layout3).setVisibility(View.GONE);
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
+//                        builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
+//                                .setCancelable(false)
+//                                .setTitle("Try Again !")
+//                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int id) {
+//                                        prev_ride_case = "";
+//                                        screen_status = 1;
+//                                        found = 0;
+//                                        findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+//                                        findViewById(R.id.layout3).setVisibility(View.GONE);
+////                                        Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
+//                                        DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
+//                                        data.child(log_id.getString("id", null)).removeValue();
+//                                        findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+//                                        findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+////             if (vehicletype.equals("bike"))
+////                place_drivers_bike();
+////             else if (vehicletype.equals("car"))
+////                 place_drivers_car();
+////             else if (vehicletype.equals("auto"))
+////                 place_drivers_auto();
+////             else if (vehicletype.equals("rickshaw"))
+////                 place_drivers_rickshaw();
+//                                        driverid = "";
+//                                        place_drivers();
+//                                    }
+//                                });
+//
+//                        //Creating dialog box
+//                        AlertDialog alert = builder.create();
+//                        //Setting the title manually
+//                        alert.show();
+//                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+//                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+
+                        title.setText("No Ride Found !");
+                        message.setText("Sorry we are facing congestion ! Please try again later ! ");
+                        left.setVisibility(View.GONE);
+                        right.setText("Try Again");
+
+                        right.setOnClickListener(null);
+                        right.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                prev_ride_case = "";
+                                screen_status = 1;
+                                found = 0;
+                                findViewById(R.id.layout4).setVisibility(View.VISIBLE);
+                                findViewById(R.id.layout3).setVisibility(View.GONE);
 //                                        Toast.makeText(Home.this, "No Ride Found", Toast.LENGTH_SHORT).show();
-                                        DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
-                                        data.child(log_id.getString("id", null)).removeValue();
-                                        findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
-                                        findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+                                DatabaseReference data = FirebaseDatabase.getInstance().getReference("Share");
+                                data.child(log_id.getString("id", null)).removeValue();
+                                findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
+                                findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
 //             if (vehicletype.equals("bike"))
 //                place_drivers_bike();
 //             else if (vehicletype.equals("car"))
@@ -956,17 +1101,17 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                 place_drivers_auto();
 //             else if (vehicletype.equals("rickshaw"))
 //                 place_drivers_rickshaw();
-                                        driverid = "";
-                                        place_drivers();
-                                    }
-                                });
+                                driverid = "";
+                                place_drivers();
+                            }
+                        });
 
-                        //Creating dialog box
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder .setView(view)
+                                .setCancelable(false);
+
                         AlertDialog alert = builder.create();
-                        //Setting the title manually
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
                     }
                 }, 20000);
 //                }
@@ -1002,9 +1147,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             } else if (v == findViewById(R.id.car)) {
                 seatfull();
                 vehicletype="car";
+                data.setVeh_type("full");
                 final_price.setText(price_car.getText());
 //                final_time.setText(time_car.getText());
-                final_image.setImageResource(R.drawable.carfinal);
+                final_image.setImageResource(R.drawable.niji);
                 seats.setSelection(0);
                 seats.setEnabled(false);
                 ridetype="full";
@@ -1017,6 +1163,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             } else if (v == findViewById(R.id.excel)) {
                 seatfull();
                 vehicletype="excel";
+                data.setVeh_type("excel");
                 final_price.setText(price_excel.getText());
 //                final_time.setText(time_excel.getText());
                 final_image.setImageResource(R.drawable.carfinal);
@@ -1047,6 +1194,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             } else if (v == findViewById(R.id.rickshaw)) {
                 seatfull();
                 vehicletype="rickshaw";
+                data.setVeh_type("full");
                 // Toast.makeText(this, "rickshaw", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_rickshaw.getText());
 //                final_time.setText(time_rickshaw.getText());
@@ -1063,9 +1211,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             } else if (v == findViewById(R.id.shareCar)) {
                 seatshare();
                 vehicletype="car";
+                data.setVeh_type("share");
                 final_price.setText(price_shareCar.getText());
 //                final_time.setText(time_shareCar.getText());
-                final_image.setImageResource(R.drawable.carfinal);
+                final_image.setImageResource(R.drawable.share);
                 seats.setSelection(0);
                 seats.setEnabled(true);
                 ridetype="share";
@@ -1093,6 +1242,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             } else if (v == findViewById(R.id.shareRickshaw)) {
                 seatshare();
                 vehicletype="rickshaw";
+                data.setVeh_type("share");
                 // Toast.makeText(this, "rickshaw", Toast.LENGTH_SHORT).show();
                 final_price.setText(price_shareRickshaw.getText());
 //                final_time.setText(time_shareRickshaw.getText());
@@ -1190,7 +1340,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 //Glide.with(Home.this).load(drive.get("thumb").toString()).into((CircleImageView)findViewById(R.id.pic));
                 ((TextView)findViewById(R.id.bike_name)).setText(drive.get("veh_type").toString());
                 ((TextView)findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
-                ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
+                int iend = drive.get("name").toString().indexOf(" ");
+                if (iend!=-1)
+                    ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString().substring(0 , iend));
+                else
+                    ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
                 if (drive.containsKey("rate"))
                     ((RatingBar)findViewById(R.id.driver_rating)).setRating(Float.valueOf(drive.get("rate").toString()));
                 else
@@ -1297,23 +1451,43 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     else if (map.get("resp").toString().equals("Cancel")){
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
-                        builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
-                                .setCancelable(false)
-                                .setTitle("Trip Cancelled !")
-                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-//                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
-                                        cancel_current_trip();
-                                    }
-                                });
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
+//                        builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
+//                                .setCancelable(false)
+//                                .setTitle("Trip Cancelled !")
+//                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int id) {
+////                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
+//                                        cancel_current_trip();
+//                                    }
+//                                });
 
-                        //Creating dialog box
+//                        //Creating dialog box
+//                        AlertDialog alert = builder.create();
+//                        //Setting the title manually
+//                        alert.show();
+//                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+//                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+
+                        title.setText("Trip Cancelled !");
+                        message.setText("Sorry the driver is currently unable to serve you ! Please try again !");
+                        left.setVisibility(View.GONE);
+                        right.setText("Try Again");
+
+                        right.setOnClickListener(null);
+                        right.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                cancel_current_trip();
+                            }
+                        });
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder .setView(view)
+                                .setCancelable(false);
+
                         AlertDialog alert = builder.create();
-                        //Setting the title manually
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
 //                        // Log.v("TAG","cancel");
 //
 //                        if (driver != null) {
@@ -1402,7 +1576,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                 //Glide.with(Home.this).load(drive.get("thumb").toString()).into((CircleImageView)findViewById(R.id.pic));
                                 ((TextView)findViewById(R.id.bike_name)).setText(drive.get("veh_type").toString());
                                 ((TextView)findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
-                                ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
+                                int iend = drive.get("name").toString().indexOf(" ");
+                                if (iend!=-1)
+                                    ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString().substring(0 , iend));
+                                else
+                                    ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
                                 if (drive.containsKey("rate"))
                                     ((RatingBar)findViewById(R.id.driver_rating)).setRating(Float.valueOf(drive.get("rate").toString()));
                                 else
@@ -1510,23 +1688,43 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     else if (map.get("resp").toString().equals("Cancel")){
                         handler_time.removeCallbacks(runnable);
                         marker_pick.hideInfoWindow();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
-                        builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
-                                .setCancelable(false)
-                                .setTitle("Trip Cancelled !")
-                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-//                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
-                                        cancel_current_trip();
-                                    }
-                                });
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
+//                        builder.setMessage("Sorry the driver is currently unable to serve you ! Please try again !!")
+//                                .setCancelable(false)
+//                                .setTitle("Trip Cancelled !")
+//                                .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int id) {
+////                                        Toast.makeText(Home.this, "Trip Cancelled by driver", Toast.LENGTH_SHORT).show();
+//                                        cancel_current_trip();
+//                                    }
+//                                });
+//
+//                        //Creating dialog box
+//                        AlertDialog alert = builder.create();
+//                        //Setting the title manually
+//                        alert.show();
+//                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+//                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
 
-                        //Creating dialog box
+                        title.setText("Trip Cancelled !");
+                        message.setText("Sorry the driver is currently unable to serve you ! Please try again !");
+                        left.setVisibility(View.GONE);
+                        right.setText("Try Again");
+
+                        right.setOnClickListener(null);
+                        right.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                cancel_current_trip();
+                            }
+                        });
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder .setView(view)
+                                .setCancelable(false);
+
                         AlertDialog alert = builder.create();
-                        //Setting the title manually
                         alert.show();
-                        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-                        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
 
 //                        stopService(new Intent(Home.this, NotificationService.class));
                         // Log.v("TAG","cancel");
@@ -1586,7 +1784,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     }
 
     private void cancel_current_trip() {
-        Toast.makeText(this, "Trip Cancelled !", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Trip Cancelled !", Toast.LENGTH_SHORT).show();
 //        DatabaseReference tripstatus = FirebaseDatabase.getInstance().getReference("Status/" + log_id.getString("driver", null));
 //        tripstatus.removeValue();
         resp.removeValue();
@@ -1761,7 +1959,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                     ((TextView) findViewById(R.id.bike_name)).setText(drive.get("veh_type").toString());
                     ((TextView) findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
-                    ((TextView) findViewById(R.id.dname)).setText(drive.get("name").toString());
+                    int iend = drive.get("name").toString().indexOf(" ");
+                    if (iend!=-1)
+                        ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString().substring(0 , iend));
+                    else
+                        ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
                     if (drive.containsKey("rate"))
                         ((RatingBar)findViewById(R.id.driver_rating)).setRating(Float.valueOf(drive.get("rate").toString()));
                     else
@@ -1803,54 +2005,168 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     }
 
     public void cancel_trip(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
-        builder.setMessage("Are you sure to cancel the ride ??")
-                .setCancelable(false)
-                .setTitle("Cancel Trip !")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        final ProgressDialog progress=new ProgressDialog(Home.this);
-                        progress.setMessage("Cancelling Trip !");
-                        progress.setIndeterminate(true);
-                        progress.setCanceledOnTouchOutside(false);
-                        progress.setCancelable(false);
-                        progress.show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
+//        builder.setMessage("Are you sure to cancel the ride ??")
+//                .setCancelable(false)
+//                .setTitle("Cancel Trip !")
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        final ProgressDialog progress=new ProgressDialog(Home.this);
+//                        progress.setMessage("Cancelling Trip !");
+//                        progress.setIndeterminate(true);
+//                        progress.setCanceledOnTouchOutside(false);
+//                        progress.setCancelable(false);
+//                        progress.show();
+//
+//                        handler_time.removeCallbacks(runnable);
+//                        marker_pick.hideInfoWindow();
+//
+//                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/" + log_id.getString("driver",null)+"/"+log_id.getString("id",null));
+//                        ref.child("accept").setValue(2);
+//                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                final Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
+//                                Ride ride=new Ride();
+//                                ride.setDestination(map.get("destination").toString());
+//                                ride.setSource(map.get("source").toString());
+//                                ride.setAmount(map.get("price").toString());
+//                                ride.setCustomerid(map.get("customer_id").toString());
+//                                ride.setDriver(log_id.getString("driver",null));
+//                                ride.setCancel_charge(map.get("cancel_charge").toString());
+//                                ride.setPaymode(map.get("paymode").toString());
+//                                ride.setDiscount(map.get("offer").toString());
+//                                Date dt=new Date();
+//                                ride.setTime(dt.toString());
+//                                ride.setStatus("Cancelled");
+//                                ride.setCancelledby("Customer");
+//
+//                                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Rides");
+//                                String key=ref.push().getKey();
+//                                ref.child(key).setValue(ride);
+//
+//                                final DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerPendingCharges/"+log_id.getString("id",null)+"/cancel_req");
+//                                dref.child(map.get("veh_type").toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                                        if (dataSnapshot.exists()){
+//                                            int val=Integer.parseInt(dataSnapshot.getValue().toString())+1;
+//                                            dref.child(map.get("veh_type").toString()).setValue(String.valueOf(val));
+//                                        }
+//                                        else {
+//                                            dref.child(map.get("veh_type").toString()).setValue(String.valueOf(1));
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(DatabaseError databaseError) {
+//
+//                                    }
+//                                });
+//
+//                                progress.dismiss();
+////                                Toast.makeText(Home.this, "Trip Cancelled !", Toast.LENGTH_SHORT).show();
+//                                resp.removeValue();
+//                                resp.removeEventListener(resplistener);
+//                                cust_req.child(log_id.getString("id",null)).removeValue();
+//                                SharedPreferences.Editor editor=log_id.edit();
+//                                editor.putString("driver","");
+//                                editor.remove("ride");
+//                                editor.remove("status");
+//                                editor.commit();
+//                                finish();
+//                                startActivity(getIntent());
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//                    }
+//                })
+//                .setNeutralButton("No", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                    }
+//                });
 
-                        handler_time.removeCallbacks(runnable);
-                        marker_pick.hideInfoWindow();
+//        //Creating dialog box
+//        AlertDialog alert = builder.create();
+//        //Setting the title manually
+//        alert.show();
+//        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
+//        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
 
-                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/" + log_id.getString("driver",null)+"/"+log_id.getString("id",null));
-                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        title.setText("Cancel Trip !");
+        message.setText("Are you sure to cancel the ride ??");
+        left.setVisibility(View.VISIBLE);
+        right.setText("No");
+        left.setText("Yes");
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+        builder .setView(view)
+                .setCancelable(false);
+
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+        right.setOnClickListener(null);
+        right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert.dismiss();
+            }
+        });
+        left.setOnClickListener(null);
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ProgressDialog progress=new ProgressDialog(Home.this);
+                progress.setMessage("Cancelling Trip !");
+                progress.setIndeterminate(true);
+                progress.setCanceledOnTouchOutside(false);
+                progress.setCancelable(false);
+                progress.show();
+
+                handler_time.removeCallbacks(runnable);
+                marker_pick.hideInfoWindow();
+
+                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/" + log_id.getString("driver",null)+"/"+log_id.getString("id",null));
+                ref.child("accept").setValue(2);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
+                        Ride ride=new Ride();
+                        ride.setDestination(map.get("destination").toString());
+                        ride.setSource(map.get("source").toString());
+                        ride.setAmount(map.get("price").toString());
+                        ride.setCustomerid(map.get("customer_id").toString());
+                        ride.setDriver(log_id.getString("driver",null));
+                        ride.setCancel_charge(map.get("cancel_charge").toString());
+                        ride.setPaymode(map.get("paymode").toString());
+                        ride.setDiscount(map.get("offer").toString());
+                        Date dt=new Date();
+                        ride.setTime(dt.toString());
+                        ride.setStatus("Cancelled");
+                        ride.setCancelledby("Customer");
+
+                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Rides");
+                        String key=ref.push().getKey();
+                        ref.child(key).setValue(ride);
+
+                        final DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerPendingCharges/"+log_id.getString("id",null)+"/cancel_req");
+                        dref.child(map.get("veh_type").toString()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                                Ride ride=new Ride();
-                                ride.setDestination(map.get("destination").toString());
-                                ride.setSource(map.get("source").toString());
-                                ride.setAmount(map.get("price").toString());
-                                ride.setCustomerid(map.get("customer_id").toString());
-                                ride.setDriver(log_id.getString("driver",null));
-                                Date dt=new Date();
-                                ride.setTime(dt.toString());
-                                ride.setStatus("Cancelled");
-                                ride.setCancelledby("Customer");
-
-                                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Rides");
-                                String key=ref.push().getKey();
-                                ref.child(key).setValue(ride);
-
-                                progress.dismiss();
-//                                Toast.makeText(Home.this, "Trip Cancelled !", Toast.LENGTH_SHORT).show();
-                                resp.removeValue();
-                                resp.removeEventListener(resplistener);
-                                cust_req.child(log_id.getString("id",null)).removeValue();
-                                SharedPreferences.Editor editor=log_id.edit();
-                                editor.putString("driver","");
-                                editor.remove("ride");
-                                editor.remove("status");
-                                editor.commit();
-                                finish();
-                                startActivity(getIntent());
+                                if (dataSnapshot.exists()){
+                                    int val=Integer.parseInt(dataSnapshot.getValue().toString())+1;
+                                    dref.child(map.get("veh_type").toString()).setValue(String.valueOf(val));
+                                }
+                                else {
+                                    dref.child(map.get("veh_type").toString()).setValue(String.valueOf(1));
+                                }
                             }
 
                             @Override
@@ -1858,20 +2174,28 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                             }
                         });
+
+                        progress.dismiss();
+//                                Toast.makeText(Home.this, "Trip Cancelled !", Toast.LENGTH_SHORT).show();
+                        resp.removeValue();
+                        resp.removeEventListener(resplistener);
+                        cust_req.child(log_id.getString("id",null)).removeValue();
+                        SharedPreferences.Editor editor=log_id.edit();
+                        editor.putString("driver","");
+                        editor.remove("ride");
+                        editor.remove("status");
+                        editor.commit();
+                        finish();
+                        startActivity(getIntent());
                     }
-                })
-                .setNeutralButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
                     }
                 });
-
-        //Creating dialog box
-        AlertDialog alert = builder.create();
-        //Setting the title manually
-        alert.show();
-        alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-        alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
+            }
+        });
 
 //        DatabaseReference tripstatus = FirebaseDatabase.getInstance().getReference("Status/" + log_id.getString("driver", null));
 //        tripstatus.removeValue();
@@ -3584,7 +3908,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
         } else if (requestCode==5 && resultCode==RESULT_OK){
 //            Double pr=Double.parseDouble(final_price.getText().toString().substring(4));
-                payment.setText(intent.getStringExtra("mode"));
+            payment.setText(intent.getStringExtra("mode"));
+            data.setPaymode(intent.getStringExtra("mode"));
         }
     }
 
@@ -3683,22 +4008,43 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 boolean status2 = hasActiveInternetConnection();
 
                 if (!status1 || !status2){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
-                    builder.setMessage("Turn on your internet connection and try again.")
-                            .setCancelable(false)
-                            .setTitle("No Internet !")
-                            .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    finish();
-                                    startActivity(getIntent());
-                                }
-                            });
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
+//                    builder.setMessage("Turn on your internet connection and try again.")
+//                            .setCancelable(false)
+//                            .setTitle("No Internet !")
+//                            .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    finish();
+//                                    startActivity(getIntent());
+//                                }
+//                            });
+//
+//                    //Creating dialog box
+//                    AlertDialog alert = builder.create();
+//                    //Setting the title manually
+//                    alert.show();
+//                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
 
-                    //Creating dialog box
+                    title.setText("No Internet !");
+                    message.setText("Turn on your internet connection and try again.");
+                    left.setVisibility(View.GONE);
+                    right.setText("Try Again");
+
+                    right.setOnClickListener(null);
+                    right.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    });
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                    builder .setView(view)
+                            .setCancelable(false);
+
                     AlertDialog alert = builder.create();
-                    //Setting the title manually
                     alert.show();
-                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
                 }
                 else {
                     handler_time.postDelayed(runnable,15000);

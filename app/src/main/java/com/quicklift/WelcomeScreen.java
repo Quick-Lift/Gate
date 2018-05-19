@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -102,7 +103,9 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                editor.putString("cancelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge").getValue(Integer.class)));
+                editor.putString("excelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/excel").getValue(Integer.class)));
+                editor.putString("sharecharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/share").getValue(Integer.class)));
+                editor.putString("fullcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/full").getValue(Integer.class)));
                 editor.commit();
                 for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                     ArrayList<String> price=new ArrayList<String>();
@@ -196,22 +199,48 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             }
         }
         else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this,R.style.myBackgroundStyle);
-            builder.setMessage("Turn on your internet connection and try again.")
-                    .setCancelable(false)
-                    .setTitle("No Internet !")
-                    .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            finish();
-                            startActivity(getIntent());
-                        }
-                    });
+//            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this,R.style.myBackgroundStyle);
+//            builder.setMessage("Turn on your internet connection and try again.")
+//                    .setCancelable(false)
+//                    .setTitle("No Internet !")
+//                    .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            finish();
+//                            startActivity(getIntent());
+//                        }
+//                    });
+//
+//            //Creating dialog box
+//            AlertDialog alert = builder.create();
+//            //Setting the title manually
+//            alert.show();
+//            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
 
-            //Creating dialog box
+            View view=getLayoutInflater().inflate(R.layout.notification_layout,null);
+            TextView title=(TextView)view.findViewById(R.id.title);
+            TextView message=(TextView)view.findViewById(R.id.message);
+            Button left=(Button) view.findViewById(R.id.left_btn);
+            Button right=(Button) view.findViewById(R.id.right_btn);
+
+            title.setText("No Internet !");
+            message.setText("Turn on your internet connection and try again.");
+            left.setVisibility(View.GONE);
+            right.setText("Try Again");
+
+            right.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                    startActivity(getIntent());
+                }
+            });
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+            builder .setView(view)
+                    .setCancelable(false);
+
             AlertDialog alert = builder.create();
-            //Setting the title manually
             alert.show();
-            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
         }
 
         // checking user permission

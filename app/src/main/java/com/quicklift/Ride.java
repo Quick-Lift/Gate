@@ -5,7 +5,7 @@ package com.quicklift;
  */
 
 public class Ride {
-    String customerid,source,destination,amount,time,driver,status,cancelledby;
+    String customerid,source,destination,amount,time,driver,status,cancelledby,discount,cancel_charge,paymode;
 
     public Ride() {
 
@@ -17,6 +17,30 @@ public class Ride {
 
     public String getCancelledby() {
         return cancelledby;
+    }
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
+    }
+
+    public String getCancel_charge() {
+        return cancel_charge;
+    }
+
+    public void setCancel_charge(String cancel_charge) {
+        this.cancel_charge = cancel_charge;
+    }
+
+    public String getPaymode() {
+        return paymode;
+    }
+
+    public void setPaymode(String paymode) {
+        this.paymode = paymode;
     }
 
     public void setCancelledby(String cancelledby) {

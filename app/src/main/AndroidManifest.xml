@@ -102,7 +102,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".DisplayAlertbox"></activity>
+        <activity android:name=".DisplayAlertbox" />
+        <activity android:name=".AboutUs" />
+        <activity android:name=".RideOptions" />
+        <activity android:name=".FaresandCharges" />
+        <activity android:name=".FAQ"></activity>
     </application>
 
 </manifest>
