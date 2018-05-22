@@ -200,6 +200,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     View view;
     TextView title,message;
     Button left,right;
+    AlertDialog alert;
 
     @Override
     public void onBackPressed() {
@@ -276,6 +277,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         message=(TextView)view.findViewById(R.id.message);
         left=(Button) view.findViewById(R.id.left_btn);
         right=(Button) view.findViewById(R.id.right_btn);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+        builder .setView(view)
+                .setCancelable(false);
+
+        alert = builder.create();
 
         if (googleServicesAvailable()) {
             //Toast.makeText(this, "Perfect !", Toast.LENGTH_SHORT).show();
@@ -539,11 +546,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     left.setVisibility(View.GONE);
                     right.setText("Ok");
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                    builder .setView(view)
-                            .setCancelable(false);
-
-                    final AlertDialog alert = builder.create();
                     alert.show();
 
                     right.setOnClickListener(null);
@@ -996,6 +998,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                     left.setVisibility(View.GONE);
                                     right.setText("Try Again");
 
+                                    alert.show();
+
                                     right.setOnClickListener(null);
                                     right.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -1008,15 +1012,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                             data.child(log_id.getString("id", null)).removeValue();
                                             findViewById(R.id.pickup_layout).setVisibility(View.VISIBLE);
                                             findViewById(R.id.destn_layout).setVisibility(View.VISIBLE);
+                                            alert.dismiss();
                                         }
                                     });
-
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                                    builder .setView(view)
-                                            .setCancelable(false);
-
-                                    AlertDialog alert = builder.create();
-                                    alert.show();
                                 }
                             }, 20000);
                         }
@@ -1079,6 +1077,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         left.setVisibility(View.GONE);
                         right.setText("Try Again");
 
+                        alert.show();
+
                         right.setOnClickListener(null);
                         right.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -1103,15 +1103,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                 place_drivers_rickshaw();
                                 driverid = "";
                                 place_drivers();
+                                alert.dismiss();
                             }
                         });
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                        builder .setView(view)
-                                .setCancelable(false);
-
-                        AlertDialog alert = builder.create();
-                        alert.show();
                     }
                 }, 20000);
 //                }
@@ -1474,20 +1468,17 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         left.setVisibility(View.GONE);
                         right.setText("Try Again");
 
+                        alert.show();
+
+
                         right.setOnClickListener(null);
                         right.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 cancel_current_trip();
+                                alert.dismiss();
                             }
                         });
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                        builder .setView(view)
-                                .setCancelable(false);
-
-                        AlertDialog alert = builder.create();
-                        alert.show();
 //                        // Log.v("TAG","cancel");
 //
 //                        if (driver != null) {
@@ -1711,20 +1702,16 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         left.setVisibility(View.GONE);
                         right.setText("Try Again");
 
+                        alert.show();
+
                         right.setOnClickListener(null);
                         right.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 cancel_current_trip();
+                                alert.dismiss();
                             }
                         });
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                        builder .setView(view)
-                                .setCancelable(false);
-
-                        AlertDialog alert = builder.create();
-                        alert.show();
 
 //                        stopService(new Intent(Home.this, NotificationService.class));
                         // Log.v("TAG","cancel");
@@ -2104,11 +2091,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         right.setText("No");
         left.setText("Yes");
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-        builder .setView(view)
-                .setCancelable(false);
-
-        final AlertDialog alert = builder.create();
         alert.show();
 
         right.setOnClickListener(null);
@@ -3892,11 +3874,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
             offervalue=(int)less;
             if (pr<less)
-                pr=0.0;
+                pr=0;
             else
                 pr=pr-less;
 
-            final_price.setText("Rs. "+pr);
+            final_price.setText("Rs. "+(int)pr);
             offer.setText(intent.getStringExtra("offer"));
 
         } else if (requestCode==4 && resultCode==RESULT_OK){
@@ -4039,11 +4021,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         }
                     });
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                    builder .setView(view)
-                            .setCancelable(false);
-
-                    AlertDialog alert = builder.create();
                     alert.show();
                 }
                 else {

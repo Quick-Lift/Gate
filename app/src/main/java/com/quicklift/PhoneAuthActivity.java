@@ -194,6 +194,10 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                     db.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
+                                            editor.putString("excelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/excel").getValue(Integer.class)));
+                                            editor.putString("sharecharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/share").getValue(Integer.class)));
+                                            editor.putString("fullcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/full").getValue(Integer.class)));
+                                            editor.commit();
                                             for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                                                 ArrayList<String> price=new ArrayList<String>();
                                                 price.add(data.child("Latitude").getValue(String.class));

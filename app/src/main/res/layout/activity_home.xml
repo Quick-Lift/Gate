@@ -273,7 +273,7 @@
                                      android:layout_marginBottom="5dp"
                                      android:background="@drawable/round_button">
                                      <ImageView
-                                         android:layout_width="60dp"
+                                         android:layout_width="55dp"
                                          android:layout_height="40dp"
                                          android:layout_gravity="center_horizontal"
                                          android:src="@drawable/share"/>
@@ -521,18 +521,6 @@
                              android:orientation="horizontal">
 
                              <TextView
-                                 android:id="@+id/amount"
-                                 android:layout_width="0dp"
-                                 android:layout_weight="1"
-                                 android:layout_height="match_parent"
-                                 android:gravity="center_vertical|start"
-                                 android:paddingLeft="5dp"
-                                 android:text=""
-                                 android:textSize="16sp"
-                                 android:textStyle="bold"
-                                 android:textColor="#000000"/>
-
-                             <TextView
                                  android:layout_width="0dp"
                                  android:layout_weight="1"
                                  android:layout_height="match_parent"
@@ -544,10 +532,22 @@
                                  android:textColor="#000000"/>
 
                              <TextView
+                                 android:id="@+id/amount"
                                  android:layout_width="0dp"
                                  android:layout_weight="1"
                                  android:layout_height="match_parent"
-                                 android:gravity="center_vertical|end"
+                                 android:gravity="center"
+                                 android:paddingLeft="5dp"
+                                 android:text=""
+                                 android:textSize="16sp"
+                                 android:textStyle="bold"
+                                 android:textColor="#000000"/>
+
+                             <TextView
+                                 android:layout_width="0dp"
+                                 android:layout_weight="1"
+                                 android:layout_height="match_parent"
+                                 android:gravity="center"
                                  android:text=""
                                  android:paddingEnd="5dp"
                                  android:textStyle="bold"
@@ -635,10 +635,10 @@
                          android:background="@drawable/round_button_blue">
                          <ImageView
                              android:id="@+id/final_image"
-                             android:layout_width="90dp"
+                             android:layout_width="70dp"
                              android:layout_height="70dp"
                              android:layout_gravity="center_horizontal"
-                             android:src="@drawable/carfinal"/>
+                             android:src="@drawable/share"/>
                          <TextView
                              android:id="@+id/time"
                              android:layout_width="wrap_content"

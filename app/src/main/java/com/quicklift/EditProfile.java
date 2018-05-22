@@ -49,6 +49,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -272,20 +273,24 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
         switch(requestCode) {
             case 1234:
                 if(resultCode == RESULT_OK){
-                    selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String filePath = cursor.getString(columnIndex);
-                    cursor.close();
-
-                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-                    Bitmap imageThumbnail= ThumbnailUtils.extractThumbnail(yourSelectedImage,150,150);
-                    upload_img = BitMapToString(imageThumbnail);
-                    Glide.with(EditProfile.this).load(selectedImage).into(pic);
+                    if (data.getData()!=null) {
+                        Uri uri = data.getData();
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                            //image.setImageBitmap(bitmap);
+                            pic.setImageURI(uri);
+                            Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, 150, 150);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            thumb.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                            byte[] byteFormat = stream.toByteArray();
+                            upload_img = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        Toast.makeText(this, "Unable to get image. Please try again !!", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
         }

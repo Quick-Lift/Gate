@@ -1,9 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:background="#ffffff"
     tools:context="com.quicklift.FAQ">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Frequently Asked Question"
+            android:textSize="18sp"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:textStyle="italic|bold"
+            android:textColor="#000000"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/all_margin">
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="expand"
+                android:src="@drawable/ic_down"/>
+
+            <TextView
+                android:id="@+id/ques1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="How the booking can be done on QuickLift App?"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="30dp"/>
+
+            <TextView
+                android:id="@+id/ans1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Launch the QuickLift app. Put the drop location by clicking on destination white rectangle. Select the proper vehicle type and then click on confirm booking button.\nYour request will be sent and the booking confirmation details will be displayed as notification with OTP.\n\nTo change the source location, you have the option of changing the source location after entering the drop location. There is another white box which displays your current location. By clicking on that white rectangle, source location can also be changed."
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:layout_below="@+id/ques1"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/all_margin">
+
+            <ImageView
+                android:id="@+id/image2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="expand"
+                android:src="@drawable/ic_down"/>
+
+            <TextView
+                android:id="@+id/ques2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="What are the types of Rides QuickLift provides?"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="30dp"/>
+
+            <TextView
+                android:id="@+id/ans2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="QuickLift provides various types of vehicles for the smooth ride based on your need and choice. You have the option of hiring small cabs to SUV Cabs based on your needs. QuickLift provides E rickshaws booking also through the app."
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:layout_below="@+id/ques2"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/all_margin">
+
+            <ImageView
+                android:id="@+id/image3"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="expand"
+                android:src="@drawable/ic_down"/>
+
+            <TextView
+                android:id="@+id/ques3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="How can I get the details of my previous rides?"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="30dp"/>
+
+            <TextView
+                android:id="@+id/ans3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="By clicking on the menu button on the top left side of app, you get all the option list. Click on the Rides' and you will get complete details of all your previous ride. It shows not only the source and destination of that ride with fare details but also the complete driver details. \n\nIn case of ongoing rides, you will get that ride on top with the green rectangle surrounding it."
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:layout_below="@+id/ques3"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/all_margin">
+
+            <ImageView
+                android:id="@+id/image4"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="expand"
+                android:src="@drawable/ic_down"/>
+
+            <TextView
+                android:id="@+id/ques4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="How would I know about the current offers?"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="30dp"/>
+
+            <TextView
+                android:id="@+id/ans4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="By clicking on the menu button on the top left side of app, you get all the option list. Click on the 'Offers' , and you will get list of all the offers provided to you by QuickLift.\nYou can refer your friend also earn the offers."
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:layout_below="@+id/ques4"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/all_margin">
+
+            <ImageView
+                android:id="@+id/image5"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="expand"
+                android:src="@drawable/ic_down"/>
+
+            <TextView
+                android:id="@+id/ques5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="How can I raise a complaint about and issue during my QuickLift ride?"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="30dp"/>
+
+            <TextView
+                android:id="@+id/ans5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="By clicking on the menu button on the top left side of app, you get all the option list. Click on the 'Support', you will get the contact details of the QuicKLift’s customer care."
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:layout_below="@+id/ques5"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/all_margin">
+
+            <ImageView
+                android:id="@+id/image6"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="expand"
+                android:src="@drawable/ic_down"/>
+
+            <TextView
+                android:id="@+id/ques6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="What should I do in an emergency situation during the trip?"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="30dp"/>
+
+            <TextView
+                android:id="@+id/ans6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="By clicking on the menu button on the top left side of app, you get all the option list. Click on the 'Emergency contact'.  Please save an emergency contact number for you. You can contact that person on a single tap using this emergency contact option."
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:layout_below="@+id/ques6"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/all_margin">
+
+            <ImageView
+                android:id="@+id/image7"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="expand"
+                android:src="@drawable/ic_down"/>
+
+            <TextView
+                android:id="@+id/ques7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Can the booking be done by calling customer care number?"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="30dp"/>
+
+            <TextView
+                android:id="@+id/ans7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="QuickLift cab service is provided and booking is done only through app. Customer care details are only for supporting some specific issues and not for the booking and booking details."
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:layout_below="@+id/ques7"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</ScrollView>

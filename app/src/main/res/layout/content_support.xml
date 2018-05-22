@@ -15,8 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#05affc"
-        android:text="Contact Us :-"
+        android:text="Contact Us -"
         android:textSize="18sp"
+        android:textStyle="bold"
         android:paddingLeft="20dp"
         android:paddingBottom="2dp"
         android:layout_marginTop="10dp"/>

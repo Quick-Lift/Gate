@@ -193,7 +193,7 @@ public class PlaceSelector extends AppCompatActivity {
                                 intent.putExtra("lat", myPlace.getLatLng().latitude);
                                 intent.putExtra("lng", myPlace.getLatLng().longitude);
                                 intent.putExtra("case","1");
-
+//
 //
 //
 //

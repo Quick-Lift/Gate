@@ -44,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -207,7 +208,7 @@ public class CustomerRegistration extends AppCompatActivity {
                 });
             }
             SharedPreferences log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
-            SharedPreferences.Editor editor=log_id.edit();
+            final SharedPreferences.Editor editor=log_id.edit();
             //Toast.makeText(CustomerRegistration.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
             //Log.v("TAG",user.getUid());
             editor.putString("id",key);
@@ -222,6 +223,10 @@ public class CustomerRegistration extends AppCompatActivity {
             db.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    editor.putString("excelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/excel").getValue(Integer.class)));
+                    editor.putString("sharecharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/share").getValue(Integer.class)));
+                    editor.putString("fullcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/full").getValue(Integer.class)));
+                    editor.commit();
                     for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                         ArrayList<String> price=new ArrayList<String>();
                         price.add(data.child("Latitude").getValue(String.class));
@@ -343,21 +348,24 @@ public class CustomerRegistration extends AppCompatActivity {
             case 1234:
                 if(resultCode == RESULT_OK){
                     showProgressDialog();
-
-                    selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String filePath = cursor.getString(columnIndex);
-                    cursor.close();
-
-                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-                    Bitmap imageThumbnail= ThumbnailUtils.extractThumbnail(yourSelectedImage,150,150);
-                    upload_img = BitMapToString(imageThumbnail);
-                    pic.setImageBitmap(yourSelectedImage);
+                    if (data.getData()!=null) {
+                        Uri uri = data.getData();
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                            //image.setImageBitmap(bitmap);
+                            pic.setImageURI(uri);
+                            Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, 150, 150);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            thumb.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                            byte[] byteFormat = stream.toByteArray();
+                            upload_img = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        Toast.makeText(this, "Unable to get image. Please try again !!", Toast.LENGTH_SHORT).show();
+                    }
 
                     hideProgressDialog();
                 }
