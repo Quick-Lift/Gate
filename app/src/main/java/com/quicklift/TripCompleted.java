@@ -65,7 +65,7 @@ public class TripCompleted extends AppCompatActivity {
         save=(Button) findViewById(R.id.save);
         cancel=(Button) findViewById(R.id.cancel);
 
-        amount.setText(log_id.getString("amount",null));
+        amount.setText("Rs. "+log_id.getString("amount",null));
 
         editor.putString("driver","");
         editor.putString("ride","");
@@ -115,12 +115,13 @@ public class TripCompleted extends AppCompatActivity {
 //            }
 //        });
 
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers/"+driverid);
+        dref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.v("TAG",getIntent().getStringExtra("id"));
+//                Log.v("TAG",getIntent().getStringExtra("id"));
                 if (dataSnapshot.exists()) {
-                    Log.v("TAG","hello");
+//                    Log.v("TAG","hello");
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                     if (!map.get("thumb").toString().equals("")) {
                         byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);

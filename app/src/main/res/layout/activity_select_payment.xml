@@ -39,6 +39,7 @@
         android:textColor="#05affc"
         android:textSize="22sp"
         android:onClick="selectmode"
+        android:visibility="gone"
         android:background="@drawable/all_margin"
         android:layout_margin="5dp"/>
 

@@ -7,7 +7,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
+
+import static com.quicklift.Home.home;
+import static com.quicklift.Home.network_status;
+import static com.quicklift.PlaceSelector.place;
+import static com.quicklift.PlaceSelector.place_network_status;
 
 /**
  * Created by adarsh on 5/5/18.
@@ -16,35 +23,33 @@ import android.widget.Toast;
 public class CheckConnectivity extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+//        Toast.makeText(context, "hi", Toast.LENGTH_SHORT).show();
         boolean isConnected = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
         if(isConnected){
-//            Intent i = new Intent(context, DisplayAlertbox.class);
-//            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            context.startActivity(i);
-
+            if (home!=null) {
+                if (network_status != null)
+                    network_status.setVisibility(View.VISIBLE);
+                home.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+            if (place!=null){
+                if (place_network_status != null)
+                    place_network_status.setVisibility(View.VISIBLE);
+                place.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
         }
         else{
-//            Toast.makeText(context, "Internet Connected", Toast.LENGTH_LONG).show();
+            if (home!=null) {
+                if (network_status!=null)
+                    network_status.setVisibility(View.GONE);
+                home.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+            if (place!=null){
+                if (place_network_status!=null)
+                    place_network_status.setVisibility(View.GONE);
+                place.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
         }
-
-//        if (!wifi.isAvailable() && !mobile.isAvailable()) {
-//            // Do something
-//            AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.myBackgroundStyle);
-//            builder.setMessage("Turn on your internet connection and try again.")
-//                    .setCancelable(false)
-//                    .setTitle("No Internet !")
-//                    .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//
-//            //Creating dialog box
-//            AlertDialog alert = builder.create();
-//            //Setting the title manually
-//            alert.show();
-//            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-////            Log.d("Network Available ", "Flag No 1");
-//        }
     }
 }

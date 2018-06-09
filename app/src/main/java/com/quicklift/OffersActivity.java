@@ -8,22 +8,29 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.system.Os;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +38,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -39,10 +51,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class OffersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ListView list;
     private SharedPreferences log_id;
-    private DatabaseReference db;
+    private DatabaseReference db,off;
     ArrayList<String> offers=new ArrayList<>();
     TextView code,offer;
-    String refcode="";
+    String refcode="",sharedisc,shareupto;
     ProgressDialog dialog;
 
     @Override
@@ -72,6 +84,7 @@ public class OffersActivity extends AppCompatActivity implements NavigationView.
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
         db= FirebaseDatabase.getInstance().getReference("ReferalCode/"+log_id.getString("id",null));
+        off= FirebaseDatabase.getInstance().getReference("Offers");
 
         dialog=new ProgressDialog(this);
         dialog.setCanceledOnTouchOutside(false);
@@ -82,6 +95,27 @@ public class OffersActivity extends AppCompatActivity implements NavigationView.
         code=(TextView)findViewById(R.id.code);
         offer=(TextView)findViewById(R.id.offer);
         list=(ListView)findViewById(R.id.list);
+
+//        Refer your friends and get 50% off upto Rs. 50/- on your next ride
+
+        off.orderByChild("code").equalTo("100").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    for (DataSnapshot data:dataSnapshot.getChildren()){
+                        ((TextView)findViewById(R.id.message)).setText("Refer your friends and get "+
+                                data.child("discount").getValue().toString()+"% off upto Rs. "+data.child("upto").getValue().toString()+"/- on your next ride.");
+                        sharedisc=data.child("discount").getValue().toString();
+                        shareupto=data.child("upto").getValue().toString();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         db.child("code").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -220,14 +254,71 @@ public class OffersActivity extends AppCompatActivity implements NavigationView.
 
     public void share(View view){
         if (!refcode.equals("")) {
+//            Uri imageUri = Uri.parse("android.resource://" + getPackageName()
+//                    + "/drawable/" + R.drawable.logo);
+//            Uri imageUri = Uri.parse("android.resource://com.quicklift/drawable/"+R.drawable.logo);
+            final String appPackageName = getApplicationContext().getPackageName();
+////            String imagePath = "android.resource://com.quicklift/drawable/home";
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT,
-                    "Download Quicklift app and win 100% off upto Rs. 50 on your first ride.\n " +
-                            "Playstore Link Here !!!!!" +
+                    "Download Quicklift app and win "+sharedisc+"% off upto Rs. "+sharedisc+"/- on your first ride.\n " +
+                            "https://play.google.com/store/apps/details?id=" + appPackageName +
                             "\nUse Referal Code : "+refcode);
+//            shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out Aap Ka Sewak App at: https://play.google.com/store/apps/details?id=" + appPackageName);
+
+//            shareIntent.putExtra(Intent.EXTRA_STREAM,imageUri);
             shareIntent.setType("text/plain");
-            startActivity(shareIntent);
+            startActivity(Intent.createChooser(shareIntent, "Refer QuickLift"));
+
+//            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+//            shareIntent.setType("image/jpeg");
+//            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+//            shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello");
+//            shareIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            Intent chooser = Intent.createChooser(shareIntent, "send");
+//            startActivity(chooser);
+
+//            ShareCompat.IntentBuilder.from(this)
+//                    .setType("text/plain")
+//                    .setChooserTitle("Chooser title")
+//                    .setText("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())
+//                    .startChooser();
         }
+    }
+
+    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException{
+        InputStream input = getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inDither=true;//optional
+        onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
+            return null;
+        }
+
+        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+
+        double ratio = (originalSize > 150) ? (originalSize / 150) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inDither = true; //optional
+        bitmapOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//
+        input = this.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        input.close();
+        return bitmap;
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio){
+        int k = Integer.highestOneBit((int)Math.floor(ratio));
+        if(k==0) return 1;
+        else return k;
     }
 }

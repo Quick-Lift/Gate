@@ -1,9 +1,13 @@
 package com.quicklift;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by adarsh on 27/4/18.
  */
@@ -27,7 +33,11 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
     Data data;
     Marker marker_drop;
     Cursor cursor,spec_location;
-    int spec_package=-1,vehicle_case;
+    Context context;
+    int spec_package=-1,vehicle_case,parking;
+    String parkingpricefull,parkingpriceshare,parkingpriceexcel;
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected String doInBackground(Object... objects) {
@@ -43,6 +53,11 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
         spec_location=(Cursor) objects[9];
         spec_package=(int) objects[10];
         vehicle_case=(int) objects[11];
+        context=(Context) objects[12];
+        parking=(int) objects[13];
+        parkingpriceshare=(String) objects[14];
+        parkingpricefull=(String) objects[15];
+        parkingpriceexcel=(String) objects[16];
         //duration=(String) objects[2];
 
         DownloadUrl downloadUrl=new DownloadUrl();
@@ -64,6 +79,9 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
         duration=directionsList.get("duration");
         distance=directionsList.get("distance");
 
+        pref = context.getSharedPreferences("Login",MODE_PRIVATE);
+        editor=pref.edit();
+
         //editText.setText(distance + " : "+duration);
 //        Toast.makeText(this, ""+cursor.getCount()+" , "+cursor.getColumnCount(), Toast.LENGTH_SHORT).show();
 
@@ -83,13 +101,13 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
         }
 
 //        pricebike(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
-        priceexcel(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
+        priceexcel(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60,parking);
 //        priceauto(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
-        pricecar(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
-        pricerickshaw(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
+        pricecar(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60,parking);
+//        pricerickshaw(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
 //        priceshareauto(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
-        pricesharecar(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
-        pricesharerickshaw(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
+        pricesharecar(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60,parking);
+//        pricesharerickshaw(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
 
 //        editText.setText(duration);
 //        editText1.setText(duration);
@@ -100,9 +118,10 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //        editText6.setText(duration);
     }
 
-    private void priceexcel(int pckg, Cursor sloc, int index, Cursor cursor, int distanceValue, int time) {
+    private void priceexcel(int pckg, Cursor sloc, int index, Cursor cursor, int distanceValue, int time, int parking) {
 //        Toast.makeText(this, ""+distanceValue+" "+time, Toast.LENGTH_SHORT).show();
 
+//        Log.v("Address",String.valueOf(cursor.getCount()));
         cursor.moveToFirst();
         for (int x=0;x<8;x++){
             cursor.moveToNext();
@@ -116,51 +135,60 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
         if (pckg==-1) {
             if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))) {
                 fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
             } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
                 fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
             } else {
                 fare = Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_base")));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_base")))));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
             }
             fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
         }
         else {
             if (distanceValue <= Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))) {
                 fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
             } else if (distanceValue <= Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))) {
                 fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+                Log.v("TAG",""+fare);
+//                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             } else {
                 fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first"))) - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
-//                Log.v("TAG",""+fare);
+                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
-//                Log.v("TAG",""+fare);
-                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+                Log.v("TAG",""+fare);
             }
+            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+            fare=fare+(Float.parseFloat(pref.getString("excel",null))*parking);
+            parkingpriceexcel=String.valueOf((int)(Float.parseFloat(pref.getString("excel",null))*parking));
+            editor.putString("parkexcel",parkingpriceexcel);
+            editor.commit();
         }
-//            Log.v("TAG",""+fare);
+            Log.v("TAG",""+fare);
 
         if (vehicle_case==1) {
             int val=(int)fare;
+            val=(int)(((float)val)* Float.parseFloat(pref.getString("ratemultiplier",null)));
             price_excel.setText("Rs. " + val);
         }
         else if (vehicle_case==2) {
+            int add=(int)(fare/100);
             int val=(int)fare;
-            price_excel.setText("Rs. " + 2*val);
+            val=(int)(((float)val)* Float.parseFloat(pref.getString("ratemultiplier",null)))+((int)((float)add* Float.parseFloat(pref.getString("ratemultiplier",null)))*Integer.parseInt(pref.getString("outsidetripextraamount",null)));
+            price_excel.setText("Rs. " + val);
+
+            Log.v("TAG",""+distanceValue+" "+fare+" "+val);
         }
     }
 //    private void pricebike(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
@@ -171,7 +199,7 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //        price_auto.setText("Rs. " + String.valueOf(distanceValue * 4 / 1000));
 //        //time_auto.setText(String.valueOf(time/60)+" min");
 //    }
-    private void pricecar(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+    private void pricecar(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time, int parking) {
         cursor.moveToFirst();
 //            for (int x=0;x<1;x++){
 //                cursor.moveToNext();
@@ -211,7 +239,7 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
 //                Log.v("TAG",""+fare);
-                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             } else {
                 fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
 //                Log.v("TAG",""+fare);
@@ -219,21 +247,31 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
 //                Log.v("TAG",""+fare);
-                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             }
+            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+            fare=fare+(Float.parseFloat(pref.getString("fullcar",null))*parking);
+            parkingpricefull=String.valueOf((int)(Float.parseFloat(pref.getString("fullcar",null))*parking));
+
+            editor.putString("parkfull",parkingpricefull);
+            editor.commit();
         }
 
         if (vehicle_case==1){
             int val=(int)fare;
+            val=(int)(((float)val)* Float.parseFloat(pref.getString("ratemultiplier",null)));
             price_car.setText("Rs. " + val);
         }
         else if (vehicle_case==2) {
-            int val = (int) fare;
-            price_car.setText("Rs. " + 2 * val);
+            int add=(int)(fare/100);
+            int val=(int)fare;
+            val=(int)(((float)val)* Float.parseFloat(pref.getString("ratemultiplier",null)))+((int)((float)add* Float.parseFloat(pref.getString("ratemultiplier",null)))*Integer.parseInt(pref.getString("outsidetripextraamount",null)));
+            price_car.setText("Rs. " + val);
+
+            Log.v("TAG",""+distanceValue+" "+fare+" "+val);
         }
         //time_car.setText(String.valueOf(time/60)+" min");
     }
-    private void pricerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+    private void pricerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time, int parking) {
         cursor.moveToFirst();
         for (int x=0;x<2;x++){
             cursor.moveToNext();
@@ -283,8 +321,10 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //                Log.v("TAG",""+fare);
                 fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             }
+            fare=fare+Float.parseFloat(pref.getString("fullrickshaw",null));
         }
         int val=(int)fare;
+        val=val* Integer.parseInt(pref.getString("ratemultiplier",null));
         price_rickshaw.setText("Rs. " + val);
         //time_rickshaw.setText(String.valueOf(time/60)+" min");
     }
@@ -292,7 +332,7 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //        price_shareAuto.setText("Rs. " + String.valueOf(distanceValue * 3 / 1000));
 //        //time_shareAuto.setText(String.valueOf(time/60)+" min");
 //    }
-    private void pricesharecar(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+    private void pricesharecar(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time, int parking) {
         cursor.moveToFirst();
         for (int x=0;x<4;x++){
             cursor.moveToNext();
@@ -331,7 +371,7 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_first"))) * (distanceValue - Integer.parseInt(sloc.getString(sloc.getColumnIndex("distance")))));
 //                Log.v("TAG",""+fare);
-                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             } else {
                 fare = Float.valueOf(sloc.getString(sloc.getColumnIndex("amount")));
 //                Log.v("TAG",""+fare);
@@ -339,14 +379,20 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //                Log.v("TAG",""+fare);
                 fare = fare + (Float.valueOf(cursor.getString(cursor.getColumnIndex("amount_second"))) * (distanceValue - Integer.parseInt(cursor.getString(cursor.getColumnIndex("dist_first")))));
 //                Log.v("TAG",""+fare);
-                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+//                fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             }
+            fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
+            fare=fare+(Float.parseFloat(pref.getString("sharecar",null))*parking);
+            parkingpriceshare=String.valueOf((int)(Float.parseFloat(pref.getString("sharecar",null))*parking));
+            editor.putString("parkshare",parkingpriceshare);
+            editor.commit();
         }
         int val=(int)fare;
+        val=(int)(((float)val)* Float.parseFloat(pref.getString("ratemultiplier",null)));
         price_shareCar.setText("Rs. " + val);
         //time_shareCar.setText(String.valueOf(time/60)+" min");
     }
-    private void pricesharerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time) {
+    private void pricesharerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time, int parking) {
         cursor.moveToFirst();
         for (int x=0;x<6;x++){
             cursor.moveToNext();
@@ -395,8 +441,10 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //                Log.v("TAG",""+fare);
                 fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             }
+            fare=fare+Float.parseFloat(pref.getString("sharerickshaw",null));
         }
         int val=(int)fare;
+        val=val* Integer.parseInt(pref.getString("ratemultiplier",null));
         price_shareRickshaw.setText("Rs. " + val);
         //time_shareRickshaw.setText(String.valueOf(time/60)+" min");
     }

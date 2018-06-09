@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QuickLiftUser</string>
+    <string name="app_name">QuickLift</string>
     <string name="label_google_sign_in">Firebase + Google Sign In</string>
     <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
 
@@ -82,4 +82,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main2">Map</string>
     <string name="seat">Select Seats</string>
+
+    <array name="delete_list">
+        <item>Delete</item>
+    </array>
 </resources>

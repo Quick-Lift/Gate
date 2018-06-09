@@ -101,6 +101,13 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+        <!--<receiver android:name=".Home$CheckConnection">-->
+            <!--<intent-filter>-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+
+                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <activity android:name=".DisplayAlertbox" />
         <activity android:name=".AboutUs" />

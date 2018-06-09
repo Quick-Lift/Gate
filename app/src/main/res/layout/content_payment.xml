@@ -24,9 +24,11 @@
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp">
+        android:layout_marginTop="40dp"
+        android:checkedButton="@+id/cash">
 
         <RadioButton
+            android:id="@+id/cash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Cash"
@@ -36,6 +38,7 @@
             android:paddingLeft="15dp"/>
 
         <RadioButton
+            android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Debit/Credit Card"
@@ -43,6 +46,7 @@
             android:paddingLeft="15dp"
             android:textColor="#05affc"
             android:buttonTint="#05affc"
+            android:enabled="false"
             android:layout_marginTop="20dp"/>
 
         <EditText
@@ -55,6 +59,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="15dp"
+            android:enabled="false"
             android:background="@drawable/margin"/>
 
         <LinearLayout
@@ -73,6 +78,7 @@
                 android:hint="Expiry"
                 android:textColorHint="#8805affc"
                 android:paddingLeft="20dp"
+                android:enabled="false"
                 android:background="@drawable/margin"/>
 
             <EditText
@@ -83,11 +89,13 @@
                 android:hint="CVV"
                 android:textColorHint="#8805affc"
                 android:paddingLeft="20dp"
+                android:enabled="false"
                 android:background="@drawable/margin"/>
 
         </LinearLayout>
 
         <RadioButton
+            android:id="@+id/paytm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Paytm"
@@ -95,9 +103,11 @@
             android:paddingLeft="15dp"
             android:textColor="#05affc"
             android:buttonTint="#05affc"
+            android:enabled="false"
             android:layout_marginTop="20dp"/>
 
         <RadioButton
+            android:id="@+id/upi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="UPI"
@@ -105,6 +115,7 @@
             android:buttonTint="#05affc"
             android:paddingLeft="15dp"
             android:textColor="#05affc"
+            android:enabled="false"
             android:layout_marginTop="20dp"/>
 
     </RadioGroup>
@@ -118,5 +129,6 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:backgroundTint="#05affc"
+        android:onClick="save"
         android:textColor="#FFFFFF"/>
 </LinearLayout>

@@ -20,9 +20,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -43,6 +46,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -58,6 +62,8 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     String latitude,longitude;
     ListView list;
     ArrayList<String> loc_name=new ArrayList<>();
+    ArrayList<String> loc_key=new ArrayList<>();
+    int item_id;
 
     @Override
     public void onBackPressed() {
@@ -98,8 +104,8 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         address.setTextColor(Color.parseColor("#05affc"));
         address.setHintTextColor(Color.parseColor("#9005affc"));
         LatLngBounds latLngBounds = new LatLngBounds(
-                new LatLng(12.934533,77.626579),
-                new LatLng(12.934533,77.626579));
+                new LatLng(25.612677,85.158875),
+                new LatLng(25.612677,85.158875));
         autocompleteFragment.setBoundsBias(latLngBounds);
 
 //        Toolbar toolbar = findViewById(R.id.toolbar);
@@ -132,12 +138,14 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         updatenavbar();
 
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("SavedLocations/"+log_id.getString("id",null)+"/saved");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
+                    loc_key.clear();
                     loc_name.clear();
                     for (DataSnapshot data:dataSnapshot.getChildren()){
+                        loc_key.add(data.getKey());
                         loc_name.add(data.child("name").getValue().toString()+" ("+data.child("locname").getValue().toString()+")");
                     }
                     list.setAdapter(new CustomAdapter());
@@ -182,6 +190,46 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 //                Toast.makeText(Home.this, status.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                item_id=position;
+                registerForContextMenu(list);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.list) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            menu.setHeaderTitle("Menu");
+            String[] menuItems = getResources().getStringArray(R.array.delete_list);
+            for (int i = 0; i<menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
+            }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        String[] menuItems = getResources().getStringArray(R.array.delete_list);
+        String menuItemName = menuItems[menuItemIndex];
+        String listItemName = "Menu";
+
+        if(menuItemName.equals("Delete")) {
+            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("SavedLocations/"+log_id.getString("id",null)+"/saved");
+            ref.child(loc_key.get(item_id)).removeValue();
+            Toast.makeText(this, "Location Removed !!", Toast.LENGTH_LONG).show();
+        }
+        //text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
+        //Toast.makeText(this, String.format("Selected %s for item %s",search_array.get(item_no).getId() , listItemName), Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     private void updatenavbar() {
@@ -216,12 +264,18 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         else {
             DatabaseReference ref=FirebaseDatabase.getInstance().getReference("SavedLocations/"+log_id.getString("id",null)+"/saved");
             String key=ref.push().getKey();
-            ref.child(key+"/name").setValue(location_name.getText().toString());
-            ref.child(key+"/locname").setValue(address.getText().toString());
-            ref.child(key+"/lat").setValue(latitude);
-            ref.child(key+"/lng").setValue(longitude);
+            HashMap<String,String> map=new HashMap<>();
+            map.put("name",location_name.getText().toString());
+            map.put("locname",address.getText().toString());
+            map.put("lat",latitude);
+            map.put("lng",longitude);
+//            ref.child(key+"/name").setValue(location_name.getText().toString());
+//            ref.child(key+"/locname").setValue(address.getText().toString());
+//            ref.child(key+"/lat").setValue(latitude);
+//            ref.child(key+"/lng").setValue(longitude);
+            ref.child(key).setValue(map);
 
-            Toast.makeText(this, "Location Saved !", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Location Saved !", Toast.LENGTH_SHORT).show();
             address.setText("");
             location_name.setText("");
         }

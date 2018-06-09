@@ -1,12 +1,17 @@
 package com.quicklift;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -43,8 +48,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class PlaceSelector extends AppCompatActivity {
     private GooglePlacesAutocompleteAdapter dataAdapter;
@@ -55,6 +63,10 @@ public class PlaceSelector extends AppCompatActivity {
     private GeoDataClient mGeoDataClient;
     SQLQueries sqlQueries;
     private SharedPreferences log_id;
+    TextView outofbound;
+    static Activity place=null;
+    static TextView place_network_status=null;
+    CheckConnectivity con=new CheckConnectivity();
 
     @Override
     public void onBackPressed() {
@@ -66,12 +78,15 @@ public class PlaceSelector extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_selector);
+        place=this;
 
         getSupportActionBar().setTitle("Select Place");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         destination=(EditText)findViewById(R.id.destination);
+        outofbound=(TextView)findViewById(R.id.outofbound);
+        place_network_status=(TextView)findViewById(R.id.network_status);
         mGeoDataClient = Places.getGeoDataClient(this, null);
         sqlQueries=new SQLQueries(this);
 
@@ -158,6 +173,7 @@ public class PlaceSelector extends AppCompatActivity {
                 //Toast.makeText(PlaceSelector.this, String.valueOf(dataAdapter.getCount()), Toast.LENGTH_SHORT).show();
 
                 list_places.setVisibility(View.GONE);
+                outofbound.setVisibility(View.GONE);
                 Handler handle=new Handler();
                 handle.postDelayed(new Runnable() {
                     @Override
@@ -181,38 +197,40 @@ public class PlaceSelector extends AppCompatActivity {
                             PlaceBufferResponse places = task.getResult();
                             Place myPlace = places.get(0);
 
-//
-//
+
+
 //                            if (myPlace.getLatLng().latitude >= 25.548596 && myPlace.getLatLng().latitude <= 25.701826
 //                                    && myPlace.getLatLng().longitude >= 84.854858 && myPlace.getLatLng().longitude <= 85.278055 ) {
 
+                            if (myPlace.getAddress().toString().contains("Bihar")){
                                 destination.setText(myPlace.getName());
+//                            Log.v("Address",myPlace.getAddress().toString());
 //                            Toast.makeText(PlaceSelector.this, ""+myPlace.getLatLng().latitude, Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent();
                                 intent.putExtra("place", myPlace.getName());
                                 intent.putExtra("lat", myPlace.getLatLng().latitude);
                                 intent.putExtra("lng", myPlace.getLatLng().longitude);
-                                intent.putExtra("case","1");
-//
-//
-//
-//
-//                                if (myPlace.getLatLng().latitude >= 25.561272 && myPlace.getLatLng().latitude <= 25.654152
-//                                        && myPlace.getLatLng().longitude >= 85.020262 && myPlace.getLatLng().longitude <= 85.278055){
-//                                    intent.putExtra("case","1");
-//                                }
-//                                else {
-//                                    intent.putExtra("case","2");
-//                                }
-//
-//
-//
+//                                intent.putExtra("case","1");
+                                Log.v("Tag",""+myPlace.getLatLng().latitude+" "+myPlace.getLatLng().longitude);
+
+
+
+                                if (myPlace.getLatLng().latitude >= 25.561272 && myPlace.getLatLng().latitude <= 25.654152
+                                        && myPlace.getLatLng().longitude >= 85.020262 && myPlace.getLatLng().longitude <= 85.278055){
+                                    intent.putExtra("case","1");
+                                }
+                                else {
+                                    intent.putExtra("case","2");
+                                }
+
+
                                 setResult(RESULT_OK, intent);
                                 finish();
 
-//                            } else {
+                            } else {
 //                                Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
-//                            }
+                                outofbound.setVisibility(View.VISIBLE);
+                            }
 //
 //
 //
@@ -236,9 +254,44 @@ public class PlaceSelector extends AppCompatActivity {
                 intent.putExtra("place", name.get(position).getPlace());
                 intent.putExtra("lat", Double.parseDouble(name.get(position).getLat()));
                 intent.putExtra("lng", Double.parseDouble(name.get(position).getLng()));
-                intent.putExtra("case","1");
-//
-//
+//                intent.putExtra("case","1");
+
+                double latitude = Double.parseDouble(name.get(position).getLat());
+                double longitude = Double.parseDouble(name.get(position).getLng());
+                Geocoder geocoder = new Geocoder(PlaceSelector.this, Locale.getDefault());
+                //List<Address> addresses =geocoder.getFromLocation(latitude, longitude, 1);
+Log.v("Tag",""+Double.parseDouble(name.get(position).getLat())+" "+Double.parseDouble(name.get(position).getLng()));
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    String stateName = addresses.get(0).getAdminArea();
+
+//                    Log.v("Address",addresses.get(0).getAdminArea());
+                    if (Double.parseDouble(name.get(position).getLat()) >= 25.561272 && Double.parseDouble(name.get(position).getLat()) <= 25.654152
+                            && Double.parseDouble(name.get(position).getLng()) >= 85.020262 && Double.parseDouble(name.get(position).getLng()) <= 85.278055){
+                        intent.putExtra("case","1");
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                    else if (stateName.equals("Bihar")){
+                        intent.putExtra("case","2");
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                    else {
+//                      Log.v("TAG","outside");
+//                      Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
+                        outofbound.setVisibility(View.VISIBLE);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(PlaceSelector.this, "Failed to retrieve address ! Please try again !", Toast.LENGTH_SHORT).show();
+                }
+
+
+
+
+
 //                if (Double.parseDouble(name.get(position).getLat()) >= 25.561272 && Double.parseDouble(name.get(position).getLat()) <= 25.654152
 //                        && Double.parseDouble(name.get(position).getLng()) >= 85.020262 && Double.parseDouble(name.get(position).getLng()) <= 85.278055){
 //                    intent.putExtra("case","1");
@@ -253,15 +306,19 @@ public class PlaceSelector extends AppCompatActivity {
 //                }
 //                else {
 //                    Log.v("TAG","outside");
-//                    Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
+////                    Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
+//                    outofbound.setVisibility(View.VISIBLE);
 //                }
-//
-//
-//
-                setResult(RESULT_OK,intent);
-                finish();
+
+
+
+//                setResult(RESULT_OK,intent);
+//                finish();
             }
         });
+
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(con, intentFilter);
     }
 
     class CustomAdapter extends BaseAdapter{
@@ -292,5 +349,12 @@ public class PlaceSelector extends AppCompatActivity {
 
             return view;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (this.isFinishing())
+            unregisterReceiver(con);
+        super.onDestroy();
     }
 }

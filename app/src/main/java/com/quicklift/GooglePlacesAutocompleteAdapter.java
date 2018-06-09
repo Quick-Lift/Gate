@@ -31,6 +31,7 @@ public class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Fil
     private ArrayList<String> resultList;
     private ArrayList<String> resultkeyList=new ArrayList<>();
     private Context context = null;
+
     public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
         this.context = context;
@@ -58,9 +59,9 @@ public class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Fil
             StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
             sb.append("?key=" + API_KEY);
             sb.append("&components=country:in");
-            sb.append("&location=12.972442,77.580643&radius=30000");
+            sb.append("&location=25.612677,85.158875&radius=30000");
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
-
+//            25.612677,85.158875
             URL url = new URL(sb.toString());
             //Log.v("TAG",  sb.toString());
             conn = (HttpURLConnection) url.openConnection();
@@ -107,7 +108,6 @@ public class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Fil
         //Log.v("TAG",  String.valueOf(descriptionList.size()));
         return descriptionList;
     }
-
 
     @Override
     public Filter getFilter() {

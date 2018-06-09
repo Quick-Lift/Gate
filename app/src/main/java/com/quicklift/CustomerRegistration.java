@@ -186,7 +186,8 @@ public class CustomerRegistration extends AppCompatActivity {
             user_db.child(key).setValue(customer);
             final DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ReferalCode");
             ref.child(key+"/code").setValue(phone.getText().toString()+"@qik");
-
+            DatabaseReference newref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
+            newref.child("100").setValue("1");
             if (!refcode.getText().toString().equals("")){
                 DatabaseReference reference=FirebaseDatabase.getInstance().getReference("ReferalCode");
                 reference.orderByChild("code").equalTo(refcode.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -196,8 +197,6 @@ public class CustomerRegistration extends AppCompatActivity {
 //                            DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+dt.getKey());
 //                            dref.child("101").setValue("true");
                             ref.child(key+"/referredby").setValue(dt.getKey());
-                            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
-                            ref.child("100").setValue("1");
                         }
                     }
 
@@ -226,6 +225,17 @@ public class CustomerRegistration extends AppCompatActivity {
                     editor.putString("excelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/excel").getValue(Integer.class)));
                     editor.putString("sharecharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/share").getValue(Integer.class)));
                     editor.putString("fullcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/full").getValue(Integer.class)));
+                    editor.putString("ratemultiplier",String.valueOf(dataSnapshot.child("RateMultiplier").getValue(Float.class)));
+                    editor.putString("searchingtime",String.valueOf(dataSnapshot.child("SearchingTime").getValue(Integer.class)));
+                    editor.putString("outsidetripextraamount",String.valueOf(dataSnapshot.child("OutsideTripExtraAmount").getValue(Integer.class)));
+                    editor.putString("twoseatprice",String.valueOf(dataSnapshot.child("Twoseatprice").getValue(Integer.class)));
+                    editor.putString("excel",String.valueOf(dataSnapshot.child("ParkingCharge/excel").getValue(Integer.class)));
+                    editor.putString("fullcar",String.valueOf(dataSnapshot.child("ParkingCharge/fullcar").getValue(Integer.class)));
+                    editor.putString("fullrickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/fullrickshaw").getValue(Integer.class)));
+                    editor.putString("sharecar",String.valueOf(dataSnapshot.child("ParkingCharge/sharecar").getValue(Integer.class)));
+                    editor.putString("sharerickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/sharerickshaw").getValue(Integer.class)));
+                    editor.putString("normaltimeradius",String.valueOf(dataSnapshot.child("NormalTimeSearchRadius").getValue().toString()));
+                    editor.putString("peaktimeradius",String.valueOf(dataSnapshot.child("PeakTimeSearchRadius").getValue().toString()));
                     editor.commit();
                     for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                         ArrayList<String> price=new ArrayList<String>();

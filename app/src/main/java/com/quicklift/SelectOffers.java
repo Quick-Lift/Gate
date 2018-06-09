@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,11 +121,30 @@ public class SelectOffers extends AppCompatActivity {
                 finish();
             }
         });
+
+        promocode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                findViewById(R.id.notfound).setVisibility(View.GONE);
+                promocode.setError(null);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     public void apply(View view){
         if (TextUtils.isEmpty(promocode.getText().toString())){
-            Toast.makeText(this, "Please Enter Promocode.", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Please Enter Promocode.", Toast.LENGTH_SHORT).show();
+            promocode.setError("Required.");
         }
         else {
             final ProgressDialog dialog=new ProgressDialog(this);
@@ -149,7 +170,8 @@ public class SelectOffers extends AppCompatActivity {
                         finish();
                     }
                     else {
-                        Toast.makeText(SelectOffers.this, "Invalid Promocode !", Toast.LENGTH_SHORT).show();
+                        findViewById(R.id.notfound).setVisibility(View.VISIBLE);
+//                        Toast.makeText(SelectOffers.this, "Invalid Promocode !", Toast.LENGTH_SHORT).show();
                     }
                 }
 

@@ -30,7 +30,6 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="30dp"
-        android:visibility="invisible"
         android:background="#fdfefe">
 
                  <EditText
@@ -41,7 +40,7 @@
                      android:hint="Pick Up"
                      android:paddingLeft="20dp"
                      android:textColor="#000000"
-                     android:textColorHint="#fdfefe"
+                     android:textColorHint="@android:color/darker_gray"
                      android:background="@android:color/transparent"/>
 <!--
         <Button
@@ -112,6 +111,17 @@
                  android:orientation="vertical"
                  android:gravity="bottom|center_horizontal">
 
+                 <TextView
+                     android:id="@+id/comingsoon"
+                     android:layout_width="match_parent"
+                     android:layout_height="40dp"
+                     android:text="This service is coming soon."
+                     android:textSize="18sp"
+                     android:gravity="center"
+                     android:textColor="#05affc"
+                     android:visibility="gone"
+                     android:background="@drawable/all_margin"/>
+
                  <HorizontalScrollView
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
@@ -161,167 +171,239 @@
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:gravity="center"
+                                 android:orientation="horizontal"
                                  android:background="@drawable/blue_margin">
+
                                  <LinearLayout
-                                     android:layout_width="80dp"
-                                     android:layout_height="80dp"
-                                     android:gravity="center"
-                                     android:orientation="vertical"
-                                     android:id="@+id/rickshaw"
-                                     android:onClick="select_vehicle"
-                                     android:layout_marginTop="5dp"
-                                     android:layout_marginLeft="5dp"
-                                     android:layout_marginBottom="5dp"
-                                     android:background="@drawable/round_button">
-                                     <ImageView
-                                         android:layout_width="70dp"
-                                         android:layout_height="40dp"
-                                         android:layout_gravity="center_horizontal"
-                                         android:src="@drawable/rickshawfinal"/>
+                                     android:layout_width="match_parent"
+                                     android:layout_height="wrap_content"
+                                     android:orientation="vertical">
+
+                                     <LinearLayout
+                                         android:layout_width="80dp"
+                                         android:layout_height="80dp"
+                                         android:gravity="center"
+                                         android:orientation="vertical"
+                                         android:id="@+id/rickshaw"
+                                         android:onClick="select_vehicle"
+                                         android:layout_marginTop="5dp"
+                                         android:layout_marginLeft="5dp"
+                                         android:background="@drawable/round_button">
+                                         <ImageView
+                                             android:layout_width="70dp"
+                                             android:layout_height="40dp"
+                                             android:layout_gravity="center_horizontal"
+                                             android:src="@drawable/rickshawfinal"/>
+                                         <TextView
+                                             android:id="@+id/time_rickshaw"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text="..."
+                                             android:textSize="14sp"
+                                             android:visibility="gone"
+                                             android:textColor="@android:color/black"/>
+                                         <TextView
+                                             android:id="@+id/price_rickshaw"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text="Upcoming"
+                                             android:gravity="center"
+                                             android:textSize="12sp"
+                                             android:textColor="@android:color/black"/>
+                                     </LinearLayout>
                                      <TextView
-                                         android:id="@+id/time_rickshaw"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text="..."
-                                         android:textSize="14sp"
-                                         android:visibility="gone"
-                                         android:textColor="@android:color/black"/>
-                                     <TextView
-                                         android:id="@+id/price_rickshaw"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text=""
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
+                                         android:layout_width="match_parent"
+                                         android:layout_height="25dp"
+                                         android:text="E-Car"
+                                         android:gravity="center"
+                                         android:textSize="18sp"
+                                         android:textColor="#000000"/>
                                  </LinearLayout>
+
                                  <LinearLayout
-                                     android:layout_width="80dp"
-                                     android:layout_height="80dp"
-                                     android:gravity="center"
-                                     android:orientation="vertical"
-                                     android:id="@+id/car"
-                                     android:onClick="select_vehicle"
-                                     android:layout_marginTop="5dp"
-                                     android:layout_marginLeft="5dp"
-                                     android:layout_marginBottom="5dp"
-                                     android:background="@drawable/round_button">
-                                     <ImageView
-                                         android:layout_width="70dp"
-                                         android:layout_height="40dp"
-                                         android:layout_gravity="center_horizontal"
-                                         android:src="@drawable/niji"/>
+                                     android:layout_width="match_parent"
+                                     android:layout_height="wrap_content"
+                                     android:orientation="vertical">
+
+                                     <LinearLayout
+                                         android:layout_width="80dp"
+                                         android:layout_height="80dp"
+                                         android:gravity="center"
+                                         android:orientation="vertical"
+                                         android:id="@+id/car"
+                                         android:onClick="select_vehicle"
+                                         android:layout_marginTop="5dp"
+                                         android:layout_marginLeft="5dp"
+                                         android:background="@drawable/round_button">
+                                         <ImageView
+                                             android:layout_width="70dp"
+                                             android:layout_height="40dp"
+                                             android:layout_gravity="center_horizontal"
+                                             android:src="@drawable/niji"/>
+                                         <TextView
+                                             android:id="@+id/time_car"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text="..."
+                                             android:visibility="gone"
+                                             android:textSize="14sp"
+                                             android:textColor="@android:color/black"/>
+                                         <TextView
+                                             android:id="@+id/price_car"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text=""
+                                             android:textSize="14sp"
+                                             android:textColor="@android:color/black"/>
+                                     </LinearLayout>
                                      <TextView
-                                         android:id="@+id/time_car"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text="..."
-                                         android:visibility="gone"
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
-                                     <TextView
-                                         android:id="@+id/price_car"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text=""
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
+                                         android:layout_width="match_parent"
+                                         android:layout_height="25dp"
+                                         android:text="Van"
+                                         android:gravity="center"
+                                         android:textSize="18sp"
+                                         android:textColor="#000000"/>
                                  </LinearLayout>
+
                                  <LinearLayout
-                                     android:layout_width="80dp"
-                                     android:layout_height="80dp"
-                                     android:gravity="center"
-                                     android:orientation="vertical"
-                                     android:id="@+id/excel"
-                                     android:onClick="select_vehicle"
-                                     android:layout_margin="5dp"
-                                     android:background="@drawable/round_button">
-                                     <ImageView
-                                         android:layout_width="70dp"
-                                         android:layout_height="40dp"
-                                         android:layout_gravity="center_horizontal"
-                                         android:src="@drawable/carfinal"/>
+                                     android:layout_width="match_parent"
+                                     android:layout_height="wrap_content"
+                                     android:orientation="vertical">
+                                     <LinearLayout
+                                         android:layout_width="80dp"
+                                         android:layout_height="80dp"
+                                         android:gravity="center"
+                                         android:orientation="vertical"
+                                         android:id="@+id/excel"
+                                         android:onClick="select_vehicle"
+                                         android:layout_marginLeft="5dp"
+                                         android:layout_marginRight="5dp"
+                                         android:layout_marginTop="5dp"
+                                         android:background="@drawable/round_button">
+                                         <ImageView
+                                             android:layout_width="70dp"
+                                             android:layout_height="40dp"
+                                             android:layout_gravity="center_horizontal"
+                                             android:src="@drawable/carfinal"/>
+                                         <TextView
+                                             android:id="@+id/time_excel"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text="..."
+                                             android:visibility="gone"
+                                             android:textSize="14sp"
+                                             android:textColor="@android:color/black"/>
+                                         <TextView
+                                             android:id="@+id/price_excel"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text=""
+                                             android:textSize="14sp"
+                                             android:textColor="@android:color/black"/>
+                                     </LinearLayout>
                                      <TextView
-                                         android:id="@+id/time_excel"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text="..."
-                                         android:visibility="gone"
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
-                                     <TextView
-                                         android:id="@+id/price_excel"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text=""
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
+                                         android:layout_width="match_parent"
+                                         android:layout_height="25dp"
+                                         android:text="SUV"
+                                         android:gravity="center"
+                                         android:textSize="18sp"
+                                         android:textColor="#000000"/>
                                  </LinearLayout>
                              </LinearLayout>
                              <LinearLayout
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
+                                 android:orientation="horizontal"
                                  android:background="@drawable/blue_margin">
+
                                  <LinearLayout
-                                     android:layout_width="80dp"
-                                     android:layout_height="80dp"
-                                     android:gravity="center"
-                                     android:orientation="vertical"
-                                     android:id="@+id/shareCar"
-                                     android:onClick="select_vehicle"
-                                     android:layout_marginTop="5dp"
-                                     android:layout_marginLeft="5dp"
-                                     android:layout_marginBottom="5dp"
-                                     android:background="@drawable/round_button">
-                                     <ImageView
-                                         android:layout_width="55dp"
-                                         android:layout_height="40dp"
-                                         android:layout_gravity="center_horizontal"
-                                         android:src="@drawable/share"/>
+                                     android:layout_width="match_parent"
+                                     android:layout_height="wrap_content"
+                                     android:orientation="vertical">
+                                     <LinearLayout
+                                         android:layout_width="80dp"
+                                         android:layout_height="80dp"
+                                         android:gravity="center"
+                                         android:orientation="vertical"
+                                         android:id="@+id/shareCar"
+                                         android:onClick="select_vehicle"
+                                         android:layout_marginTop="5dp"
+                                         android:layout_marginLeft="5dp"
+                                         android:background="@drawable/round_button">
+                                         <ImageView
+                                             android:layout_width="70dp"
+                                             android:layout_height="40dp"
+                                             android:layout_gravity="center_horizontal"
+                                             android:src="@drawable/share"/>
+                                         <TextView
+                                             android:id="@+id/time_shareCar"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text="..."
+                                             android:visibility="gone"
+                                             android:textSize="14sp"
+                                             android:textColor="@android:color/black"/>
+                                         <TextView
+                                             android:id="@+id/price_shareCar"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text=""
+                                             android:gravity="center"
+                                             android:textSize="14sp"
+                                             android:textColor="@android:color/black"/>
+                                     </LinearLayout>
                                      <TextView
-                                         android:id="@+id/time_shareCar"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text="..."
-                                         android:visibility="gone"
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
-                                     <TextView
-                                         android:id="@+id/price_shareCar"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text=""
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
+                                         android:layout_width="match_parent"
+                                         android:layout_height="25dp"
+                                         android:text="Taxi"
+                                         android:gravity="center"
+                                         android:textSize="18sp"
+                                         android:textColor="#000000"/>
                                  </LinearLayout>
+
                                  <LinearLayout
-                                     android:layout_width="80dp"
-                                     android:layout_height="80dp"
-                                     android:gravity="center"
-                                     android:orientation="vertical"
-                                     android:id="@+id/shareRickshaw"
-                                     android:onClick="select_vehicle"
-                                     android:layout_margin="5dp"
-                                     android:background="@drawable/round_button">
-                                     <ImageView
-                                         android:layout_width="70dp"
-                                         android:layout_height="40dp"
-                                         android:layout_gravity="center_horizontal"
-                                         android:src="@drawable/rickshawfinal"/>
+                                     android:layout_width="match_parent"
+                                     android:layout_height="wrap_content"
+                                     android:orientation="vertical">
+                                     <LinearLayout
+                                         android:layout_width="80dp"
+                                         android:layout_height="80dp"
+                                         android:gravity="center"
+                                         android:orientation="vertical"
+                                         android:id="@+id/shareRickshaw"
+                                         android:onClick="select_vehicle"
+                                         android:layout_marginLeft="5dp"
+                                         android:layout_marginRight="5dp"
+                                         android:layout_marginTop="5dp"
+                                         android:background="@drawable/round_button">
+                                         <ImageView
+                                             android:layout_width="70dp"
+                                             android:layout_height="40dp"
+                                             android:layout_gravity="center_horizontal"
+                                             android:src="@drawable/rickshawfinal"/>
+                                         <TextView
+                                             android:id="@+id/time_shareRickshaw"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text="..."
+                                             android:visibility="gone"
+                                             android:textSize="14sp"
+                                             android:textColor="@android:color/black"/>
+                                         <TextView
+                                             android:id="@+id/price_shareRickshaw"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content"
+                                             android:text="Upcoming"
+                                             android:textSize="12sp"
+                                             android:textColor="@android:color/black"/>
+                                     </LinearLayout>
                                      <TextView
-                                         android:id="@+id/time_shareRickshaw"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text="..."
-                                         android:visibility="gone"
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
-                                     <TextView
-                                         android:id="@+id/price_shareRickshaw"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text=""
-                                         android:textSize="14sp"
-                                         android:textColor="@android:color/black"/>
+                                         android:layout_width="match_parent"
+                                         android:layout_height="25dp"
+                                         android:text="E-Car"
+                                         android:gravity="center"
+                                         android:textSize="18sp"
+                                         android:textColor="#000000"/>
                                  </LinearLayout>
                              </LinearLayout>
                              <LinearLayout
@@ -460,39 +542,69 @@
                              android:layout_width="0dp"
                              android:layout_weight="2"
                              android:layout_height="100dp"
-                             android:gravity="center">
+                             android:gravity="center"
+                             android:orientation="horizontal">
 
                              <LinearLayout
-                                 android:layout_width="80dp"
-                                 android:layout_height="80dp"
+                                 android:layout_width="0dp"
+                                 android:layout_weight="1"
                                  android:gravity="center"
-                                 android:orientation="vertical"
-                                 android:background="@drawable/round_button">
+                                 android:layout_height="match_parent">
 
-                                 <de.hdodenhof.circleimageview.CircleImageView
-                                     android:layout_width="60dp"
-                                     android:layout_height="60dp"
-                                     android:id="@+id/call"
-                                     android:layout_gravity="center_horizontal"
-                                     android:src="@drawable/ic_call"/>
-
-                             </LinearLayout>
-                             <LinearLayout
-                                 android:layout_width="80dp"
-                                 android:layout_height="80dp"
-                                 android:gravity="center"
-                                 android:orientation="vertical"
-                                 android:layout_marginLeft="20dp"
-                                 android:background="@drawable/round_button">
-
-                                 <TextView
-                                     android:id="@+id/otp"
-                                     android:layout_width="wrap_content"
-                                     android:layout_height="wrap_content"
-                                     android:text="OTP\n1500"
-                                     android:textSize="18sp"
+                                 <LinearLayout
+                                     android:layout_width="80dp"
+                                     android:layout_height="80dp"
                                      android:gravity="center"
-                                     android:textColor="#05affc"/>
+                                     android:orientation="vertical"
+                                     android:background="@drawable/round_button">
+
+                                     <LinearLayout
+                                         android:layout_width="70dp"
+                                         android:layout_height="70dp"
+                                         android:orientation="vertical"
+                                         android:gravity="center"
+                                         android:background="@drawable/round_button">
+
+                                         <de.hdodenhof.circleimageview.CircleImageView
+                                             android:layout_width="60dp"
+                                             android:layout_height="60dp"
+                                             android:id="@+id/call"
+                                             android:layout_gravity="center"
+                                             android:src="@drawable/ic_call"/>
+                                     </LinearLayout>
+                                 </LinearLayout>
+                             </LinearLayout>
+
+                             <LinearLayout
+                                 android:layout_width="0dp"
+                                 android:layout_weight="1"
+                                 android:gravity="center"
+                                 android:layout_height="match_parent">
+
+                                 <LinearLayout
+                                     android:layout_width="80dp"
+                                     android:layout_height="80dp"
+                                     android:gravity="center"
+                                     android:orientation="vertical"
+                                     android:background="@drawable/round_button">
+
+                                     <LinearLayout
+                                         android:layout_width="70dp"
+                                         android:layout_height="70dp"
+                                         android:orientation="vertical"
+                                         android:gravity="center"
+                                         android:background="@drawable/round_button">
+
+                                     <TextView
+                                         android:id="@+id/otp"
+                                         android:layout_width="wrap_content"
+                                         android:layout_height="wrap_content"
+                                         android:text="OTP\n"
+                                         android:textSize="18sp"
+                                         android:gravity="center"
+                                         android:textColor="#05affc"/>
+                                         </LinearLayout>
+                                 </LinearLayout>
                              </LinearLayout>
                          </LinearLayout>
                          <LinearLayout
@@ -510,13 +622,13 @@
                      </LinearLayout>
                      <LinearLayout
                          android:layout_width="match_parent"
-                         android:layout_height="70dp"
+                         android:layout_height="wrap_content"
                          android:gravity="center"
                          android:orientation="vertical">
 
                          <LinearLayout
                              android:layout_width="match_parent"
-                             android:layout_height="35dp"
+                             android:layout_height="wrap_content"
                              android:weightSum="3"
                              android:orientation="horizontal">
 
@@ -526,21 +638,23 @@
                                  android:layout_height="match_parent"
                                  android:id="@+id/bike_name"
                                  android:gravity="center"
-                                 android:text=""
-                                 android:textStyle="bold"
-                                 android:textSize="16sp"
+                                 android:text="white Alto 800"
+                                 android:textSize="18sp"
+                                 android:layout_marginLeft="3dp"
+                                 android:layout_marginRight="3dp"
+                                 android:background="@drawable/bottom_border_less"
                                  android:textColor="#000000"/>
 
                              <TextView
-                                 android:id="@+id/amount"
                                  android:layout_width="0dp"
                                  android:layout_weight="1"
                                  android:layout_height="match_parent"
                                  android:gravity="center"
-                                 android:paddingLeft="5dp"
-                                 android:text=""
-                                 android:textSize="16sp"
-                                 android:textStyle="bold"
+                                 android:text="Fare"
+                                 android:textSize="18sp"
+                                 android:layout_marginLeft="3dp"
+                                 android:layout_marginRight="3dp"
+                                 android:background="@drawable/bottom_border_less"
                                  android:textColor="#000000"/>
 
                              <TextView
@@ -550,9 +664,11 @@
                                  android:gravity="center"
                                  android:text=""
                                  android:paddingEnd="5dp"
-                                 android:textStyle="bold"
                                  android:id="@+id/dname"
-                                 android:textSize="16sp"
+                                 android:textSize="18sp"
+                                 android:layout_marginLeft="3dp"
+                                 android:layout_marginRight="3dp"
+                                 android:background="@drawable/bottom_border_less"
                                  android:textColor="#000000"/>
 
                          </LinearLayout>
@@ -561,7 +677,7 @@
                              android:layout_height="35dp"
                              android:gravity="center"
                              android:orientation="horizontal"
-                             android:weightSum="2">
+                             android:weightSum="3">
 
                              <TextView
                                  android:layout_width="0dp"
@@ -570,25 +686,74 @@
                                  android:gravity="center"
                                  android:id="@+id/bike_no"
                                  android:text=""
-                                 android:textStyle="bold"
-                                 android:textSize="16sp"
+                                 android:textSize="18sp"
+                                 android:layout_marginLeft="3dp"
+                                 android:layout_marginRight="3dp"
+                                 android:layout_marginBottom="3dp"
+                                 android:background="@drawable/top_border_less"
+                                 android:textColor="#000000"/>
+
+                             <TextView
+                                 android:layout_width="0dp"
+                                 android:layout_weight="1"
+                                 android:layout_height="match_parent"
+                                 android:gravity="center"
+                                 android:text=""
+                                 android:id="@+id/amount"
+                                 android:layout_marginLeft="3dp"
+                                 android:layout_marginRight="3dp"
+                                 android:layout_marginBottom="3dp"
+                                 android:background="@drawable/top_border_less"
+                                 android:textSize="18sp"
                                  android:textColor="#000000"/>
 
                              <LinearLayout
                                  android:layout_width="0dp"
                                  android:layout_weight="1"
                                  android:gravity="center"
-                                 android:layout_height="match_parent">
+                                 android:orientation="horizontal"
+                                 android:layout_height="match_parent"
+                                 android:layout_marginLeft="3dp"
+                                 android:layout_marginRight="3dp"
+                                 android:layout_marginBottom="3dp"
+                                 android:background="@drawable/top_border_less">
 
-                                 <RatingBar
-                                     android:id="@+id/driver_rating"
-                                     android:layout_width="wrap_content"
-                                     android:layout_height="wrap_content"
-                                     style="@style/foodRatingBar"
-                                     android:isIndicator="true"
-                                     android:layout_gravity="center_horizontal"
-                                     android:numStars="5"/>
+                                 <!--<RatingBar-->
+                                     <!--android:id="@+id/driver_rating"-->
+                                     <!--android:layout_width="wrap_content"-->
+                                     <!--android:layout_height="wrap_content"-->
+                                     <!--style="@style/foodRatingBar"-->
+                                     <!--android:isIndicator="true"-->
+                                     <!--android:visibility="gone"-->
+                                     <!--android:layout_gravity="center_horizontal"-->
+                                     <!--android:numStars="5"/>-->
 
+                                 <LinearLayout
+                                     android:layout_width="0dp"
+                                     android:layout_weight="0.5"
+                                     android:layout_height="match_parent">
+
+                                    <TextView
+                                        android:id="@+id/rating_value"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:text=""
+                                        android:textSize="18sp"
+                                        android:textColor="#000000"
+                                        android:gravity="center_vertical|end"
+                                        android:paddingEnd="5dp"/>
+                                 </LinearLayout>
+                                 <LinearLayout
+                                     android:layout_width="0dp"
+                                     android:layout_weight="0.5"
+                                     android:layout_height="match_parent">
+
+                                    <ImageView
+                                        android:layout_width="30dp"
+                                        android:layout_height="match_parent"
+                                        android:src="@drawable/ic_star_fill"
+                                        android:layout_gravity="start"/>
+                                 </LinearLayout>
                              </LinearLayout>
                          </LinearLayout>
                      </LinearLayout>
@@ -596,23 +761,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:gravity="center"
-                        android:background="@drawable/blue_margin">
+                        android:background="#05affc">
 
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:src="@drawable/ic_close_icon"
+                            android:onClick="cancel_trip"
                             android:tint="#ff0000"/>
 
                         <Button
                             android:id="@+id/canceltrip"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:onClick="cancel_trip"
                             android:text="Cancel Trip"
                             android:textColor="#ffffff"
                             android:textSize="20sp"
                             android:layout_marginLeft="5dp"
+                            android:onClick="cancel_trip"
                             android:background="@android:color/transparent"/>
 
                     </LinearLayout>
@@ -633,10 +799,18 @@
                          android:onClick="showoptiondetail"
                          android:layout_gravity="center_horizontal"
                          android:background="@drawable/round_button_blue">
+                         <TextView
+                             android:id="@+id/type"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="Taxi"
+                             android:textSize="16sp"
+                             android:layout_marginTop="5dp"
+                             android:textColor="@android:color/black"/>
                          <ImageView
                              android:id="@+id/final_image"
-                             android:layout_width="70dp"
-                             android:layout_height="70dp"
+                             android:layout_width="90dp"
+                             android:layout_height="50dp"
                              android:layout_gravity="center_horizontal"
                              android:src="@drawable/share"/>
                          <TextView
@@ -728,8 +902,7 @@
                                      android:text="Cash"
                                      android:gravity="center"
                                      android:textSize="18sp"
-                                     android:textColor="#000000"
-                                     android:layout_marginEnd="40dp"/>
+                                     android:textColor="#000000"/>
 
                                  <ImageView
                                      android:layout_width="20dp"
@@ -839,7 +1012,7 @@
                         android:id="@+id/driver_pic"
                         android:layout_width="90sp"
                         android:layout_height="70sp"
-                        android:src="@drawable/home"
+                        android:src="@drawable/profile"
                         android:background="@android:color/transparent"/>
                 </android.support.v7.widget.CardView>
                 <android.support.v7.widget.CardView
@@ -960,6 +1133,59 @@
             android:textSize="20dp"
             android:text="You are on your way !!!"
             android:gravity="center"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#ff0000"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/linearLayout">
+
+        <TextView
+            android:id="@+id/network_status"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            android:visibility="gone"
+            android:text="No Internet Access !!!"
+            android:gravity="center"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:orientation="vertical"
+        android:background="#8805affc"
+        android:paddingTop="10dp"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/no_ride">
+
+        <TextView
+            android:id="@+id/msg_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Sorry we are facing congestion ! Please try again later ! "
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/try_again"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Try Again !"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#05affc"
+            android:layout_gravity="end"
+            android:textSize="18sp"
+            android:textColor="#ffffff"/>
 
     </LinearLayout>
 </RelativeLayout>

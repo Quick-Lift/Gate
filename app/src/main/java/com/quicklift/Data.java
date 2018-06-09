@@ -6,7 +6,7 @@ package com.quicklift;
 
 public class Data {
     double st_lat,st_lng,en_lat,en_lng,d_lat,d_lng;
-    String customer_id,source,destination,price,otp,seat,offer="0",paymode="Cash",cancel_charge="0",veh_type;
+    String customer_id,source,destination,price,otp,seat,offer="0",paymode="Cash",cancel_charge="0",veh_type,parking_price="0";
     Integer accept=0;
 
     public Data() {
@@ -18,6 +18,14 @@ public class Data {
 
     public String getOffer() {
         return offer;
+    }
+
+    public String getParking_price() {
+        return parking_price;
+    }
+
+    public void setParking_price(String parking_price) {
+        this.parking_price = parking_price;
     }
 
     public void setOffer(String offer) {

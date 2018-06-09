@@ -1,9 +1,11 @@
 package com.quicklift;
 
 import android.app.ActivityOptions;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -16,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -67,6 +70,12 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
     SharedPreferences.Editor editor;
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
@@ -75,6 +84,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
+
         //Toast.makeText(Login.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
         //Log.v("TAG",user.getUid());
 
@@ -101,11 +111,23 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         sqlQueries.deletelocation();
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("Fare/Patna");
         db.addListenerForSingleValueEvent(new ValueEventListener() {
+            
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 editor.putString("excelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/excel").getValue(Integer.class)));
                 editor.putString("sharecharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/share").getValue(Integer.class)));
                 editor.putString("fullcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/full").getValue(Integer.class)));
+                editor.putString("ratemultiplier",String.valueOf(dataSnapshot.child("RateMultiplier").getValue(Float.class)));
+                editor.putString("searchingtime",String.valueOf(dataSnapshot.child("SearchingTime").getValue(Integer.class)));
+                editor.putString("outsidetripextraamount",String.valueOf(dataSnapshot.child("OutsideTripExtraAmount").getValue(Integer.class)));
+                editor.putString("twoseatprice",String.valueOf(dataSnapshot.child("Twoseatprice").getValue(Integer.class)));
+                editor.putString("excel",String.valueOf(dataSnapshot.child("ParkingCharge/excel").getValue(Integer.class)));
+                editor.putString("fullcar",String.valueOf(dataSnapshot.child("ParkingCharge/fullcar").getValue(Integer.class)));
+                editor.putString("fullrickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/fullrickshaw").getValue(Integer.class)));
+                editor.putString("sharecar",String.valueOf(dataSnapshot.child("ParkingCharge/sharecar").getValue(Integer.class)));
+                editor.putString("sharerickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/sharerickshaw").getValue(Integer.class)));
+                editor.putString("normaltimeradius",dataSnapshot.child("NormalTimeSearchRadius").getValue(String.class));
+                editor.putString("peaktimeradius",dataSnapshot.child("PeakTimeSearchRadius").getValue(String.class));
                 editor.commit();
                 for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                     ArrayList<String> price=new ArrayList<String>();
@@ -139,6 +161,47 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                     sqlQueries.savefare(price);
 //                    Toast.makeText(WelcomeScreen.this, ""+"hi", Toast.LENGTH_SHORT).show();
 //                    Log.v("TAG",price.get(0)+" "+price.get(1)+" "+price.get(2)+" "+price.get(3)+" "+price.get(4)+" "+price.get(5)+" ");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Response/"+log_id.getString("id",null));
+        dref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    if (dataSnapshot.child("resp").getValue().toString().equals("Trip Ended") || dataSnapshot.child("resp").getValue().toString().equals("Cancel") || dataSnapshot.child("resp").getValue().toString().equals("Reject")){
+                        dref.removeValue();
+                    }
+                    else {
+                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/"+dataSnapshot.child("driver").getValue().toString()+"/"+log_id.getString("id",null));
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (!dataSnapshot.exists()){
+                                    dref.removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                }
+                else {
+                    DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Share/"+log_id.getString("id",null));
+                    reference.removeValue();
+                    editor.putString("driver","");
+                    editor.remove("ride");
+                    editor.commit();
                 }
             }
 
@@ -199,6 +262,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             }
         }
         else {
+            findViewById(R.id.network_status).setVisibility(View.VISIBLE);
 //            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this,R.style.myBackgroundStyle);
 //            builder.setMessage("Turn on your internet connection and try again.")
 //                    .setCancelable(false)
@@ -216,31 +280,31 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 //            alert.show();
 //            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
 
-            View view=getLayoutInflater().inflate(R.layout.notification_layout,null);
-            TextView title=(TextView)view.findViewById(R.id.title);
-            TextView message=(TextView)view.findViewById(R.id.message);
-            Button left=(Button) view.findViewById(R.id.left_btn);
-            Button right=(Button) view.findViewById(R.id.right_btn);
-
-            title.setText("No Internet !");
-            message.setText("Turn on your internet connection and try again.");
-            left.setVisibility(View.GONE);
-            right.setText("Try Again");
-
-            right.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                    startActivity(getIntent());
-                }
-            });
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
-            builder .setView(view)
-                    .setCancelable(false);
-
-            AlertDialog alert = builder.create();
-            alert.show();
+//            View view=getLayoutInflater().inflate(R.layout.notification_layout,null);
+//            TextView title=(TextView)view.findViewById(R.id.title);
+//            TextView message=(TextView)view.findViewById(R.id.message);
+//            Button left=(Button) view.findViewById(R.id.left_btn);
+//            Button right=(Button) view.findViewById(R.id.right_btn);
+//
+//            title.setText("No Internet !");
+//            message.setText("Turn on your internet connection and try again.");
+//            left.setVisibility(View.GONE);
+//            right.setText("Try Again");
+//
+//            right.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    finish();
+//                    startActivity(getIntent());
+//                }
+//            });
+//
+//            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+//            builder .setView(view)
+//                    .setCancelable(false);
+//
+//            AlertDialog alert = builder.create();
+//            alert.show();
         }
 
         // checking user permission
@@ -316,6 +380,9 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 //                alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("red"));
 //            }
 //        }
+
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(new Receiver(), intentFilter);
     }
 
     private boolean haveNetworkConnection() {
@@ -335,8 +402,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         return haveConnectedWifi || haveConnectedMobile;
     }
 
-    public boolean hasActiveInternetConnection()
-    {
+    public boolean hasActiveInternetConnection(){
         // TCP/HTTP/DNS (depending on the port, 53=DNS, 80=HTTP, etc.)
         Runtime runtime = Runtime.getRuntime();
         try {
@@ -414,8 +480,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                 SixthPermissionResult ==PackageManager.PERMISSION_GRANTED;
     }
 
-    static public void appendLog(String text)
-    {
+    static public void appendLog(String text){
         File logFile = new File("sdcard/log.txt");
         if (!logFile.exists())
 
@@ -525,5 +590,25 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        unregisterReceiver(new Receiver());
+    }
+
+    public class Receiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean isConnected = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+            if (isConnected) {
+                findViewById(R.id.network_status).setVisibility(View.VISIBLE);
+            }
+            else {
+                findViewById(R.id.network_status).setVisibility(View.GONE);
+            }
+        }
     }
 }

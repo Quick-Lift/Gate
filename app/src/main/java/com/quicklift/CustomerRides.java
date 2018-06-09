@@ -123,37 +123,19 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
 //        updatenavbar();
         if (!log_id.getString("driver",null).equals("")){
 //            ongoing.setVisibility(View.VISIBLE);
-            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/"+log_id.getString("driver",null)+"/"+log_id.getString("id",null));
+            getinfo(log_id.getString("driver",null));
+        }
+        else {
+            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Response/"+log_id.getString("id",null)+"/driver");
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                    ((TextView)findViewById(R.id.timestamp)).setText("Ongoing ...");
-                    ((TextView)findViewById(R.id.source)).setText(map.get("source").toString());
-                    ((TextView)findViewById(R.id.destination)).setText(map.get("destination").toString());
-                    ((TextView)findViewById(R.id.amount)).setText("Rs. "+map.get("price").toString());
-
-                    DatabaseReference dref=FirebaseDatabase.getInstance().getReference("Drivers");
-                    dref.child(log_id.getString("driver",null)).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                            ((TextView)findViewById(R.id.vehiclemodel)).setText(map.get("veh_type").toString()+" , "+map.get("veh_num").toString());
-                            ((TextView)findViewById(R.id.name)).setText(map.get("name").toString());
-                            if (!map.get("thumb").toString().equals("")) {
-                                byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
-                                Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
-                                ((CircleImageView)findViewById(R.id.image)).setImageBitmap(decbyte);
-                            }
-
-                            findViewById(R.id.rideinfo).setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                    if (dataSnapshot.exists()){
+                        getinfo(dataSnapshot.getValue().toString());
+                        SharedPreferences.Editor editor=log_id.edit();
+                        editor.putString("driver",dataSnapshot.getValue().toString());
+                        editor.commit();
+                    }
                 }
 
                 @Override
@@ -216,18 +198,63 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
         });
     }
 
+    private void getinfo(final String driver){
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/"+driver+"/"+log_id.getString("id",null));
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    ((TextView) findViewById(R.id.timestamp)).setText("Ongoing ...");
+                    ((TextView) findViewById(R.id.source)).setText(map.get("source").toString());
+                    ((TextView) findViewById(R.id.destination)).setText(map.get("destination").toString());
+                    ((TextView) findViewById(R.id.amount)).setText("Rs. " + map.get("price").toString());
+
+                    DatabaseReference dref = FirebaseDatabase.getInstance().getReference("Drivers");
+                    dref.child(driver).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                            ((TextView) findViewById(R.id.vehiclemodel)).setText(map.get("veh_type").toString() + " , " + map.get("veh_num").toString());
+                            ((TextView) findViewById(R.id.name)).setText(map.get("name").toString());
+                            if (!map.get("thumb").toString().equals("")) {
+                                byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
+                                Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
+                                ((CircleImageView) findViewById(R.id.image)).setImageBitmap(decbyte);
+                            }
+
+                            findViewById(R.id.rideinfo).setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void updatenavbar() {
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("Users/"+log_id.getString("id",null));
         db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                name.setText(map.get("name").toString());
-                phone.setText(map.get("phone").toString());
-                if (!map.get("thumb").toString().equals("")) {
-                    byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
-                    Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
-                    image.setImageBitmap(decbyte);
+                if (dataSnapshot.exists()) {
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    name.setText(map.get("name").toString());
+                    phone.setText(map.get("phone").toString());
+                    if (!map.get("thumb").toString().equals("")) {
+                        byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
+                        Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
+                        image.setImageBitmap(decbyte);
+                    }
                 }
             }
 

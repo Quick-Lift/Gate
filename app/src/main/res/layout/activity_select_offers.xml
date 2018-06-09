@@ -43,17 +43,30 @@
             android:backgroundTint="#05affc"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
-
+    <TextView
+        android:id="@+id/notfound"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="Invalid Promocode."
+        android:textColor="#ff0000"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/all_margin_red"
+        android:layout_below="@+id/rl"/>
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
         android:dividerHeight="5dp"
-        android:layout_below="@+id/rl"
+        android:layout_below="@+id/notfound"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"/>
 
     <TextView
         android:id="@+id/nooffer"

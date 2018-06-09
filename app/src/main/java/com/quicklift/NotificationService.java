@@ -77,6 +77,16 @@ public class NotificationService extends Service {
 
                         notification(text, str);
                         removeservice();
+                    } else if (text.equals("Reject")) {
+                        String str="The trip is cancelled by driver ...";
+                        if (log.contains("found")) {
+                            if (log.getString("found", null).equals("1")){
+                                notification(text, str);
+                                SharedPreferences.Editor ed=log.edit();
+                                ed.remove("found");
+                                ed.commit();
+                            }
+                        }
                     }
                 }
             }
@@ -138,16 +148,18 @@ public class NotificationService extends Service {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()){
-                        if (dataSnapshot.hasChild(log.getString("offer",null))){
+                        if (log.contains("offer")) {
+                            if (dataSnapshot.hasChild(log.getString("offer", null))) {
 
-                            Integer val=Integer.parseInt(dataSnapshot.child(log.getString("offer",null)).getValue(String.class));
-                            if (val==1)
-                                dref.child(log.getString("offer",null)).removeValue();
-                            else
-                                dref.child(log.getString("offer",null)).setValue(String.valueOf(val-1));
-                            SharedPreferences.Editor ed=log.edit();
-                            ed.remove("offer");
-                            ed.commit();
+                                Integer val = Integer.parseInt(dataSnapshot.child(log.getString("offer", null)).getValue(String.class));
+                                if (val == 1)
+                                    dref.child(log.getString("offer", null)).removeValue();
+                                else
+                                    dref.child(log.getString("offer", null)).setValue(String.valueOf(val - 1));
+                                SharedPreferences.Editor ed = log.edit();
+                                ed.remove("offer");
+                                ed.commit();
+                            }
                         }
                     }
                 }

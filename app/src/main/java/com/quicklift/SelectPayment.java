@@ -45,9 +45,12 @@ public class SelectPayment extends AppCompatActivity {
 
     public void selectmode(View view){
         TextView txt=(TextView) findViewById(view.getId());
-        Intent intent=new Intent();
-        intent.putExtra("mode",txt.getText().toString());
-        setResult(RESULT_OK,intent);
-        finish();
+
+        if (txt.getText().toString().equals("Cash")) {
+            Intent intent = new Intent();
+            intent.putExtra("mode", txt.getText().toString());
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 }

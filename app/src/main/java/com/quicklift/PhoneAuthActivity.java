@@ -82,6 +82,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()){
+                            if (progress.isShowing())
                             progress.dismiss();
 //                            AlertDialog.Builder builder = new AlertDialog.Builder(PhoneAuthActivity.this,R.style.myBackgroundStyle);
 //                            builder.setMessage("This number belongs to "+dataSnapshot.child("name").getValue(String.class))
@@ -169,11 +170,11 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             Button right=(Button) view.findViewById(R.id.right_btn);
 
                             title.setText("Account Action !");
-                            message.setText("This number belongs to "+dataSnapshot.child("name").getValue(String.class));
-                            right.setText("New User");
-                            left.setText("Continue");
+                            message.setText("Are you "+dataSnapshot.child("name").getValue(String.class)+" ?");
+                            left.setText("No");
+                            right.setText("Yes");
 
-                            right.setOnClickListener(new View.OnClickListener() {
+                            left.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent=new Intent(PhoneAuthActivity.this,CustomerRegistration.class);
@@ -184,7 +185,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                 }
                             });
 
-                            left.setOnClickListener(new View.OnClickListener() {
+                            right.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     final SQLQueries sqlQueries=new SQLQueries(PhoneAuthActivity.this);
@@ -197,6 +198,17 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                             editor.putString("excelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/excel").getValue(Integer.class)));
                                             editor.putString("sharecharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/share").getValue(Integer.class)));
                                             editor.putString("fullcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/full").getValue(Integer.class)));
+                                            editor.putString("ratemultiplier",String.valueOf(dataSnapshot.child("RateMultiplier").getValue(Float.class)));
+                                            editor.putString("searchingtime",String.valueOf(dataSnapshot.child("SearchingTime").getValue(Integer.class)));
+                                            editor.putString("outsidetripextraamount",String.valueOf(dataSnapshot.child("OutsideTripExtraAmount").getValue(Integer.class)));
+                                            editor.putString("twoseatprice",String.valueOf(dataSnapshot.child("Twoseatprice").getValue(Integer.class)));
+                                            editor.putString("excel",String.valueOf(dataSnapshot.child("ParkingCharge/excel").getValue(Integer.class)));
+                                            editor.putString("fullcar",String.valueOf(dataSnapshot.child("ParkingCharge/fullcar").getValue(Integer.class)));
+                                            editor.putString("fullrickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/fullrickshaw").getValue(Integer.class)));
+                                            editor.putString("sharecar",String.valueOf(dataSnapshot.child("ParkingCharge/sharecar").getValue(Integer.class)));
+                                            editor.putString("sharerickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/sharerickshaw").getValue(Integer.class)));
+                                            editor.putString("normaltimeradius",String.valueOf(dataSnapshot.child("NormalTimeSearchRadius").getValue().toString()));
+                                            editor.putString("peaktimeradius",String.valueOf(dataSnapshot.child("PeakTimeSearchRadius").getValue().toString()));
                                             editor.commit();
                                             for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                                                 ArrayList<String> price=new ArrayList<String>();
@@ -255,6 +267,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             alert.show();
                         }
                         else {
+                            if (progress.isShowing())
                             progress.dismiss();
                             Intent intent=new Intent(PhoneAuthActivity.this,CustomerRegistration.class);
                             intent.putExtra("phone",String.valueOf(user.getPhoneNumber()));

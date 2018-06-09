@@ -91,6 +91,10 @@ public class Payment extends AppCompatActivity implements NavigationView.OnNavig
 //        updatenavbar();
     }
 
+    public void save(View view){
+        finish();
+    }
+
     private void updatenavbar() {
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("Users/"+log_id.getString("id",null));
         db.addValueEventListener(new ValueEventListener() {
