@@ -23,6 +23,7 @@ import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -49,6 +50,7 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
     Button ongoing;
     private SharedPreferences log_id;
     ArrayList<Map<String,Object>> ride_list=new ArrayList<Map<String,Object>>();
+    ArrayList<String> ridekey=new ArrayList<>();
     ProgressDialog progress;
 
     @Override
@@ -175,8 +177,10 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ride_list.clear();
+                ridekey.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
                     ride_list.add((Map<String, Object>) data.getValue());
+                    ridekey.add(data.getKey());
                     //Toast.makeText(CustomerRides.this, String.valueOf(ride_list.size()), Toast.LENGTH_SHORT).show();
                     //Toast.makeText(CustomerRides.this, ride_list.get(ride_list.size()-1).get("time").toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -194,6 +198,15 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent(CustomerRides.this,BillDetails.class);
+                intent.putExtra("rideid",ridekey.get(ridekey.size()-1-position));
+                startActivity(intent);
             }
         });
     }
@@ -347,7 +360,15 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             time.setText(ride_list.get(ride_list.size()-1-position).get("time").toString());
             source.setText(ride_list.get(ride_list.size()-1-position).get("source").toString());
             destination.setText(ride_list.get(ride_list.size()-1-position).get("destination").toString());
-            amount.setText("Rs. "+ride_list.get(ride_list.size()-1-position).get("amount").toString());
+            float charge=0;
+            if (ride_list.get(ride_list.size()-1-position).containsKey("cancel_charge")) {
+                charge=Float.valueOf(ride_list.get(ride_list.size()-1-position).get("amount").toString())+
+                        Float.valueOf(ride_list.get(ride_list.size()-1-position).get("cancel_charge").toString());
+            }
+            else {
+                charge=Float.valueOf(ride_list.get(ride_list.size()-1-position).get("amount").toString());
+            }
+            amount.setText("Rs. "+(int)charge);
             if (ride_list.get(ride_list.size()-1-position).containsKey("status")){
                 if (ride_list.get(ride_list.size()-1-position).get("status").equals("Cancelled")){
                     status.setText(ride_list.get(ride_list.size()-1-position).get("status").toString());
@@ -362,12 +383,27 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                    veh.setText(map.get("veh_type").toString()+" , "+map.get("veh_num").toString());
+//                    veh.setText(map.get("veh_type").toString()+" , "+map.get("veh_num").toString());
                     name.setText(map.get("name").toString());
                     if (!map.get("thumb").toString().equals("")) {
                         byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
                         Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
                         img.setImageBitmap(decbyte);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            DatabaseReference reference=FirebaseDatabase.getInstance().getReference("VehicleDetails/Patna");
+            reference.child(ride_list.get(ride_list.size()-1-position).get("driver").toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()){
+                        if (dataSnapshot.hasChild("model") && dataSnapshot.hasChild("number"))
+                            veh.setText(dataSnapshot.child("model").getValue().toString()+", "+dataSnapshot.child("number").getValue().toString());
                     }
                 }
 

@@ -6,6 +6,7 @@ package com.quicklift;
 
 public class Ride {
     String customerid,source,destination,amount,time,driver,status,cancelledby,discount,cancel_charge,paymode,parking,seat;
+    String waiting,timing;
 
     public Ride() {
 
@@ -13,6 +14,22 @@ public class Ride {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getWaiting() {
+        return waiting;
+    }
+
+    public void setWaiting(String waiting) {
+        this.waiting = waiting;
+    }
+
+    public String getTiming() {
+        return timing;
+    }
+
+    public void setTiming(String timing) {
+        this.timing = timing;
     }
 
     public String getCancelledby() {

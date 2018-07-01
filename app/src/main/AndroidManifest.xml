@@ -101,19 +101,22 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <!--<receiver android:name=".Home$CheckConnection">-->
-            <!--<intent-filter>-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
+        <!-- <receiver android:name=".Home$CheckConnection"> -->
+        <!-- <intent-filter> -->
+        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
 
-                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+
+        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
 
         <activity android:name=".DisplayAlertbox" />
         <activity android:name=".AboutUs" />
         <activity android:name=".RideOptions" />
         <activity android:name=".FaresandCharges" />
-        <activity android:name=".FAQ"></activity>
+        <activity android:name=".FAQ" />
+        <activity android:name=".BillDetails" />
+        <activity android:name=".ConfirmLocation"></activity>
     </application>
 
 </manifest>

@@ -236,6 +236,9 @@ public class CustomerRegistration extends AppCompatActivity {
                     editor.putString("sharerickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/sharerickshaw").getValue(Integer.class)));
                     editor.putString("normaltimeradius",String.valueOf(dataSnapshot.child("NormalTimeSearchRadius").getValue().toString()));
                     editor.putString("peaktimeradius",String.valueOf(dataSnapshot.child("PeakTimeSearchRadius").getValue().toString()));
+                    editor.putString("waittime",String.valueOf(dataSnapshot.child("WaitingTime").getValue(Integer.class)));
+                    editor.putString("waitingcharge",String.valueOf(dataSnapshot.child("WaitingCharge").getValue(Integer.class)));
+                    editor.putString("tax",String.valueOf(dataSnapshot.child("Tax").getValue().toString()));
                     editor.commit();
                     for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                         ArrayList<String> price=new ArrayList<String>();
@@ -364,6 +367,7 @@ public class CustomerRegistration extends AppCompatActivity {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                             //image.setImageBitmap(bitmap);
                             pic.setImageURI(uri);
+                            selectedImage=uri;
                             Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, 150, 150);
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
                             thumb.compress(Bitmap.CompressFormat.JPEG, 100, stream);

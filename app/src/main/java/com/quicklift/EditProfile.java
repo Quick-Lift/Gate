@@ -146,6 +146,7 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
         mStorageRef.child("Users/"+log_id.getString("id",null)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
+//                Toast.makeText(EditProfile.this, "Success", Toast.LENGTH_SHORT).show();
                 Glide.with(getApplicationContext()).load(uri).into(pic);
             }
         });
@@ -279,6 +280,7 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                             //image.setImageBitmap(bitmap);
                             pic.setImageURI(uri);
+                            selectedImage=uri;
                             Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, 150, 150);
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
                             thumb.compress(Bitmap.CompressFormat.JPEG, 100, stream);

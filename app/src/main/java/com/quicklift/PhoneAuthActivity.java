@@ -209,6 +209,9 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                             editor.putString("sharerickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/sharerickshaw").getValue(Integer.class)));
                                             editor.putString("normaltimeradius",String.valueOf(dataSnapshot.child("NormalTimeSearchRadius").getValue().toString()));
                                             editor.putString("peaktimeradius",String.valueOf(dataSnapshot.child("PeakTimeSearchRadius").getValue().toString()));
+                                            editor.putString("waittime",String.valueOf(dataSnapshot.child("WaitingTime").getValue(Integer.class)));
+                                            editor.putString("waitingcharge",String.valueOf(dataSnapshot.child("WaitingCharge").getValue(Integer.class)));
+                                            editor.putString("tax",String.valueOf(dataSnapshot.child("Tax").getValue().toString()));
                                             editor.commit();
                                             for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                                                 ArrayList<String> price=new ArrayList<String>();

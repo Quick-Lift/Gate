@@ -1,5 +1,6 @@
 package com.quicklift;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +38,9 @@ public class DriveWithUs extends AppCompatActivity {
         getSupportActionBar().setTitle("Drive With Us");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+//        startActivity(new Intent(this,ConfirmLocation.class));
+//        finish();
 
 //        RelativeLayout rl=new RelativeLayout(this);
 //        RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

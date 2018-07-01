@@ -111,7 +111,6 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         sqlQueries.deletelocation();
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("Fare/Patna");
         db.addListenerForSingleValueEvent(new ValueEventListener() {
-            
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 editor.putString("excelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/excel").getValue(Integer.class)));
@@ -128,6 +127,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                 editor.putString("sharerickshaw",String.valueOf(dataSnapshot.child("ParkingCharge/sharerickshaw").getValue(Integer.class)));
                 editor.putString("normaltimeradius",dataSnapshot.child("NormalTimeSearchRadius").getValue(String.class));
                 editor.putString("peaktimeradius",dataSnapshot.child("PeakTimeSearchRadius").getValue(String.class));
+                editor.putString("waittime",String.valueOf(dataSnapshot.child("WaitingTime").getValue(Integer.class)));
+                editor.putString("waitingcharge",String.valueOf(dataSnapshot.child("WaitingCharge").getValue(Integer.class)));
                 editor.commit();
                 for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                     ArrayList<String> price=new ArrayList<String>();
