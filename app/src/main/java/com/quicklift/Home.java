@@ -123,6 +123,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1110,7 +1111,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 dialog.dismiss();
         }
         else if (found == 0 && i < driver_list.size()) {
-            Log.v("TAG","CD"+i+" "+driver_list.size());
+//            Log.v("TAG","CD"+i+" "+driver_list.size());
 //            Toast.makeText(this, "close driver", Toast.LENGTH_SHORT).show();
             getClosestDriver();
         }
@@ -1210,6 +1211,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                                         ((TextView)findViewById(R.id.msg_text)).setText("Sorry we are facing congestion ! Please try again later ! ");
                                         pickup_address.setEnabled(false);
                                         destn_address.setEnabled(false);
+                                        no_ride_found();
                                         findViewById(R.id.try_again).setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
@@ -1329,6 +1331,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                             ((TextView)findViewById(R.id.msg_text)).setText("Sorry we are facing congestion ! Please try again later ! ");
                             pickup_address.setEnabled(false);
                             destn_address.setEnabled(false);
+                            no_ride_found();
                             findViewById(R.id.try_again).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -1409,8 +1412,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 seatfull();
                 vehicletype="car";
                 data.setVeh_type("full");
-                if (log_id.contains("parkfull"))
-                    data.setParking_price(log_id.getString("parkfull",null));
+//                if (log_id.contains("parkfull"))
+//                    data.setParking_price(log_id.getString("parkfull",null));
                 final_price.setText(price_car.getText());
 //                final_time.setText(time_car.getText());
                 final_image.setImageResource(R.drawable.niji);
@@ -1431,8 +1434,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 screen_status=1;
                 seatfull();
                 vehicletype="excel";
-                if (log_id.contains("parkexcel"))
-                    data.setParking_price(log_id.getString("parkexcel",null));
+//                if (log_id.contains("parkexcel"))
+//                    data.setParking_price(log_id.getString("parkexcel",null));
                 data.setVeh_type("excel");
                 final_price.setText(price_excel.getText());
 //                final_time.setText(time_excel.getText());
@@ -1492,8 +1495,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 screen_status=1;
                 seatshare();
                 vehicletype="car";
-                if (log_id.contains("parkshare"))
-                    data.setParking_price(log_id.getString("parkshare",null));
+//                if (log_id.contains("parkshare"))
+//                    data.setParking_price(log_id.getString("parkshare",null));
                 data.setVeh_type("share");
                 final_price.setText(price_shareCar.getText());
 //                final_time.setText(time_shareCar.getText());
@@ -4117,8 +4120,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             Cursor spec_location = sqlQueries.retrievelocation();
             Cursor cursor = sqlQueries.retrievefare();
             Location lc = new Location(LocationManager.GPS_PROVIDER);
-            lc.setLatitude(marker_drop.getPosition().latitude);
-            lc.setLongitude(marker_drop.getPosition().longitude);
+            lc.setLatitude(marker_pick.getPosition().latitude);
+            lc.setLongitude(marker_pick.getPosition().longitude);
+            park_pick=0;
             while (spec_location.moveToNext()) {
                 Location l = new Location(LocationManager.GPS_PROVIDER);
                 l.setLatitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
@@ -4132,13 +4136,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         hide_share_vehicles();
                     }
                     park_pick=1;
+                    Log.v("Park","pick park");
                     break;
                 }
-                else {
-                    park_pick=0;
-                }
             }
-
+            Log.v("DISTANCE",""+park_pick);
             if (marker_drop!=null) {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(marker_pick.getPosition());
@@ -4148,6 +4150,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 int padding = 40;
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                 mMap.animateCamera(cu);
+
+                Log.v("Park"," "+(park_drop+park_pick));
 
                 Object[] dataTransfer = new Object[18];
                 String url = getDirectionsUrltwoplaces();
@@ -4165,7 +4169,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 dataTransfer[10] = spec_package;
                 dataTransfer[11] = vehicle_case;
                 dataTransfer[12] = Home.this;
-                dataTransfer[13] = park_pick+park_drop;
+                dataTransfer[13] = (park_pick+park_drop);
                 dataTransfer[14] = parking_priceshare;
                 dataTransfer[15] = parking_pricefull;
                 dataTransfer[16] = parking_priceexcel;
@@ -4239,6 +4243,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             Location lc = new Location(LocationManager.GPS_PROVIDER);
             lc.setLatitude(marker_drop.getPosition().latitude);
             lc.setLongitude(marker_drop.getPosition().longitude);
+            park_drop=0;
             while (spec_location.moveToNext()) {
                 Location l = new Location(LocationManager.GPS_PROVIDER);
                 l.setLatitude(Double.valueOf(spec_location.getString(spec_location.getColumnIndex("latitude"))));
@@ -4252,12 +4257,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         hide_share_vehicles();
                     }
                     park_drop = 1;
+                    Log.v("Park","dest park");
                     break;
-                } else {
-                    park_drop = 0;
                 }
             }
-
+            Log.v("DISTANCE",""+park_drop);
             if (marker_pick != null) {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(marker_pick.getPosition());
@@ -4269,6 +4273,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 mMap.animateCamera(cu);
 
 //            Log.v("URL",getDirectionsUrltwoplaces());
+                Log.v("Park"," "+(park_drop+park_pick));
 
                 Object[] dataTransfer = new Object[18];
                 String url = getDirectionsUrltwoplaces();
@@ -4286,7 +4291,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 dataTransfer[10] = spec_package;
                 dataTransfer[11] = vehicle_case;
                 dataTransfer[12] = Home.this;
-                dataTransfer[13] = park_pick + park_drop;
+                dataTransfer[13] = (park_pick + park_drop);
                 dataTransfer[14] = parking_priceshare;
                 dataTransfer[15] = parking_pricefull;
                 dataTransfer[16] = parking_priceexcel;
@@ -4690,5 +4695,15 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //            }
 //        }
 //    }
+
+    public void no_ride_found (){
+        DatabaseReference rej_ride=FirebaseDatabase.getInstance().getReference("NotFoundRides");
+        HashMap<String,Object> map=new HashMap<>();
+        map.put("customer_id",log_id.getString("id",null));
+        map.put("source",data.getSource());
+        map.put("destination",data.getDestination());
+        map.put("time",(new Date()).toString());
+        rej_ride.push().setValue(map);
+    }
 }
 

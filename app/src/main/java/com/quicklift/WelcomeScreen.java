@@ -68,6 +68,9 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
     public static final int RequestPermissionCode = 1;
     SharedPreferences log_id;
     SharedPreferences.Editor editor;
+    GenerateLog generateLog=new GenerateLog();
+    String tag="Welcome";
+    int load=0;
 
     @Override
     public void onBackPressed() {
@@ -84,6 +87,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
+
+        generateLog.appendLog(tag,"Loading page !");
 
         //Toast.makeText(Login.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
         //Log.v("TAG",user.getUid());
@@ -108,11 +113,14 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
         final SQLQueries sqlQueries=new SQLQueries(this);
         sqlQueries.deletefare();
+        generateLog.appendLog(tag,"Fare Removed !");
         sqlQueries.deletelocation();
+        generateLog.appendLog(tag,"Location Removed !");
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("Fare/Patna");
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                generateLog.appendLog(tag,"Saving Price Data!");
                 editor.putString("excelcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/excel").getValue(Integer.class)));
                 editor.putString("sharecharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/share").getValue(Integer.class)));
                 editor.putString("fullcharge",String.valueOf(dataSnapshot.child("CustomerCancelCharge/full").getValue(Integer.class)));
@@ -175,6 +183,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         dref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                generateLog.appendLog(tag,"Removing Available Response !");
                 if (dataSnapshot.exists()){
                     if (dataSnapshot.child("resp").getValue().toString().equals("Trip Ended") || dataSnapshot.child("resp").getValue().toString().equals("Cancel") || dataSnapshot.child("resp").getValue().toString().equals("Reject")){
                         dref.removeValue();
@@ -216,12 +225,15 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         boolean gps_enabled = false;
         boolean network_enabled = false;
 
+        generateLog.appendLog(tag,"Checking Location !");
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            generateLog.appendLog(tag,"Checking gps !");
         } catch(Exception ex) {}
 
         try {
             network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            generateLog.appendLog(tag,"Checking network !");
         } catch(Exception ex) {}
 
         if(!gps_enabled && !network_enabled) {
@@ -253,16 +265,20 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         boolean status2 = hasActiveInternetConnection();
 
         if (status1 && status2){
+            generateLog.appendLog(tag,"Internet Available!");
             if (!checkPermission()){
+                generateLog.appendLog(tag,"Permission Requesting !");
                 requestPermission();
             }
             else {
+                generateLog.appendLog(tag,"All permissions available!");
                 Intent i = new Intent(this,PhoneAuthActivity.class);
                 startActivity(i);
                 finish();
             }
         }
         else {
+            generateLog.appendLog(tag,"No internet!");
             findViewById(R.id.network_status).setVisibility(View.VISIBLE);
 //            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this,R.style.myBackgroundStyle);
 //            builder.setMessage("Turn on your internet connection and try again.")
@@ -419,7 +435,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void requestPermission() {
-
+        generateLog.appendLog(tag,"Requesting Permission !");
         ActivityCompat.requestPermissions(WelcomeScreen.this, new String[]
                 {
                         WRITE_EXTERNAL_STORAGE,
@@ -438,7 +454,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         switch (requestCode) {
 
             case RequestPermissionCode:
-
+                generateLog.appendLog(tag,"Request Permission Result!");
                 if (grantResults.length > 0) {
                     boolean CameraPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean RecordAudioPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
@@ -448,6 +464,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                     boolean CallPhone = grantResults[5] == PackageManager.PERMISSION_GRANTED;
 
                     if (CameraPermission && RecordAudioPermission && WriteStoragePermission && ReadStorgaePermission && LocationService && CallPhone) {
+                        generateLog.appendLog(tag,"Request Permission Granted !");
                         Intent i = new Intent(this,PhoneAuthActivity.class);
                         startActivity(i);
                         finish();
@@ -455,7 +472,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                     }
                     else {
                         //Toast.makeText(WelcomeScreen.this,"Permission Denied",Toast.LENGTH_LONG).show();
-                        appendLog(getCurrentTime()+"Few permissions denied status:0");
+                        generateLog.appendLog(tag,"Request Permission Denied !");
                         Intent i = new Intent(this,PhoneAuthActivity.class);
                         startActivity(i);
                         finish();
@@ -466,6 +483,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
     }
 
     public boolean checkPermission() {
+        generateLog.appendLog(tag,"Checking Permission !");
         int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), LOCATION_SERVICE);
         int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_COARSE_LOCATION);
         int ThirdPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
@@ -481,44 +499,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                 SixthPermissionResult ==PackageManager.PERMISSION_GRANTED;
     }
 
-    static public void appendLog(String text){
-        File logFile = new File("sdcard/log.txt");
-        if (!logFile.exists())
-
-        {
-            try
-            {
-                logFile.createNewFile();
-            }
-            catch (IOException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        try
-        {
-            //BufferedWriter for performance, true to set append to file flag
-            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
-            buf.append(text);
-            buf.newLine();
-            buf.close();
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    public static String getCurrentTime() {
-        //date output format
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        return dateFormat.format(cal.getTime())+"\t";
-    }
-
     private void EnableGPSAutoMatically() {
+        generateLog.appendLog(tag,"Enable gps !");
         GoogleApiClient googleApiClient = null;
         if (googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(this)
@@ -550,6 +532,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                             // All location settings are satisfied. The client can
                             // initialize location
                             // requests here.
+                            generateLog.appendLog(tag,"Enabled gps !");
                             break;
                         case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
 //                            toast("GPS is not on");
@@ -605,10 +588,16 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
             if (isConnected) {
+                load=1;
                 findViewById(R.id.network_status).setVisibility(View.VISIBLE);
             }
             else {
                 findViewById(R.id.network_status).setVisibility(View.GONE);
+                if (load==1) {
+                    Intent i = new Intent(WelcomeScreen.this, PhoneAuthActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         }
     }

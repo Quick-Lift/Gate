@@ -174,13 +174,15 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
             }
             data.setTimecharge(cursor.getString(cursor.getColumnIndex("time")));
             fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
-            fare=fare+(Float.parseFloat(pref.getString("excel",null))*parking);
-            parkingpriceexcel=String.valueOf((int)(Float.parseFloat(pref.getString("excel",null))*parking));
-            editor.putString("parkexcel",parkingpriceexcel);
-            editor.commit();
+
+//            editor.putString("parkexcel",parkingpriceexcel);
+//            editor.commit();
         }
             Log.v("TAG",""+fare);
-
+        fare=fare+(Float.parseFloat(pref.getString("excel",null))*parking);
+        parkingpriceexcel=String.valueOf((int)(Float.parseFloat(pref.getString("excel",null))*parking));
+        data.setParking_price(parkingpriceexcel);
+        Log.v("Park",""+parkingpriceexcel+" , "+parking);
         if (vehicle_case==1) {
             int val=(int)fare;
             val=(int)(((float)val)* Float.parseFloat(pref.getString("ratemultiplier",null)));
@@ -257,13 +259,14 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
             }
             fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             data.setTimecharge(cursor.getString(cursor.getColumnIndex("time")));
-            fare=fare+(Float.parseFloat(pref.getString("fullcar",null))*parking);
-            parkingpricefull=String.valueOf((int)(Float.parseFloat(pref.getString("fullcar",null))*parking));
 
-            editor.putString("parkfull",parkingpricefull);
-            editor.commit();
+//            editor.putString("parkfull",parkingpricefull);
+//            editor.commit();
         }
-
+        fare=fare+(Float.parseFloat(pref.getString("fullcar",null))*parking);
+        parkingpricefull=String.valueOf((int)(Float.parseFloat(pref.getString("fullcar",null))*parking));
+        data.setParking_price(parkingpricefull);
+        Log.v("Park",""+parkingpricefull+" , "+parking);
         if (vehicle_case==1){
             int val=(int)fare;
             val=(int)(((float)val)* Float.parseFloat(pref.getString("ratemultiplier",null)));
@@ -281,6 +284,7 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
         }
         //time_car.setText(String.valueOf(time/60)+" min");
     }
+
     private void pricerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time, int parking) {
         cursor.moveToFirst();
         for (int x=0;x<2;x++){
@@ -394,17 +398,21 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
             }
             fare = fare + (time * Float.valueOf(cursor.getString(cursor.getColumnIndex("time"))));
             data.setTimecharge(cursor.getString(cursor.getColumnIndex("time")));
-            fare=fare+(Float.parseFloat(pref.getString("sharecar",null))*parking);
-            parkingpriceshare=String.valueOf((int)(Float.parseFloat(pref.getString("sharecar",null))*parking));
-            editor.putString("parkshare",parkingpriceshare);
-            editor.commit();
+
+//            editor.putString("parkshare",parkingpriceshare);
+//            editor.commit();
         }
+        fare=fare+(Float.parseFloat(pref.getString("sharecar",null))*parking);
+        parkingpriceshare=String.valueOf((int)(Float.parseFloat(pref.getString("sharecar",null))*parking));
+        data.setParking_price(parkingpriceshare);
+        Log.v("Park",""+parkingpriceshare+" , "+parking);
         int val=(int)fare;
         val=(int)(((float)val)* Float.parseFloat(pref.getString("ratemultiplier",null)));
         val+= (int)(((float)val)* (Float.parseFloat(pref.getString("tax",null))/100));
         price_shareCar.setText("Rs. " + val);
         //time_shareCar.setText(String.valueOf(time/60)+" min");
     }
+
     private void pricesharerickshaw(int pckg,Cursor sloc, int index, Cursor cursor, int distanceValue,int time, int parking) {
         cursor.moveToFirst();
         for (int x=0;x<6;x++){
