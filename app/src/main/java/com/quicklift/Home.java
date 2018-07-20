@@ -514,90 +514,115 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 SharedPreferences.Editor ed=log_id.edit();
                 ed.putString("found","1");
                 ed.commit();
+                for (int val=0;val<driver_list.size();val++){
+                    if (driver_list.get(val).equals(driverid)){
+                        if (marker_drop != null) {
+                            marker_drop.remove();
+                        }
+                        Bitmap b = null;
+                        if (vehicletype.equals("rickshaw"))
+                            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.rickshawfinal), 100,60, false);
+                        else if (vehicletype.equals("car"))
+                            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.carfinal), 100,60, false);
+                        else if (vehicletype.equals("excel"))
+                            b = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.carfinal), 100,60, false);
+
+                        final BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(b);
+                        MarkerOptions opt = new MarkerOptions()
+                                .title("Driver")
+                                .icon(icon)
+                                .position(new LatLng(driver_markers.get(val).getPosition().latitude, driver_markers.get(val).getPosition().longitude))
+                                .snippet("Arriving");
+                        marker_drop = mMap.addMarker(opt);
+                        break;
+                    }
+                }
                 startService(new Intent(Home.this,NotificationService.class));
-                DatabaseReference reference=FirebaseDatabase.getInstance().getReference("VehicleDetails/Patna/"+driverid);
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()){
-                            Map<String,Object> drive=(Map<String, Object>) dataSnapshot.getValue();
-                            ((TextView)findViewById(R.id.bike_name)).setText(drive.get("model").toString());
-                            ((TextView)findViewById(R.id.bike_no)).setText(drive.get("number").toString());
-                        }
-                    }
+                findViewById(R.id.pickup_layout).setVisibility(View.INVISIBLE);
+                findViewById(R.id.destn_layout).setVisibility(View.INVISIBLE);
+                SharedPreferences.Editor editor=log_id.edit();
+                editor.putString("driver",driverid);
+                editor.putString("status","accepted");
+                editor.commit();
+                if (dialog.isShowing())
+                    dialog.dismiss();
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                handler_time.removeCallbacks(runnable);
+                handler_time.postDelayed(runnable,1);
+                tracktripstatus();
 
-                    }
-                });
-                DatabaseReference db = FirebaseDatabase.getInstance().getReference("Drivers/" + driverid);
-                db.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        findViewById(R.id.layout3).setVisibility(View.VISIBLE);
-                        final Map<String, Object> drive = (Map<String, Object>) dataSnapshot.getValue();
-
-                        //Glide.with(Home.this).load(drive.get("thumb").toString()).into((CircleImageView)findViewById(R.id.pic));
-//                                ((TextView)findViewById(R.id.bike_name)).setText(drive.get("veh_type").toString());
-//                                ((TextView)findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
-                        int iend = drive.get("name").toString().indexOf(" ");
-                        if (iend!=-1)
-                            ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString().substring(0 , iend));
-                        else
-                            ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
-//                                if (drive.containsKey("rate"))
-//                                    ((RatingBar)findViewById(R.id.driver_rating)).setRating(Float.valueOf(drive.get("rate").toString()));
-//                                else
-//                                    ((RatingBar)findViewById(R.id.driver_rating)).setRating(0);
-                        if (drive.containsKey("rate"))
-                            ((TextView)findViewById(R.id.rating_value)).setText(String.format("%.1f",Float.parseFloat(drive.get("rate").toString())));
-                        else
-                            ((TextView)findViewById(R.id.rating_value)).setText("5.0");
-                        ((TextView)findViewById(R.id.amount)).setText(final_price.getText().toString());
-
-                        if (!drive.get("thumb").toString().equals("")) {
-                            byte[] dec = Base64.decode(drive.get("thumb").toString(), Base64.DEFAULT);
-                            Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
-                            ((CircleImageView)findViewById(R.id.pic)).setImageBitmap(decbyte);
-                        }
-                        ((CircleImageView)findViewById(R.id.call)).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                callIntent.setData(Uri.parse("tel:"+drive.get("phone").toString()));
-
-                                if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                    // TODO: Consider calling
-                                    //    ActivityCompat#requestPermissions
-                                    // here to request the missing permissions, and then overriding
-                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                    //                                          int[] grantResults)
-                                    // to handle the case where the user grants the permission. See the documentation
-                                    // for ActivityCompat#requestPermissions for more details.
-                                    return;
-                                }
-                                startActivity(callIntent);
-                            }
-                        });
-                        findViewById(R.id.pickup_layout).setVisibility(View.INVISIBLE);
-                        findViewById(R.id.destn_layout).setVisibility(View.INVISIBLE);
-                        SharedPreferences.Editor editor=log_id.edit();
-                        editor.putString("driver",driverid);
-                        editor.putString("status","accepted");
-                        editor.commit();
-                        if (dialog.isShowing())
-                            dialog.dismiss();
-                        tracktripstatus();
-                        handler_time.removeCallbacks(runnable);
-                        handler_time.postDelayed(runnable,1000);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+//                DatabaseReference reference=FirebaseDatabase.getInstance().getReference("VehicleDetails/Patna/"+driverid);
+//                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        if (dataSnapshot.exists()){
+//                            Map<String,Object> drive=(Map<String, Object>) dataSnapshot.getValue();
+//                            ((TextView)findViewById(R.id.bike_name)).setText(drive.get("model").toString());
+//                            ((TextView)findViewById(R.id.bike_no)).setText(drive.get("number").toString());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+//                DatabaseReference db = FirebaseDatabase.getInstance().getReference("Drivers/" + driverid);
+//                db.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        findViewById(R.id.layout3).setVisibility(View.VISIBLE);
+//                        final Map<String, Object> drive = (Map<String, Object>) dataSnapshot.getValue();
+//
+//                        //Glide.with(Home.this).load(drive.get("thumb").toString()).into((CircleImageView)findViewById(R.id.pic));
+////                                ((TextView)findViewById(R.id.bike_name)).setText(drive.get("veh_type").toString());
+////                                ((TextView)findViewById(R.id.bike_no)).setText(drive.get("veh_num").toString());
+//                        int iend = drive.get("name").toString().indexOf(" ");
+//                        if (iend!=-1)
+//                            ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString().substring(0 , iend));
+//                        else
+//                            ((TextView)findViewById(R.id.dname)).setText(drive.get("name").toString());
+////                                if (drive.containsKey("rate"))
+////                                    ((RatingBar)findViewById(R.id.driver_rating)).setRating(Float.valueOf(drive.get("rate").toString()));
+////                                else
+////                                    ((RatingBar)findViewById(R.id.driver_rating)).setRating(0);
+//                        if (drive.containsKey("rate"))
+//                            ((TextView)findViewById(R.id.rating_value)).setText(String.format("%.1f",Float.parseFloat(drive.get("rate").toString())));
+//                        else
+//                            ((TextView)findViewById(R.id.rating_value)).setText("5.0");
+//                        ((TextView)findViewById(R.id.amount)).setText(final_price.getText().toString());
+//
+//                        if (!drive.get("thumb").toString().equals("")) {
+//                            byte[] dec = Base64.decode(drive.get("thumb").toString(), Base64.DEFAULT);
+//                            Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
+//                            ((CircleImageView)findViewById(R.id.pic)).setImageBitmap(decbyte);
+//                        }
+//                        ((CircleImageView)findViewById(R.id.call)).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+//                                callIntent.setData(Uri.parse("tel:"+drive.get("phone").toString()));
+//
+//                                if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                                    // TODO: Consider calling
+//                                    //    ActivityCompat#requestPermissions
+//                                    // here to request the missing permissions, and then overriding
+//                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                                    //                                          int[] grantResults)
+//                                    // to handle the case where the user grants the permission. See the documentation
+//                                    // for ActivityCompat#requestPermissions for more details.
+//                                    return;
+//                                }
+//                                startActivity(callIntent);
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
             }
         };
 

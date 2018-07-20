@@ -151,9 +151,19 @@ public class CustomerRegistration extends AppCompatActivity {
 //        }
 //    }
 
-    public void updateUI(View view) {
+    public void accept_terms(View view){
+        startActivityForResult(new Intent(this,Terms_and_Condition.class),2);
+    }
+
+    public void updateUI() {
 //        hideProgressDialog();
+        pdialog=new ProgressDialog(this);
+        pdialog.setMessage("Creating Account ...");
+        pdialog.setIndeterminate(true);
+        pdialog.setCancelable(false);
+
         if (validateForm()) {
+            pdialog.show();
             Customer customer=new Customer();
             customer.setName(name.getText().toString());
             customer.setEmail(email.getText().toString());
@@ -169,18 +179,15 @@ public class CustomerRegistration extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle unsuccessful uploads
-                        Toast.makeText(CustomerRegistration.this, "Failed to upload image !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CustomerRegistration.this, "Failed to upload profile image !", Toast.LENGTH_SHORT).show();
 
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(CustomerRegistration.this, "Successful", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(CustomerRegistration.this, "Successful", Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
-            else {
-                //Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
             }
 
             user_db.child(key).setValue(customer);
@@ -281,9 +288,9 @@ public class CustomerRegistration extends AppCompatActivity {
                 }
             });
             //mAuth.signOut();
+            pdialog.dismiss();
             startActivity(new Intent(CustomerRegistration.this,Home.class));
             finish();
-
         }
     }
 
@@ -330,12 +337,12 @@ public class CustomerRegistration extends AppCompatActivity {
             name.setError(null);
         }
 
-        if (TextUtils.isEmpty(phone.getText().toString())) {
-            phone.setError("Required.");
-            valid = false;
-        } else {
-            phone.setError(null);
-        }
+//        if (TextUtils.isEmpty(phone.getText().toString())) {
+//            phone.setError("Required.");
+//            valid = false;
+//        } else {
+//            phone.setError(null);
+//        }
 
         if (TextUtils.isEmpty(password.getText().toString())) {
             password.setError("Required.");
@@ -344,12 +351,12 @@ public class CustomerRegistration extends AppCompatActivity {
             password.setError(null);
         }
 
-        if (TextUtils.isEmpty(address.getText().toString())) {
-            address.setError("Required.");
-            valid = false;
-        } else {
-            address.setError(null);
-        }
+//        if (TextUtils.isEmpty(address.getText().toString())) {
+//            address.setError("Required.");
+//            valid = false;
+//        } else {
+//            address.setError(null);
+//        }
 
         return valid;
     }
@@ -384,9 +391,14 @@ public class CustomerRegistration extends AppCompatActivity {
                     hideProgressDialog();
                 }
                 break;
+
+            case 2:
+                if (resultCode==RESULT_OK){
+                    updateUI();
+                }
+                break;
         }
     }
-
 
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),

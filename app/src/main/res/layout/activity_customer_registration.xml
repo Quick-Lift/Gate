@@ -111,7 +111,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:onClick="updateUI"
+            android:onClick="accept_terms"
             android:textAllCaps="false"
             android:textSize="20sp"
             android:layout_margin="40dp"

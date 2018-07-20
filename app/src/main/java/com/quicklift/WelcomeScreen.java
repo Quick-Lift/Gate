@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -71,6 +72,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
     GenerateLog generateLog=new GenerateLog();
     String tag="Welcome";
     int load=0;
+    boolean valid=false;
 
     @Override
     public void onBackPressed() {
@@ -85,10 +87,77 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+//        startActivity(new Intent(this,Terms_and_Condition.class));
+
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
 
         generateLog.appendLog(tag,"Loading page !");
+
+        if (log_id.contains("id")) {
+            DatabaseReference vers = FirebaseDatabase.getInstance().getReference("Version_customer");
+            vers.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        try {
+                            if (Integer.parseInt(dataSnapshot.getValue().toString()) >
+                                    getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionCode) {
+                                View view = getLayoutInflater().inflate(R.layout.notification_layout, null);
+                                TextView title = (TextView) view.findViewById(R.id.title);
+                                TextView message = (TextView) view.findViewById(R.id.message);
+                                Button left = (Button) view.findViewById(R.id.left_btn);
+                                Button right = (Button) view.findViewById(R.id.right_btn);
+
+                                left.setVisibility(View.INVISIBLE);
+                                right.setText("Ok");
+                                title.setText("Update !");
+                                message.setText("A new version of app is availabe !\n We request you to update the app to enjoy the uninterrupted services !!");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+                                builder.setView(view)
+                                        .setCancelable(false);
+
+                                final AlertDialog alert = builder.create();
+                                alert.show();
+
+                                left.setOnClickListener(null);
+                                right.setOnClickListener(null);
+                                right.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                        intent.setData(Uri.parse("market://details?id=com.quickliftpilot"));
+                                        try {
+                                            startActivity(intent);
+                                        } catch (Exception e) {
+                                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.quickliftpilot"));
+                                        }
+                                        alert.dismiss();
+                                    }
+                                });
+                            } else if (valid) {
+                                startActivity(new Intent(WelcomeScreen.this, Login.class));
+                                finish();
+                            } else {
+                                valid = true;
+                            }
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        valid = true;
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else {
+            valid=true;
+        }
 
         //Toast.makeText(Login.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
         //Log.v("TAG",user.getUid());
@@ -272,9 +341,14 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             }
             else {
                 generateLog.appendLog(tag,"All permissions available!");
-                Intent i = new Intent(this,PhoneAuthActivity.class);
-                startActivity(i);
-                finish();
+                if (valid) {
+                    Intent i = new Intent(this, PhoneAuthActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+                else {
+                    valid=true;
+                }
             }
         }
         else {
@@ -465,17 +539,27 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
                     if (CameraPermission && RecordAudioPermission && WriteStoragePermission && ReadStorgaePermission && LocationService && CallPhone) {
                         generateLog.appendLog(tag,"Request Permission Granted !");
-                        Intent i = new Intent(this,PhoneAuthActivity.class);
-                        startActivity(i);
-                        finish();
+                        if (valid) {
+                            Intent i = new Intent(this, PhoneAuthActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                        else {
+                            valid=true;
+                        }
                         //Toast.makeText(AnimationActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
                     }
                     else {
                         //Toast.makeText(WelcomeScreen.this,"Permission Denied",Toast.LENGTH_LONG).show();
                         generateLog.appendLog(tag,"Request Permission Denied !");
-                        Intent i = new Intent(this,PhoneAuthActivity.class);
-                        startActivity(i);
-                        finish();
+                        if (valid){
+                            Intent i = new Intent(this,PhoneAuthActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                        else {
+                            valid=true;
+                        }
                     }
                 }
                 break;

@@ -116,7 +116,8 @@
         <activity android:name=".FaresandCharges" />
         <activity android:name=".FAQ" />
         <activity android:name=".BillDetails" />
-        <activity android:name=".ConfirmLocation"></activity>
+        <activity android:name=".ConfirmLocation" />
+        <activity android:name=".Terms_and_Condition"></activity>
     </application>
 
 </manifest>

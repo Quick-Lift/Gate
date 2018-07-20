@@ -34,7 +34,7 @@
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:backgroundTint="#05affc"
         android:textColor="#000000"
         android:text="Confirm Pickup"
