@@ -48,6 +48,7 @@ public class BillDetails extends AppCompatActivity {
     private ArrayList<String> charges=new ArrayList<>();
     private ArrayList<String> price=new ArrayList<>();
     TextView src,dest,time,driver,veh,mode,vehno;
+    String name="";
 
     @Override
     public void onBackPressed() {
@@ -233,12 +234,14 @@ public class BillDetails extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
+                    if (dataSnapshot.hasChild("name"))
+                        name=dataSnapshot.child("name").getValue().toString();
                     if (dataSnapshot.hasChild("email") && dataSnapshot.child("email").getValue().toString().equals("")){
                         progressDialog.dismiss();
                         Toast.makeText(BillDetails.this, "No email id found ! \n Please enter email id in profile !", Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        sendEmail(dataSnapshot.getValue().toString());
+                        sendEmail(dataSnapshot.child("email").getValue().toString());
                     }
                 }
                 else {
@@ -370,7 +373,7 @@ public class BillDetails extends AppCompatActivity {
 
         titleBaseLine+=28;
         txt.setTextSize(14);
-        staticLayout = new StaticLayout("Thank you Adarsh Verma for using Doorbell. Have a nice day !", txt, pageInfo.getPageWidth(), Layout.Alignment.ALIGN_CENTER, 1, 1, false);
+        staticLayout = new StaticLayout("Thank you "+name+" for using QuickLift. Have a nice day !", txt, pageInfo.getPageWidth(), Layout.Alignment.ALIGN_CENTER, 1, 1, false);
         canvas.save();
         canvas.translate(0, titleBaseLine);
         staticLayout.draw(canvas);
@@ -444,27 +447,27 @@ public class BillDetails extends AppCompatActivity {
 
         txt.setTextSize(14);
         txt.setStrokeWidth(5);
-        staticLayout = new StaticLayout("Thu Jul 19 16:01:01 GMT+05:30 2018", txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+        staticLayout = new StaticLayout(time.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
         canvas.translate(45, source_title+=2);
         staticLayout.draw(canvas);
         canvas.restore();
-        staticLayout = new StaticLayout("Ittina neela Apartment, Electronic City Phase II, Bangalore, Karnataka - 560100", txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+        staticLayout = new StaticLayout(src.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
         canvas.translate(45, source_title+=25);
         staticLayout.draw(canvas);
         canvas.restore();
-        staticLayout = new StaticLayout("Huskur Gate, Electronic City Phase II, Bangalore, Karnataka - 560100", txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+        staticLayout = new StaticLayout(dest.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
         canvas.translate(45, source_title+=60);
         staticLayout.draw(canvas);
         canvas.restore();
-        staticLayout = new StaticLayout("Puspendra Pandey", txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+        staticLayout = new StaticLayout(driver.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
         canvas.translate(45, source_title+=60);
         staticLayout.draw(canvas);
         canvas.restore();
-        staticLayout = new StaticLayout("BR123456", txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+        staticLayout = new StaticLayout(veh.getText().toString()+" "+vehno.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
         canvas.translate(45, source_title+=20);
         staticLayout.draw(canvas);
@@ -474,7 +477,7 @@ public class BillDetails extends AppCompatActivity {
         canvas.drawLine(40, source_title+=100,pageInfo.getPageWidth()-40, source_title , paint);
 
         txt.setTextSize(16);
-        staticLayout = new StaticLayout("Payment Mode : Cash", txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+        staticLayout = new StaticLayout("Payment Mode : "+mode.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
         canvas.translate(45, source_title+=10);
         staticLayout.draw(canvas);

@@ -224,15 +224,21 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
         //user.remove("name");
         //user.put("name",name.getText().toString());
         if (!TextUtils.isEmpty(phone.getText().toString()) && !TextUtils.isEmpty(address.getText().toString())) {
-            user.replace("name", name.getText().toString());
-            user.replace("phone", phone.getText().toString());
-            user.replace("email", email.getText().toString());
+            user.remove("name");
+            user.remove("phone");
+            user.remove("email");
+            user.remove("address");
+            user.remove("thumb");
+
+            user.put("name", name.getText().toString());
+            user.put("phone", phone.getText().toString());
+            user.put("email", email.getText().toString());
             if (user.containsKey("address")) {
-                user.replace("address", address.getText().toString());
+                user.put("address", address.getText().toString());
             } else {
                 user.put("address", address.getText().toString());
             }
-            user.replace("thumb", upload_img);
+            user.put("thumb", upload_img);
             db.child(log_id.getString("id", null)).setValue(user);
 
             if (selectedImage != null) {
