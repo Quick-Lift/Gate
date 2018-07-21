@@ -12,7 +12,7 @@
 package com.quicklift.mail;
 
     public class Config {
-        public static final String EMAIL ="support@quicklift.in";
-        public static final String PASSWORD ="Support@QuickLift";
+        public static final String EMAIL ="adarsh32565@gmail.com";
+        public static final String PASSWORD ="sameerverma";
     }
 

@@ -14,17 +14,25 @@ package com.quicklift.mail;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class SendMail extends AsyncTask<Void,Void,Void> {
 
@@ -37,6 +45,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
     private String message;
     //Progressdialog to show while sending email
     private ProgressDialog progressDialog;
+    private String path="";
 
     //Class Constructor
     public SendMail(Context context, String email, String subject, String message){
@@ -45,6 +54,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         this.email = email;
         this.subject = subject;
         this.message = message;
+        path= Environment.getExternalStorageDirectory().getPath() + "/invoice.pdf";
     }
 
     @Override
@@ -68,6 +78,9 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         //Showing a success message
         //Toast.makeText(context,"Mail Sent",Toast.LENGTH_LONG).show();
         progressDialog.dismiss();
+        File file=new File(path);
+        if (file.exists())
+            file.delete();
         Toast.makeText(context, "Invoice sent to your email id !", Toast.LENGTH_SHORT).show();
     }
 
@@ -106,6 +119,23 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
             //Adding message
             mm.setText(message);
 
+            if(!path.equals("")) {
+                MimeBodyPart messageBodyPart = new MimeBodyPart();
+                // fill message
+                messageBodyPart.setText(message);
+
+                Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(messageBodyPart);
+
+                messageBodyPart = new MimeBodyPart();
+                DataSource source = new FileDataSource(path);
+                messageBodyPart.setDataHandler(new DataHandler(source));
+                messageBodyPart.setFileName("Invoice.pdf");
+                multipart.addBodyPart(messageBodyPart);
+
+
+                mm.setContent(multipart);
+            }
             //Sending email
            Transport.send(mm);
 

@@ -288,6 +288,9 @@ public class CustomerRegistration extends AppCompatActivity {
                 }
             });
             //mAuth.signOut();
+//            String otp_msg="";
+//            new SendSms(otp_msg,phone.getText().toString()).start();
+
             pdialog.dismiss();
             startActivity(new Intent(CustomerRegistration.this,Home.class));
             finish();
