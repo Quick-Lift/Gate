@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,15 +55,16 @@ public class CancelReason extends AppCompatActivity {
         ref= FirebaseDatabase.getInstance().getReference("CustomerCancelReason");
         list=(ListView)findViewById(R.id.list);
 
-        dialog=new ProgressDialog(this);
-        dialog.setCancelable(false);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Please Wait ...");
-        dialog.show();
+//        dialog=new ProgressDialog(this);
+//        dialog.setCancelable(false);
+//        dialog.setIndeterminate(true);
+//        dialog.setMessage("Please Wait ...");
+//        dialog.show();
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Toast.makeText(CancelReason.this, "hi", Toast.LENGTH_SHORT).show();
                 reason.clear();
                 if (dataSnapshot.exists()){
                     for (DataSnapshot data:dataSnapshot.getChildren()){
@@ -70,6 +72,7 @@ public class CancelReason extends AppCompatActivity {
                     }
                     list.setAdapter(new CustomAdapter());
                 }
+//                dialog.cancel();
             }
 
             @Override

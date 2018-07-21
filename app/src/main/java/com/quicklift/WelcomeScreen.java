@@ -87,7 +87,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-//        startActivity(new Intent(this,Terms_and_Condition.class));
+        startActivity(new Intent(this,CancelReason.class));
 
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
