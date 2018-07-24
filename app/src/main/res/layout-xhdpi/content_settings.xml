@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_settings"
+    tools:context="com.quicklift.Settings">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="4">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="3"
+                android:layout_marginTop="15dp">
+
+                <TextView
+                    android:id="@id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Customer Name"
+                    android:textColor="#05affc"
+                    android:paddingLeft="20dp"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Phone No."
+                    android:textColor="#05affc"
+                    android:paddingLeft="20dp"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/photo"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="80dp"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/profile"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="#4505affc">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_add"
+                android:tint="#05affc"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Add another preferred location"
+                android:textSize="20sp"
+                android:gravity="center_vertical"
+                android:textColor="#05affc"
+                android:textAllCaps="false"
+                android:background="@android:color/transparent"
+                android:paddingLeft="10dp"/>
+
+        </LinearLayout>
+
+        <fragment
+            android:id="@+id/location_autocomplete"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Location"
+            android:paddingLeft="20dp"
+            android:textColor="#05affc"
+            android:textColorHint="#9005affc"
+            android:visibility="gone"
+            android:backgroundTint="#05affc"/>
+
+        <EditText
+            android:id="@+id/location_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Location Name"
+            android:paddingLeft="20dp"
+            android:textColor="#05affc"
+            android:textColorHint="#9005affc"
+            android:backgroundTint="#05affc"/>
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="Save"
+            android:textAllCaps="false"
+            android:background="#05affc"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_gravity="end"
+            android:onClick="save_location"
+            android:layout_marginEnd="10dp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="#4505affc">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:src="@drawable/home"
+                android:tint="#05affc"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Most Preferred Location"
+                android:textSize="20sp"
+                android:gravity="center_vertical"
+                android:textColor="#05affc"
+                android:textAllCaps="false"
+                android:background="@android:color/transparent"
+                android:paddingLeft="10dp"/>
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:divider="#ffffff"
+            android:dividerHeight="5dp"/>
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/home"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp">-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="45dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:src="@drawable/home"-->
+                <!--android:tint="#05affc"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:text="Home"-->
+                <!--android:textSize="18sp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:textColor="#05affc"-->
+                <!--android:paddingLeft="20dp"/>-->
+
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+            <!--android:id="@+id/work"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="45dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:src="@drawable/ic_office"-->
+                <!--android:tint="#05affc"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:text="Work"-->
+                <!--android:textSize="18sp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:textColor="#05affc"-->
+                <!--android:paddingLeft="20dp"/>-->
+
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:visibility="gone">-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="45dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:src="@drawable/ic_building"-->
+                <!--android:tint="#05affc"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:text="Save Another Location"-->
+                <!--android:textSize="18sp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:textColor="#05affc"-->
+                <!--android:paddingLeft="20dp"/>-->
+
+        <!--</LinearLayout>-->
+    </LinearLayout>
+</ScrollView>

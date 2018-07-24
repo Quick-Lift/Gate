@@ -23,7 +23,7 @@
         android:text="Total Fare"
         android:gravity="center"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_marginTop="10dp"/>
 
     <TextView
@@ -44,8 +44,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/photo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@drawable/profile"/>
 
         <LinearLayout
@@ -56,7 +56,7 @@
             <RatingBar
                 android:id="@+id/rating"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:theme="@style/RatingBar"
                 android:numStars="5"
                 android:layout_gravity="center_horizontal"
@@ -66,10 +66,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Rate the Driver"
-                android:textSize="22dp"
+                android:textSize="16dp"
                 android:textColor="#FFFFFF"
                 android:gravity="center"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="7dp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -85,21 +85,21 @@
             android:id="@+id/save"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:text="Save"
             android:backgroundTint="#0000FF"
             android:textColor="#FFFFFF"
-            android:textSize="20dp"/>
+            android:textSize="18dp"/>
 
         <Button
             android:id="@+id/cancel"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:text="Cancel"
             android:backgroundTint="#0000FF"
             android:textColor="#FFFFFF"
-            android:textSize="20dp"/>
+            android:textSize="18dp"/>
 
     </LinearLayout>
 </LinearLayout>

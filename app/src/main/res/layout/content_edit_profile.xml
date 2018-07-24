@@ -70,6 +70,7 @@
         android:gravity="center"
         android:textSize="20sp"
         android:textColor="#05affc"
+        android:visibility="gone"
         android:textColorHint="#9905affc"
         android:backgroundTint="@color/colorPrimary"
         android:inputType="textPersonName"/>
@@ -80,6 +81,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:numStars="5"
+        android:rating="4.5"
+        android:progressTint="#05affc"
         android:backgroundTint="#05affc"/>
 
     <View

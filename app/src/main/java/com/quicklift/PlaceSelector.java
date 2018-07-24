@@ -67,6 +67,7 @@ public class PlaceSelector extends AppCompatActivity {
     static Activity place=null;
     static TextView place_network_status=null;
     CheckConnectivity con=new CheckConnectivity();
+    Intent check;
 
     @Override
     public void onBackPressed() {
@@ -83,6 +84,13 @@ public class PlaceSelector extends AppCompatActivity {
         getSupportActionBar().setTitle("Select Place");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        check=getIntent();
+        if (check.hasExtra("type")){
+            if (check.getStringExtra("type").equals("pickup"))
+                getSupportActionBar().setTitle("Select Pickup");
+            else
+                getSupportActionBar().setTitle("Select Destination");
+        }
 
         destination=(EditText)findViewById(R.id.destination);
         outofbound=(TextView)findViewById(R.id.outofbound);

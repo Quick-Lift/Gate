@@ -87,7 +87,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        startActivity(new Intent(this,CancelReason.class));
+//        startActivity(new Intent(this,CancelReason.class));
 
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
@@ -333,8 +333,11 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         boolean status1 = haveNetworkConnection();
         boolean status2 = hasActiveInternetConnection();
 
-        if (status1 && status2){
+//        if (status1 && status2){
             generateLog.appendLog(tag,"Internet Available!");
+//            Intent i = new Intent(this, PhoneAuthActivity.class);
+//                    startActivity(i);
+//                    finish();
             if (!checkPermission()){
                 generateLog.appendLog(tag,"Permission Requesting !");
                 requestPermission();
@@ -350,53 +353,53 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                     valid=true;
                 }
             }
-        }
-        else {
-            generateLog.appendLog(tag,"No internet!");
-            findViewById(R.id.network_status).setVisibility(View.VISIBLE);
-//            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this,R.style.myBackgroundStyle);
-//            builder.setMessage("Turn on your internet connection and try again.")
-//                    .setCancelable(false)
-//                    .setTitle("No Internet !")
-//                    .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            finish();
-//                            startActivity(getIntent());
-//                        }
-//                    });
+//        }
+//        else {
+//            generateLog.appendLog(tag,"No internet!");
+//            findViewById(R.id.network_status).setVisibility(View.VISIBLE);
+////            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this,R.style.myBackgroundStyle);
+////            builder.setMessage("Turn on your internet connection and try again.")
+////                    .setCancelable(false)
+////                    .setTitle("No Internet !")
+////                    .setPositiveButton("Try Again !", new DialogInterface.OnClickListener() {
+////                        public void onClick(DialogInterface dialog, int id) {
+////                            finish();
+////                            startActivity(getIntent());
+////                        }
+////                    });
+////
+////            //Creating dialog box
+////            AlertDialog alert = builder.create();
+////            //Setting the title manually
+////            alert.show();
+////            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
 //
-//            //Creating dialog box
-//            AlertDialog alert = builder.create();
-//            //Setting the title manually
-//            alert.show();
-//            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
-
-//            View view=getLayoutInflater().inflate(R.layout.notification_layout,null);
-//            TextView title=(TextView)view.findViewById(R.id.title);
-//            TextView message=(TextView)view.findViewById(R.id.message);
-//            Button left=(Button) view.findViewById(R.id.left_btn);
-//            Button right=(Button) view.findViewById(R.id.right_btn);
-//
-//            title.setText("No Internet !");
-//            message.setText("Turn on your internet connection and try again.");
-//            left.setVisibility(View.GONE);
-//            right.setText("Try Again");
-//
-//            right.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    finish();
-//                    startActivity(getIntent());
-//                }
-//            });
-//
-//            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
-//            builder .setView(view)
-//                    .setCancelable(false);
-//
-//            AlertDialog alert = builder.create();
-//            alert.show();
-        }
+////            View view=getLayoutInflater().inflate(R.layout.notification_layout,null);
+////            TextView title=(TextView)view.findViewById(R.id.title);
+////            TextView message=(TextView)view.findViewById(R.id.message);
+////            Button left=(Button) view.findViewById(R.id.left_btn);
+////            Button right=(Button) view.findViewById(R.id.right_btn);
+////
+////            title.setText("No Internet !");
+////            message.setText("Turn on your internet connection and try again.");
+////            left.setVisibility(View.GONE);
+////            right.setText("Try Again");
+////
+////            right.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    finish();
+////                    startActivity(getIntent());
+////                }
+////            });
+////
+////            AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeScreen.this);
+////            builder .setView(view)
+////                    .setCancelable(false);
+////
+////            AlertDialog alert = builder.create();
+////            alert.show();
+//        }
 
         // checking user permission
 //        if(!checkPermission())
@@ -472,8 +475,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 //            }
 //        }
 
-        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(new Receiver(), intentFilter);
+//        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+//        registerReceiver(new Receiver(), intentFilter);
     }
 
     private boolean haveNetworkConnection() {

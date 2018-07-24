@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#05affc"
-                android:text="Bike Model + Bike No"
+                android:text=""
                 android:paddingLeft="10dp"/>
 
             <TextView

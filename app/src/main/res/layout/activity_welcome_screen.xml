@@ -26,7 +26,7 @@
         android:id="@+id/img2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:src="@mipmap/ic_person"
+        android:src="@mipmap/ic_launcher"
         android:visibility="invisible"
         android:layout_centerHorizontal="true"/>
 
@@ -34,7 +34,7 @@
         android:id="@+id/img3"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@mipmap/ic_app_img"
+        android:src="@mipmap/ic_launcher"
         android:visibility="invisible"
         android:layout_centerHorizontal="true"/>
 

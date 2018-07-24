@@ -956,10 +956,10 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:onClick="ratingbarclick"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <android.support.v7.widget.CardView
-            android:visibility="visible"
+            android:visibility="gone"
             android:id="@+id/ride_card_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -989,7 +989,7 @@
                             android:maxWidth="220dp"
                             android:text="Driver Name"
                             android:paddingLeft="10dp"
-                            android:textSize="19sp"
+                            android:textSize="16sp"
                             android:layout_marginTop="5dp"
                             android:background="@android:color/transparent"/>
                         <TextView
@@ -999,7 +999,6 @@
                             android:hint="Travel Date"
                             android:layout_marginTop="5dp"
                             android:paddingLeft="10dp"
-                            android:visibility="gone"
                             android:background="@android:color/transparent"/>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
@@ -1011,8 +1010,8 @@
                     CardView:cardBackgroundColor="@android:color/transparent">
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/driver_pic"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_width="90sp"
+                        android:layout_height="70sp"
                         android:src="@drawable/profile"
                         android:background="@android:color/transparent"/>
                 </android.support.v7.widget.CardView>
@@ -1133,8 +1132,8 @@
             android:src="@drawable/home"
             android:onClick="closelocationsave"
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="40dp"
             android:visibility="gone"
+            android:layout_marginLeft="40dp"
             android:tint="#fff"
             />
 

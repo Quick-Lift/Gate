@@ -1,6 +1,7 @@
 package com.quicklift;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -25,10 +27,13 @@ public class CancelReason extends AppCompatActivity {
     DatabaseReference ref;
     ProgressDialog dialog;
     ArrayList<String> reason=new ArrayList<>();
+    int selected=0;
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent intent=new Intent();
+        setResult(RESULT_CANCELED, intent);
         finish();
     }
 
@@ -55,16 +60,16 @@ public class CancelReason extends AppCompatActivity {
         ref= FirebaseDatabase.getInstance().getReference("CustomerCancelReason");
         list=(ListView)findViewById(R.id.list);
 
-//        dialog=new ProgressDialog(this);
-//        dialog.setCancelable(false);
-//        dialog.setIndeterminate(true);
-//        dialog.setMessage("Please Wait ...");
-//        dialog.show();
+        dialog=new ProgressDialog(this);
+        dialog.setCancelable(false);
+        dialog.setIndeterminate(true);
+        dialog.setMessage("Please Wait ...");
+        dialog.show();
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Toast.makeText(CancelReason.this, "hi", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(CancelReason.this, "hi", Toast.LENGTH_SHORT).show();
                 reason.clear();
                 if (dataSnapshot.exists()){
                     for (DataSnapshot data:dataSnapshot.getChildren()){
@@ -72,7 +77,7 @@ public class CancelReason extends AppCompatActivity {
                     }
                     list.setAdapter(new CustomAdapter());
                 }
-//                dialog.cancel();
+                dialog.cancel();
             }
 
             @Override
@@ -80,6 +85,19 @@ public class CancelReason extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void select (View view){
+        Intent intent=new Intent();
+        intent.putExtra("reason",reason.get(selected));
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    public void cancel (View view){
+        Intent intent=new Intent();
+        setResult(RESULT_CANCELED, intent);
+        finish();
     }
 
     public class CustomAdapter extends BaseAdapter {
@@ -100,10 +118,23 @@ public class CancelReason extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup parent) {
+        public View getView(final int position, View view, ViewGroup parent) {
             view=getLayoutInflater().inflate(R.layout.reason_layout,null);
             RadioButton btn=(RadioButton)view.findViewById(R.id.select);
             btn.setText(reason.get(position));
+
+            if (selected==position)
+                btn.setChecked(true);
+
+            btn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        selected = position;
+                        list.setAdapter(new CustomAdapter());
+                    }
+                }
+            });
 
             return view;
         }

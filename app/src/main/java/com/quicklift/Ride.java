@@ -6,10 +6,18 @@ package com.quicklift;
 
 public class Ride {
     String customerid,source,destination,amount,time,driver,status,cancelledby,discount,cancel_charge,paymode,parking,seat;
-    String waiting,timing;
+    String waiting,timing,reason;
 
     public Ride() {
 
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public String getStatus() {

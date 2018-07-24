@@ -118,7 +118,7 @@
         <activity android:name=".BillDetails" />
         <activity android:name=".ConfirmLocation" />
         <activity android:name=".Terms_and_Condition" />
-        <activity android:name=".CancelReason"></activity>
+        <activity android:name=".CancelReason"/>
     </application>
 
 </manifest>

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:text="Select Reason :"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:paddingLeft="10dp"
         android:paddingTop="5dp"
         android:textStyle="bold"/>
@@ -30,6 +30,7 @@
         android:textColor="#ffffff"
         android:layout_margin="10dp"
         android:textSize="20dp"
+        android:onClick="select"
         android:background="@drawable/blue_background"/>
 
     <Button
@@ -41,5 +42,6 @@
         android:textColor="#ffffff"
         android:layout_margin="10dp"
         android:textSize="20dp"
+        android:onClick="cancel"
         android:background="@drawable/blue_background"/>
 </RelativeLayout>
