@@ -402,6 +402,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
         pickup_address.setInputType(0);
         destn_address.setInputType(0);
+        destn_address.requestFocus();
 
         seats.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -432,18 +433,22 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         pickup_address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Home.this, PlaceSelector.class);
-                intent.putExtra("type", "pickup");
-                startActivityForResult(intent, 1);
+                if (pickup_address.hasFocus()) {
+                    Intent intent = new Intent(Home.this, PlaceSelector.class);
+                    intent.putExtra("type", "pickup");
+                    startActivityForResult(intent, 1);
+                }
             }
         });
 
         destn_address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Home.this, PlaceSelector.class);
-                intent.putExtra("type", "destination");
-                startActivityForResult(intent, 2);
+                if (destn_address.hasFocus()) {
+                    Intent intent = new Intent(Home.this, PlaceSelector.class);
+                    intent.putExtra("type", "destination");
+                    startActivityForResult(intent, 2);
+                }
             }
         });
 

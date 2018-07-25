@@ -45,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#05affc"
                 android:text="Date + Time"
+                android:maxLines="1"
                 android:paddingLeft="10dp"/>
 
             <TextView
@@ -78,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#05affc"
                 android:text="Source"
+                android:maxLines="2"
                 android:paddingLeft="10dp"/>
 
         </LinearLayout>
@@ -94,6 +96,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#05affc"
                 android:text="Destination"
+                android:maxLines="2"
                 android:paddingLeft="10dp"/>
 
         </LinearLayout>

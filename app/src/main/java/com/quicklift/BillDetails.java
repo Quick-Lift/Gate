@@ -145,7 +145,7 @@ public class BillDetails extends AppCompatActivity {
                     ((TextView)findViewById(R.id.paymode)).setText(dataSnapshot.child("paymode").getValue().toString());
                     float base=(float) Float.parseFloat(dataSnapshot.child("amount").getValue().toString()) - total +Float.parseFloat(dataSnapshot.child("discount").getValue().toString());
                     ((TextView)findViewById(R.id.basefare)).setText("Rs. "+String.format("%.2f",(base)));
-                    ((TextView)findViewById(R.id.total)).setText("Rs. "+String.valueOf(total+base+cancel));
+                    ((TextView)findViewById(R.id.total)).setText("Rs. "+String.valueOf(total+base+cancel-offer));
 
                     charges.add("Base Fare");
                     price.add("Rs. "+String.format("%.2f",(base)));
@@ -175,7 +175,7 @@ public class BillDetails extends AppCompatActivity {
                         price.add("Rs. "+String.valueOf(offer));
                     }
                     charges.add("Total");
-                    price.add("Rs. "+String.valueOf(total+base+cancel));
+                    price.add("Rs. "+String.valueOf(total+base+cancel-offer));
 
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Drivers/"+dataSnapshot.child("driver").getValue().toString());
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -276,7 +276,8 @@ public class BillDetails extends AppCompatActivity {
 //        price.add("Rs. 10");
 //        price.add("Rs. 260");
         String subject = "Invoice for trip.";
-        String message="Thank you for using our service . \nThe invoice is attached with this mail.";
+        String message="Thank you for using our service . \nThe invoice is attached with this mail.\n\n\n\n" +
+                "(* This is a system generated mail. You donot need to reply to this.)\n\nRegards\nTeam QuickLift\n";
         invoice(emailID,subject,message);
 //        String message = "Dear Customer,\n" +
 //                "Thankyou for using \"QuickLift\" Service. Here is your invoice for the trip.\n\n\n" +
@@ -311,7 +312,7 @@ public class BillDetails extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void invoice(String emailID,String subject,String message){
+    public void invoice(final String emailID, final String subject, final String message){
 //        if (isStoragePermissionGranted()){
         PdfDocument document = new PdfDocument();
         PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(576, 792, 1).create();
@@ -452,19 +453,19 @@ public class BillDetails extends AppCompatActivity {
         canvas.translate(45, source_title+=2);
         staticLayout.draw(canvas);
         canvas.restore();
-        staticLayout = new StaticLayout(src.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+        staticLayout = new StaticLayout("From : "+src.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
         canvas.translate(45, source_title+=25);
         staticLayout.draw(canvas);
         canvas.restore();
-        staticLayout = new StaticLayout(dest.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+        staticLayout = new StaticLayout("To : "+dest.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
-        canvas.translate(45, source_title+=60);
+        canvas.translate(45, source_title+=75);
         staticLayout.draw(canvas);
         canvas.restore();
         staticLayout = new StaticLayout(driver.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
         canvas.save();
-        canvas.translate(45, source_title+=60);
+        canvas.translate(45, source_title+=80);
         staticLayout.draw(canvas);
         canvas.restore();
         staticLayout = new StaticLayout(veh.getText().toString()+" "+vehno.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
@@ -474,7 +475,7 @@ public class BillDetails extends AppCompatActivity {
         canvas.restore();
 
         paint.setStrokeWidth(1);
-        canvas.drawLine(40, source_title+=100,pageInfo.getPageWidth()-40, source_title , paint);
+        canvas.drawLine(40, source_title+=70,pageInfo.getPageWidth()-40, source_title , paint);
 
         txt.setTextSize(16);
         staticLayout = new StaticLayout("Payment Mode : "+mode.getText().toString(), txt, 250, Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
@@ -494,14 +495,42 @@ public class BillDetails extends AppCompatActivity {
             document.writeTo(new FileOutputStream(filePath));
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(BillDetails.this, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(BillDetails.this, "Please provide storage permission !", Toast.LENGTH_LONG).show();
         }
         // close the document
         document.close();
-        SendMail sm = new SendMail(this, emailID, subject, message);
+        DatabaseReference db=FirebaseDatabase.getInstance().getReference("Mail_id");
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    String num="";
+                    String msg="";
+                    String id=dataSnapshot.child("email").getValue().toString();
+                    String password=dataSnapshot.child("password").getValue().toString();
+                    if (dataSnapshot.hasChild("phone")) {
+                        num = dataSnapshot.child("phone").getValue().toString();
+                        msg=message+num;
+                    }
+                    else {
+                        msg=message;
+                    }
+                    SendMail sm = new SendMail(BillDetails.this, emailID, subject, msg,id,password);
+                    progressDialog.dismiss();
+                    sm.execute();
+                }
+                else {
+                    progressDialog.dismiss();
+                    Toast.makeText(BillDetails.this, "Failed to send mail ! Try again !", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         //Executing sendmail to send email
-        progressDialog.dismiss();
-        sm.execute();
 //        }
     }
 }

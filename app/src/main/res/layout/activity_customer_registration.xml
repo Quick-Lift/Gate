@@ -86,7 +86,7 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Password"
+            android:hint="Create Password"
             android:paddingLeft="15dp"
             android:textSize="18sp"
             android:textColor="#05affc"

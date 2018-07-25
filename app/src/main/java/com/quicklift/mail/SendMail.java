@@ -46,14 +46,17 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
     //Progressdialog to show while sending email
     private ProgressDialog progressDialog;
     private String path="";
+    private String id="",password="";
 
     //Class Constructor
-    public SendMail(Context context, String email, String subject, String message){
+    public SendMail(Context context, String email, String subject, String message, String id, String password){
         //Initializing variables
         this.context = context;
         this.email = email;
         this.subject = subject;
         this.message = message;
+        this.id = id;
+        this.password = password;
         path= Environment.getExternalStorageDirectory().getPath() + "/invoice.pdf";
     }
 
@@ -102,7 +105,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
                 new javax.mail.Authenticator() {
                     //Authenticating the password
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(Config.EMAIL, Config.PASSWORD);
+                        return new PasswordAuthentication(id, password);
                     }
                 });
 
@@ -111,7 +114,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
             MimeMessage mm = new MimeMessage(session);
 
             //Setting sender address
-            mm.setFrom(new InternetAddress(Config.EMAIL));
+            mm.setFrom(new InternetAddress(id));
             //Adding receiver
             mm.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
             //Adding subject

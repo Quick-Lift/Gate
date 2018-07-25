@@ -73,6 +73,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
     String tag="Welcome";
     int load=0;
     boolean valid=false;
+    Receiver receiver=new Receiver();
 
     @Override
     public void onBackPressed() {
@@ -88,6 +89,10 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 //        startActivity(new Intent(this,CancelReason.class));
+
+//        DatabaseReference mail=FirebaseDatabase.getInstance().getReference("Mail_id");
+//        mail.child("email").setValue("qiklift@gmail.com");
+//        mail.child("password").setValue("PasswordForQuickLift");
 
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
@@ -206,6 +211,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                 editor.putString("peaktimeradius",dataSnapshot.child("PeakTimeSearchRadius").getValue(String.class));
                 editor.putString("waittime",String.valueOf(dataSnapshot.child("WaitingTime").getValue(Integer.class)));
                 editor.putString("waitingcharge",String.valueOf(dataSnapshot.child("WaitingCharge").getValue(Integer.class)));
+                editor.putString("tax",String.valueOf(dataSnapshot.child("Tax").getValue().toString()));
                 editor.commit();
                 for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                     ArrayList<String> price=new ArrayList<String>();
@@ -330,11 +336,11 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             EnableGPSAutoMatically();
         }
 //         variables storing function values returned by network connection functions
-        boolean status1 = haveNetworkConnection();
-        boolean status2 = hasActiveInternetConnection();
+//        boolean status1 = haveNetworkConnection();
+//        boolean status2 = hasActiveInternetConnection();
 
 //        if (status1 && status2){
-            generateLog.appendLog(tag,"Internet Available!");
+//            generateLog.appendLog(tag,"Internet Available!");
 //            Intent i = new Intent(this, PhoneAuthActivity.class);
 //                    startActivity(i);
 //                    finish();
@@ -475,8 +481,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 //            }
 //        }
 
-//        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-//        registerReceiver(new Receiver(), intentFilter);
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(receiver, intentFilter);
     }
 
     private boolean haveNetworkConnection() {
@@ -524,6 +530,12 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
                 }, RequestPermissionCode);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     @Override
