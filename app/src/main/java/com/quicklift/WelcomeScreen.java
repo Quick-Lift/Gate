@@ -164,6 +164,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             valid=true;
         }
 
+        handleoffer();
+
         //Toast.makeText(Login.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
         //Log.v("TAG",user.getUid());
 
@@ -262,6 +264,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                 if (dataSnapshot.exists()){
                     if (dataSnapshot.child("resp").getValue().toString().equals("Trip Ended") || dataSnapshot.child("resp").getValue().toString().equals("Cancel") || dataSnapshot.child("resp").getValue().toString().equals("Reject")){
                         dref.removeValue();
+                        editor.putString("driver","");
+                        editor.commit();
                     }
                     else {
                         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("CustomerRequests/"+dataSnapshot.child("driver").getValue().toString()+"/"+log_id.getString("id",null));
@@ -270,6 +274,8 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (!dataSnapshot.exists()){
                                     dref.removeValue();
+                                    editor.putString("driver","");
+                                    editor.commit();
                                 }
                             }
 
@@ -698,6 +704,77 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                     finish();
                 }
             }
+        }
+    }
+
+    private void handleoffer() {
+        if (log_id.contains("offer")){
+            final DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ReferalCode/"+log_id.getString("id",null));
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChild("referredby")){
+                        String str=dataSnapshot.child("referredby").getValue(String.class);
+                        final DatabaseReference db=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+str);
+                        db.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    if (dataSnapshot.hasChild("101")) {
+                                        Integer val=Integer.parseInt(dataSnapshot.child("101").getValue(String.class));
+                                        db.child("101").setValue(String.valueOf(val+1));
+                                        ref.child("referredby").removeValue();
+                                    }
+                                    else {
+                                        db.child("101").setValue("1");
+                                        ref.child("referredby").removeValue();
+                                    }
+                                }
+                                else {
+                                    db.child("101").setValue("1");
+                                    ref.child("referredby").removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            final DatabaseReference dref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+log_id.getString("id",null));
+            dref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()){
+                        if (log_id.contains("offer")) {
+                            if (dataSnapshot.hasChild(log_id.getString("offer", null))) {
+
+                                Integer val = Integer.parseInt(dataSnapshot.child(log_id.getString("offer", null)).getValue(String.class));
+                                if (val == 1)
+                                    dref.child(log_id.getString("offer", null)).removeValue();
+                                else
+                                    dref.child(log_id.getString("offer", null)).setValue(String.valueOf(val - 1));
+                                SharedPreferences.Editor ed = log_id.edit();
+                                ed.remove("offer");
+                                ed.commit();
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 }

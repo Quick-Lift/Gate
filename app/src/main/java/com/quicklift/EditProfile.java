@@ -39,6 +39,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -112,19 +115,19 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
         (findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                (findViewById(R.id.edit1)).setVisibility(View.VISIBLE);
+//                (findViewById(R.id.edit1)).setVisibility(View.VISIBLE);
                 (findViewById(R.id.edit2)).setVisibility(View.VISIBLE);
                 (findViewById(R.id.edit3)).setVisibility(View.VISIBLE);
                 (findViewById(R.id.layoutsave)).setVisibility(View.VISIBLE);
                 (findViewById(R.id.layoutcancel)).setVisibility(View.VISIBLE);
                 email.setInputType(1);
-                phone.setInputType(1);
+//                phone.setInputType(1);
                 address.setInputType(1);
                 pic.setEnabled(true);
             }
         });
 
-        db.child(log_id.getString("id",null)).addListenerForSingleValueEvent(new ValueEventListener() {
+        db.child(log_id.getString("id",null)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user=(Map<String, Object>) dataSnapshot.getValue();
@@ -272,6 +275,10 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
         Intent photo = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         final int ACTIVITY_SELECT_IMAGE = 1234;
         startActivityForResult(photo, ACTIVITY_SELECT_IMAGE);
+    }
+
+    public void changephone(View view){
+        startActivity(new Intent(EditProfile.this,ChangePhoneNumber.class));
     }
 
     @Override

@@ -89,6 +89,20 @@ public class Support extends AppCompatActivity implements NavigationView.OnNavig
 //        });
 //
 //        updatenavbar();
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("EmergencyContacts/Address");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    ((TextView)findViewById(R.id.address)).setText(dataSnapshot.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void updatenavbar() {

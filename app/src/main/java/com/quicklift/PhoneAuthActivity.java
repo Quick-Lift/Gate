@@ -66,7 +66,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
-
             if (resultCode == RESULT_OK) {
                 final ProgressDialog progress=new ProgressDialog(PhoneAuthActivity.this);
                 progress.setCancelable(false);
@@ -162,16 +161,15 @@ public class PhoneAuthActivity extends AppCompatActivity {
 //                            alert.show();
 //                            alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
 //                            alert.getButton(alert.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#000000"));
-
-                            View view=getLayoutInflater().inflate(R.layout.notification_layout,null);
-                            TextView title=(TextView)view.findViewById(R.id.title);
+                            View view=getLayoutInflater().inflate(R.layout.confirm_existing_layout,null);
+//                            TextView title=(TextView)view.findViewById(R.id.title);
                             TextView message=(TextView)view.findViewById(R.id.message);
-                            Button left=(Button) view.findViewById(R.id.left_btn);
+                            TextView left=(TextView) view.findViewById(R.id.left_btn);
                             Button right=(Button) view.findViewById(R.id.right_btn);
 
-                            title.setText("Account Action !");
+//                            title.setText("Account Action !");
                             message.setText("Are you "+dataSnapshot.child("name").getValue(String.class)+" ?");
-                            left.setText("No");
+//                            left.setText("No");
                             right.setText("Yes");
 
                             left.setOnClickListener(new View.OnClickListener() {

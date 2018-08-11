@@ -155,6 +155,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     LatLng pickup, cur_loc;
     GeoLocation driver_loc;
     ProgressDialog pdialog;
+    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     int i = 0, found = 0;
     ArrayList<String> driver_list = new ArrayList<String>();
     ArrayList<String> share_driver_list = new ArrayList<String>();
@@ -643,8 +644,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         displayrideinfo(map);
                     } else if (map.get("status").toString().equals("rated")) {
                         //displayrideinfo(map);
-                        locationinfo(map);
-                        findViewById(R.id.ride_card_view).setVisibility(View.GONE);
+                        if (map.containsKey("destination") && map.containsKey("lat") && map.containsKey("lng")) {
+                            locationinfo(map);
+                            findViewById(R.id.ride_card_view).setVisibility(View.GONE);
+                        }
+                        else {
+                            lastride.removeValue();
+                        }
                         //Toast.makeText(Home.this, "hi", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -720,6 +726,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                destn_address.setVisibility(View.VISIBLE);
+                pickup_address.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(Home.this, ConfirmLocation.class);
                 intent.putExtra("lat", String.valueOf(marker_pick.getPosition().latitude));
                 intent.putExtra("lng", String.valueOf(marker_pick.getPosition().longitude));
@@ -864,7 +872,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         shareClass.setEn_lng(marker_drop.getPosition().longitude);
         shareClass.setSeats(seats.getSelectedItem().toString().substring(0, 1));
         share.child(log_id.getString("id", null)).setValue(shareClass);
-
 //        if (found == 1)
 //            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
 //        else if (found == 0 && i < driver_list.size())
@@ -888,7 +895,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //            place_drivers();
 //            place_drivers_share();
 //        }
-
         Handler handle = new Handler();
         handle.postDelayed(new Runnable() {
             @Override
@@ -1250,6 +1256,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                                             pickup_address.setEnabled(true);
                                             destn_address.setEnabled(true);
+                                            pickup_address.setVisibility(View.VISIBLE);
+                                            destn_address.setVisibility(View.VISIBLE);
                                             findViewById(R.id.no_ride).setVisibility(View.GONE);
                                         }
                                     });
@@ -1260,23 +1268,19 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 }, 5000);
 //                }
             } else {
-                Log.v("TAG", "else " + String.valueOf(isrunning));
+//                Log.v("TAG", "else " + String.valueOf(isrunning));
 //                if (isrunning) {
 //                    isrunning = false;
 //                    Toast.makeText(this, "else condition", Toast.LENGTH_SHORT).show();
-
                 Handler hd = new Handler();
                 hd.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-//            place_drivers_share();
                         if (repeatcounter < Integer.parseInt(log_id.getString("searchingtime", null))) {
                             repeatsearching();
                         } else {
                             if (dialog.isShowing())
                                 dialog.dismiss();
-
 //                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this,R.style.myBackgroundStyle);
 //                        builder.setMessage("Sorry we are facing congestion ! Please try again later ! ")
 //                                .setCancelable(false)
@@ -1370,6 +1374,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 
                                     pickup_address.setEnabled(true);
                                     destn_address.setEnabled(true);
+                                    pickup_address.setVisibility(View.VISIBLE);
+                                    destn_address.setVisibility(View.VISIBLE);
                                     findViewById(R.id.no_ride).setVisibility(View.GONE);
                                 }
                             });
@@ -1683,6 +1689,25 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     ((CircleImageView) findViewById(R.id.pic)).setImageBitmap(decbyte);
                 }
                 ((CircleImageView) findViewById(R.id.call)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse("tel:" + drive.get("phone").toString()));
+
+                        if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return;
+                        }
+                        startActivity(callIntent);
+                    }
+                });
+                ((Button) findViewById(R.id.call_text)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -2355,6 +2380,26 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                             startActivity(callIntent);
                         }
                     });
+                    ((Button) findViewById(R.id.call_text)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent callIntent = new Intent(Intent.ACTION_CALL);
+                            callIntent.setData(Uri.parse("tel:" + drive.get("phone").toString()));
+
+                            if (ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return;
+                            }
+                            startActivity(callIntent);
+                        }
+                    });
+
                 }
             }
 
@@ -3915,22 +3960,22 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             latitude=intent.getDoubleExtra("lat",0);
             longitude=intent.getDoubleExtra("lng",0);
 
-//            if (intent.getStringExtra("case").equals("1")) {
-//                vehcasepick=1;
-//                if (vehcasedrop==2) {
-//                    vehicle_case = 2;
-//                    hide_share_vehicles();
-//                }
-//                else {
-//                    vehicle_case = 1;
-//                    show_share_vehicles();
-//                }
-//            }
-//            else {
-//                vehcasepick=2;
-//                vehicle_case = 2;
-//                hide_share_vehicles();
-//            }
+            if (intent.getStringExtra("case").equals("1")) {
+                vehcasepick=1;
+                if (vehcasedrop==2) {
+                    vehicle_case = 2;
+                    hide_share_vehicles();
+                }
+                else {
+                    vehicle_case = 1;
+                    show_share_vehicles();
+                }
+            }
+            else {
+                vehcasepick=2;
+                vehicle_case = 2;
+                hide_share_vehicles();
+            }
 
             pickup_address.setText(name);
 //            goToLocationZoom(latitude, longitude, 15);
@@ -4018,6 +4063,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             else {
                 goToLocationZoom(latitude, longitude, 15);
             }
+            if (find_driver!=null)
                 find_driver.removeAllListeners();
 //            find_driver_share.removeAllListeners();
                 place_drivers();
@@ -4161,6 +4207,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 pr=pr-less;
 
             final_price.setText("Rs. "+(int)pr);
+            data.setOffer_code(offercode);
             offer.setText(intent.getStringExtra("offer"));
 
         } else if (requestCode==4 && resultCode==RESULT_OK){
@@ -4180,6 +4227,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //            payment.setText(intent.getStringExtra("mode"));
 //            data.setPaymode(intent.getStringExtra("mode"));
             if (intent.getStringExtra("result").equals("1")){
+                data.setRequest_time(sdf.format(new Date()));
                 data.setSt_lat(Double.parseDouble(intent.getStringExtra("lat")));
                 data.setSt_lng(Double.parseDouble(intent.getStringExtra("lng")));
                 pickup_address.setText(intent.getStringExtra("address"));

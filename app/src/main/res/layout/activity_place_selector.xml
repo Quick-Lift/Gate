@@ -14,16 +14,25 @@
         android:hint="Pick Up"
         android:layout_margin="10dp"/>
 -->
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_arrow_back"
+        android:tint="#000000"/>
+
     <EditText
         android:id="@+id/destination"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:hint="Select Location"
-        android:backgroundTint="#05affc"
+        android:background="#8805affc"
         android:paddingLeft="10dp"
         android:elevation="20sp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:layout_below="@+id/pickup"/>
 
     <TextView
@@ -46,7 +55,7 @@
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
         android:dividerHeight="3dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"

@@ -27,62 +27,14 @@
             android:layout_marginTop="10dp"/>
 
         <TextView
+            android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#05affc"
-            android:text="QuickLift Solutions Private Limited"
+            android:text=""
             android:textSize="18sp"
             android:paddingBottom="2dp"
             android:paddingLeft="20dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#05affc"
-            android:text="1st Floor,"
-            android:textSize="18sp"
-            android:paddingBottom="2dp"
-            android:paddingLeft="20dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#05affc"
-            android:text="Lemon’s Shanti Plaza"
-            android:textSize="18sp"
-            android:paddingBottom="2dp"
-            android:paddingLeft="20dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#05affc"
-            android:text="Goal Road,"
-            android:textSize="18sp"
-            android:paddingBottom="2dp"
-            android:paddingLeft="20dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#05affc"
-            android:text="Patna"
-            android:textSize="18sp"
-            android:paddingBottom="2dp"
-            android:paddingLeft="20dp"/>
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/margin"
-            android:gravity="left|center_vertical"
-            android:paddingLeft="40dp"
-            android:text="Last Trip"
-            android:visibility="gone"
-            android:textColor="#05affc"
-            android:textSize="20sp" />
 
         <Button
             android:layout_width="match_parent"

@@ -515,7 +515,7 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:orientation="vertical"
-                     android:background="#aa05affc"
+                     android:background="#ffffff"
                      android:visibility="gone">
 
                      <TextView
@@ -551,28 +551,32 @@
                                  android:gravity="center"
                                  android:layout_height="match_parent">
 
-                                 <LinearLayout
+                                 <!--<LinearLayout-->
+                                 <!--android:layout_width="80dp"-->
+                                 <!--android:layout_height="80dp"-->
+                                 <!--android:gravity="center"-->
+                                 <!--android:orientation="vertical"-->
+                                 <!--android:background="@drawable/round_button">-->
+
+                                 <!--<LinearLayout-->
+                                 <!--android:layout_width="70dp"-->
+                                 <!--android:layout_height="70dp"-->
+                                 <!--android:orientation="vertical"-->
+                                 <!--android:gravity="center"-->
+                                 <!--android:background="@drawable/round_button">-->
+
+                                 <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                                 <!--android:layout_width="60dp"-->
+                                 <!--android:layout_height="60dp"-->
+                                 <!--android:id="@+id/call"-->
+                                 <!--android:layout_gravity="center"-->
+                                 <!--android:src="@drawable/ic_call"/>-->
+                                 <!--</LinearLayout>-->
+                                 <!--</LinearLayout>-->
+                                 <ImageView
                                      android:layout_width="80dp"
                                      android:layout_height="80dp"
-                                     android:gravity="center"
-                                     android:orientation="vertical"
-                                     android:background="@drawable/round_button">
-
-                                     <LinearLayout
-                                         android:layout_width="70dp"
-                                         android:layout_height="70dp"
-                                         android:orientation="vertical"
-                                         android:gravity="center"
-                                         android:background="@drawable/round_button">
-
-                                         <de.hdodenhof.circleimageview.CircleImageView
-                                             android:layout_width="60dp"
-                                             android:layout_height="60dp"
-                                             android:id="@+id/call"
-                                             android:layout_gravity="center"
-                                             android:src="@drawable/ic_call"/>
-                                     </LinearLayout>
-                                 </LinearLayout>
+                                     android:src="@drawable/carfinal"/>
                              </LinearLayout>
 
                              <LinearLayout
@@ -581,30 +585,33 @@
                                  android:gravity="center"
                                  android:layout_height="match_parent">
 
-                                 <LinearLayout
-                                     android:layout_width="80dp"
-                                     android:layout_height="80dp"
+                                 <!--<LinearLayout-->
+                                 <!--android:layout_width="80dp"-->
+                                 <!--android:layout_height="80dp"-->
+                                 <!--android:gravity="center"-->
+                                 <!--android:orientation="vertical"-->
+                                 <!--android:background="@drawable/round_button">-->
+
+                                 <!--<LinearLayout-->
+                                 <!--android:layout_width="70dp"-->
+                                 <!--android:layout_height="70dp"-->
+                                 <!--android:orientation="vertical"-->
+                                 <!--android:gravity="center"-->
+                                 <!--android:background="@drawable/round_button">-->
+
+                                 <TextView
+                                     android:id="@+id/otp"
+                                     android:layout_width="match_parent"
+                                     android:layout_height="match_parent"
+                                     android:text="OTP\n"
+                                     android:textSize="18sp"
                                      android:gravity="center"
-                                     android:orientation="vertical"
-                                     android:background="@drawable/round_button">
-
-                                     <LinearLayout
-                                         android:layout_width="70dp"
-                                         android:layout_height="70dp"
-                                         android:orientation="vertical"
-                                         android:gravity="center"
-                                         android:background="@drawable/round_button">
-
-                                     <TextView
-                                         android:id="@+id/otp"
-                                         android:layout_width="wrap_content"
-                                         android:layout_height="wrap_content"
-                                         android:text="OTP\n"
-                                         android:textSize="18sp"
-                                         android:gravity="center"
-                                         android:textColor="#05affc"/>
-                                         </LinearLayout>
-                                 </LinearLayout>
+                                     android:textColor="#000000"
+                                     android:background="#aa05affc"
+                                     android:textStyle="bold"
+                                     android:layout_margin="10dp"/>
+                                 <!--</LinearLayout>-->
+                                 <!--</LinearLayout>-->
                              </LinearLayout>
                          </LinearLayout>
                          <LinearLayout
@@ -642,7 +649,6 @@
                                  android:textSize="18sp"
                                  android:layout_marginLeft="3dp"
                                  android:layout_marginRight="3dp"
-                                 android:background="@drawable/bottom_border_less"
                                  android:textColor="#000000"/>
 
                              <TextView
@@ -650,11 +656,10 @@
                                  android:layout_weight="1"
                                  android:layout_height="match_parent"
                                  android:gravity="center"
-                                 android:text="Fare"
-                                 android:textSize="18sp"
+                                 android:text="Estimated Fare"
+                                 android:textSize="12sp"
                                  android:layout_marginLeft="3dp"
                                  android:layout_marginRight="3dp"
-                                 android:background="@drawable/bottom_border_less"
                                  android:textColor="#000000"/>
 
                              <TextView
@@ -668,7 +673,6 @@
                                  android:textSize="18sp"
                                  android:layout_marginLeft="3dp"
                                  android:layout_marginRight="3dp"
-                                 android:background="@drawable/bottom_border_less"
                                  android:textColor="#000000"/>
 
                          </LinearLayout>
@@ -684,13 +688,11 @@
                                  android:layout_weight="1"
                                  android:layout_height="match_parent"
                                  android:gravity="center"
-                                 android:id="@+id/bike_no"
                                  android:text=""
                                  android:textSize="18sp"
                                  android:layout_marginLeft="3dp"
                                  android:layout_marginRight="3dp"
                                  android:layout_marginBottom="3dp"
-                                 android:background="@drawable/top_border_less"
                                  android:textColor="#000000"/>
 
                              <TextView
@@ -703,7 +705,6 @@
                                  android:layout_marginLeft="3dp"
                                  android:layout_marginRight="3dp"
                                  android:layout_marginBottom="3dp"
-                                 android:background="@drawable/top_border_less"
                                  android:textSize="18sp"
                                  android:textColor="#000000"/>
 
@@ -715,73 +716,136 @@
                                  android:layout_height="match_parent"
                                  android:layout_marginLeft="3dp"
                                  android:layout_marginRight="3dp"
-                                 android:layout_marginBottom="3dp"
-                                 android:background="@drawable/top_border_less">
+                                 android:layout_marginBottom="3dp">
 
                                  <!--<RatingBar-->
-                                     <!--android:id="@+id/driver_rating"-->
-                                     <!--android:layout_width="wrap_content"-->
-                                     <!--android:layout_height="wrap_content"-->
-                                     <!--style="@style/foodRatingBar"-->
-                                     <!--android:isIndicator="true"-->
-                                     <!--android:visibility="gone"-->
-                                     <!--android:layout_gravity="center_horizontal"-->
-                                     <!--android:numStars="5"/>-->
+                                 <!--android:id="@+id/driver_rating"-->
+                                 <!--android:layout_width="wrap_content"-->
+                                 <!--android:layout_height="wrap_content"-->
+                                 <!--style="@style/foodRatingBar"-->
+                                 <!--android:isIndicator="true"-->
+                                 <!--android:visibility="gone"-->
+                                 <!--android:layout_gravity="center_horizontal"-->
+                                 <!--android:numStars="5"/>-->
 
                                  <LinearLayout
                                      android:layout_width="0dp"
                                      android:layout_weight="0.5"
                                      android:layout_height="match_parent">
 
-                                    <TextView
-                                        android:id="@+id/rating_value"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:text=""
-                                        android:textSize="18sp"
-                                        android:textColor="#000000"
-                                        android:gravity="center_vertical|end"
-                                        android:paddingEnd="5dp"/>
+                                     <TextView
+                                         android:id="@+id/rating_value"
+                                         android:layout_width="match_parent"
+                                         android:layout_height="match_parent"
+                                         android:text=""
+                                         android:textSize="18sp"
+                                         android:textColor="#000000"
+                                         android:gravity="center_vertical|end"
+                                         android:paddingEnd="5dp"/>
                                  </LinearLayout>
                                  <LinearLayout
                                      android:layout_width="0dp"
                                      android:layout_weight="0.5"
                                      android:layout_height="match_parent">
 
-                                    <ImageView
-                                        android:layout_width="30dp"
-                                        android:layout_height="match_parent"
-                                        android:src="@drawable/ic_star_fill"
-                                        android:layout_gravity="start"/>
+                                     <ImageView
+                                         android:layout_width="30dp"
+                                         android:layout_height="match_parent"
+                                         android:src="@drawable/ic_star_fill"
+                                         android:layout_gravity="start"/>
                                  </LinearLayout>
                              </LinearLayout>
                          </LinearLayout>
                      </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:gravity="center"
-                        android:background="#05affc">
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:weightSum="3">
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:src="@drawable/ic_close_icon"
-                            android:onClick="cancel_trip"
-                            android:tint="#ff0000"/>
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_weight="1"
+                             android:layout_height="match_parent" >
 
-                        <Button
-                            android:id="@+id/canceltrip"
-                            android:layout_width="wrap_content"
-                            android:layout_height="50dp"
-                            android:text="Cancel Trip"
-                            android:textColor="#ffffff"
-                            android:textSize="20sp"
-                            android:layout_marginLeft="5dp"
-                            android:onClick="cancel_trip"
-                            android:background="@android:color/transparent"/>
+                             <TextView
+                                 android:layout_width="0dp"
+                                 android:layout_weight="1"
+                                 android:layout_height="match_parent"
+                                 android:gravity="center"
+                                 android:id="@+id/bike_no"
+                                 android:text=""
+                                 android:textSize="18sp"
+                                 android:layout_marginLeft="3dp"
+                                 android:layout_marginRight="3dp"
+                                 android:layout_marginBottom="3dp"
+                                 android:background="@drawable/margin"
+                                 android:textColor="#000000"/>
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_weight="1"
+                             android:layout_height="50dp"
+                             android:gravity="center"
+                             android:background="#aa05affc">
 
-                    </LinearLayout>
+                             <ImageView
+                                 android:layout_width="25dp"
+                                 android:layout_height="wrap_content"
+                                 android:src="@drawable/ic_close_icon"
+                                 android:onClick="cancel_trip"
+                                 android:tint="#ff0000"/>
+
+                             <Button
+                                 android:id="@+id/canceltrip"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="50dp"
+                                 android:text="Cancel Trip"
+                                 android:textColor="#000000"
+                                 android:textSize="12sp"
+                                 android:textAllCaps="false"
+                                 android:onClick="cancel_trip"
+                                 android:paddingLeft="5dp"
+                                 android:gravity="left|center_vertical"
+                                 android:background="@android:color/transparent"/>
+
+                         </LinearLayout>
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_weight="1"
+                             android:gravity="center"
+                             android:paddingRight="10dp"
+                             android:layout_height="match_parent">
+
+                             <Button
+                                 android:id="@+id/call_text"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="50dp"
+                                 android:text="Call Driver"
+                                 android:textColor="#000000"
+                                 android:textSize="12sp"
+                                 android:textAllCaps="false"
+                                 android:gravity="right|center_vertical"
+                                 android:paddingRight="5dp"
+                                 android:background="@android:color/transparent"/>
+
+                             <LinearLayout
+                                 android:layout_width="25dp"
+                                 android:layout_height="25dp"
+                                 android:orientation="vertical"
+                                 android:gravity="center"
+                                 android:background="@drawable/round_button">
+
+                                 <de.hdodenhof.circleimageview.CircleImageView
+                                     android:layout_width="20dp"
+                                     android:layout_height="20dp"
+                                     android:id="@+id/call"
+                                     android:layout_gravity="center"
+                                     android:src="@drawable/ic_call"/>
+                             </LinearLayout>
+
+                         </LinearLayout>
+                     </LinearLayout>
                  </LinearLayout>
 
                  <LinearLayout
@@ -1172,7 +1236,7 @@
         android:layout_height="wrap_content"
         android:minHeight="100dp"
         android:orientation="vertical"
-        android:background="#8805affc"
+        android:background="@drawable/margin"
         android:paddingTop="10dp"
         android:visibility="gone"
         android:layout_alignParentBottom="true"
@@ -1192,10 +1256,10 @@
         <Button
             android:id="@+id/try_again"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="50dp"
             android:text="Try Again !"
             android:layout_marginTop="20dp"
-            android:backgroundTint="#05affc"
+            android:background="#05affc"
             android:layout_gravity="end"
             android:textSize="18sp"
             android:textColor="#ffffff"/>

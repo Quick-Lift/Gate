@@ -289,7 +289,7 @@ public class CustomerRegistration extends AppCompatActivity {
             });
             //mAuth.signOut();
             String otp_msg="QuickLift Cab सेवाओं पर साइन अप करने के लिए धन्यवाद। हम आपको QuickLift में एक सुखद और सुरक्षित अनुभव की कामना करते हैं।";
-            new SendSms(otp_msg,phone.getText().toString()).start();
+//            new SendSms(otp_msg,phone.getText().toString()).start();
 
             pdialog.dismiss();
             startActivity(new Intent(CustomerRegistration.this,Home.class));

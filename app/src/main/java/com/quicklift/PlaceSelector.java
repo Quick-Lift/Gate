@@ -81,18 +81,21 @@ public class PlaceSelector extends AppCompatActivity {
         setContentView(R.layout.activity_place_selector);
         place=this;
 
-        getSupportActionBar().setTitle("Select Place");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setTitle("Select Place");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        destination=(EditText)findViewById(R.id.destination);
         check=getIntent();
         if (check.hasExtra("type")){
-            if (check.getStringExtra("type").equals("pickup"))
-                getSupportActionBar().setTitle("Select Pickup");
-            else
-                getSupportActionBar().setTitle("Select Destination");
+            if (check.getStringExtra("type").equals("pickup")) {
+//                getSupportActionBar().setTitle("Select Pickup");
+                destination.setHint("Pick me from ");
+            } else {
+//                getSupportActionBar().setTitle("Select Destination");
+                destination.setHint("Drop me at");
+            }
         }
 
-        destination=(EditText)findViewById(R.id.destination);
         outofbound=(TextView)findViewById(R.id.outofbound);
         place_network_status=(TextView)findViewById(R.id.network_status);
         mGeoDataClient = Places.getGeoDataClient(this, null);
@@ -250,7 +253,6 @@ public class PlaceSelector extends AppCompatActivity {
                         }
                     }
                 });
-
             }
         });
 
@@ -267,8 +269,8 @@ public class PlaceSelector extends AppCompatActivity {
 //                double latitude = Double.parseDouble(name.get(position).getLat());
 //                double longitude = Double.parseDouble(name.get(position).getLng());
 //                Geocoder geocoder = new Geocoder(PlaceSelector.this, Locale.getDefault());
-//                //List<Address> addresses =geocoder.getFromLocation(latitude, longitude, 1);
-//Log.v("Tag",""+Double.parseDouble(name.get(position).getLat())+" "+Double.parseDouble(name.get(position).getLng()));
+////                //List<Address> addresses =geocoder.getFromLocation(latitude, longitude, 1);
+////Log.v("Tag",""+Double.parseDouble(name.get(position).getLat())+" "+Double.parseDouble(name.get(position).getLng()));
 //                try {
 //                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
 //                    String stateName = addresses.get(0).getAdminArea();

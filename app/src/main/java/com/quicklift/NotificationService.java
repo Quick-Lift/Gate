@@ -30,7 +30,7 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        Log.v("TAG","Service started"+i++);
+//        Log.v("TAG","Service started"+i++);
 
         log = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
        // Toast.makeText(this, "Started", Toast.LENGTH_SHORT).show();
@@ -42,22 +42,22 @@ public class NotificationService extends Service {
                     String text = dataSnapshot.getValue(String.class);
                     //Log.v("TAG","started");
                     if (text.equals("Accept")) {
-                        Log.v("TAG","accepted");
+//                        Log.v("TAG","accepted");
 
                         String str="Driver is on it's way ...\nOTP : "+log.getString("otp",null);
                         notification(text, str);
                     } else if (text.equals("Located")) {
-                        Log.v("TAG","located");
+//                        Log.v("TAG","located");
 
                         String str="Driver arrived at the pick up location ...\nOTP : "+log.getString("otp",null);
                         notification(text, str);
                     } else if (text.equals("Trip Started")) {
-                        Log.v("TAG","trip started");
+//                        Log.v("TAG","trip started");
                         String str="The trip has started ...";
                         notification(text, str);
                     } else if (text.equals("Trip Ended")) {
-                        Log.v("TAG","trip ended");
-                        handleoffer();
+//                        Log.v("TAG","trip ended");
+//                        handleoffer();
                         String str="You have arrived at your destination ...";
                         notification(text, str);
                         Handler handle = new Handler();
