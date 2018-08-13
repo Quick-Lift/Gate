@@ -75,23 +75,23 @@ public class PlaceSelector extends AppCompatActivity {
         finish();
     }
 
+    public void back (View view){
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_selector);
         place=this;
 
-//        getSupportActionBar().setTitle("Select Place");
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         destination=(EditText)findViewById(R.id.destination);
         check=getIntent();
         if (check.hasExtra("type")){
             if (check.getStringExtra("type").equals("pickup")) {
-//                getSupportActionBar().setTitle("Select Pickup");
                 destination.setHint("Pick me from ");
             } else {
-//                getSupportActionBar().setTitle("Select Destination");
                 destination.setHint("Drop me at");
             }
         }

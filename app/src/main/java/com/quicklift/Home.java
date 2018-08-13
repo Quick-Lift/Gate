@@ -2,6 +2,7 @@ package com.quicklift;
 
 import android.*;
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.Dialog;
@@ -31,6 +32,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -56,6 +58,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -65,6 +68,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -210,6 +214,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     int park_pick = 0, park_drop = 0;
     String parking_priceshare = "0", parking_pricefull = "0", parking_priceexcel = "0";
     CheckConnectivity connectivity = new CheckConnectivity();
+    private int total=0;
+    private ProgressBar bar;
 
     @Override
     public void onBackPressed() {
@@ -848,6 +854,23 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(lp);
         dialog.show();
+
+        total=0;
+        bar=(ProgressBar)view.findViewById(R.id.progress);
+        bar.setProgress(total);
+        int oneMin= 80 * 1000; // 1 minute in milli seconds
+
+        /** CountDownTimer starts with 1 minutes and every onTick is 1 second */
+        CountDownTimer cdt = new CountDownTimer(oneMin, 100) {
+
+            public void onTick(long millisUntilFinished) {
+                bar.setProgress(++total);
+            }
+
+            public void onFinish() {
+                // DO something when 1 minute is up
+            }
+        }.start();
     }
 
     private void findsharedriver() {
@@ -4497,6 +4520,15 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 dataTransfer[1] = url;
                 dataTransfer[2] = marker_pick;
                 getDirectionsData.execute(dataTransfer);
+
+                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        //mMarker is the shown marker
+                        if (marker_pick != null)
+                            marker_pick.showInfoWindow();
+                    }
+                });
 
                 handler_time.postDelayed(runnable,30000);
             }

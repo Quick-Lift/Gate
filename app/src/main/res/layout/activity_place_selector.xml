@@ -20,6 +20,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:src="@drawable/ic_arrow_back"
+        android:onClick="back"
         android:tint="#000000"/>
 
     <EditText

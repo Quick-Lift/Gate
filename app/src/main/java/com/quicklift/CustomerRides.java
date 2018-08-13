@@ -382,13 +382,16 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
             dref.child(ride_list.get(ride_list.size()-1-position).get("driver").toString()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
+                    if (dataSnapshot.exists()) {
+                        Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
 //                    veh.setText(map.get("veh_type").toString()+" , "+map.get("veh_num").toString());
-                    name.setText(map.get("name").toString());
-                    if (!map.get("thumb").toString().equals("")) {
-                        byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
-                        Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
-                        img.setImageBitmap(decbyte);
+                        if (map.containsKey("name") && !map.get("name").toString().equals(""))
+                            name.setText(map.get("name").toString());
+                        if (!map.get("thumb").toString().equals("")) {
+                            byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
+                            Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
+                            img.setImageBitmap(decbyte);
+                        }
                     }
                 }
 
