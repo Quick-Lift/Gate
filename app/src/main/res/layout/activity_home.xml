@@ -582,9 +582,7 @@
                                 android:text="BR01PH1234"
                                 android:textStyle="bold"
                                 android:textSize="14sp"
-                                android:layout_marginLeft="3dp"
-                                android:layout_marginRight="3dp"
-                                android:layout_marginBottom="3dp"
+                                android:layout_margin="8dp"
                                 android:background="@drawable/black_margin"
                                 android:textColor="#000000"/>
                         </LinearLayout>
@@ -595,6 +593,11 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#05affc"/>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
@@ -604,11 +607,12 @@
                                 android:id="@+id/otp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:text="OTP\n2548"
-                                android:textSize="18sp"
+                                android:text="OTP 2548"
+                                android:textSize="16sp"
                                 android:gravity="center"
                                 android:textColor="#000000"
                                 android:background="#aa05affc"
+                                android:layout_margin="8dp"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                         <LinearLayout
@@ -637,31 +641,38 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:background="#aa05affc">
+                            android:orientation="horizontal">
 
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:src="@drawable/ic_close_icon"
-                                android:onClick="cancel_trip"
-                                android:tint="#ff0000"
-                                android:layout_marginLeft="5dp"/>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_margin="8dp"
+                                android:background="#aa05affc">
 
-                            <Button
-                                android:id="@+id/canceltrip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="Cancel Trip"
-                                android:textColor="#000000"
-                                android:textSize="12sp"
-                                android:textAllCaps="false"
-                                android:onClick="cancel_trip"
-                                android:paddingLeft="5dp"
-                                android:gravity="left|center_vertical"
-                                android:background="@android:color/transparent"/>
+                                <ImageView
+                                    android:layout_width="25dp"
+                                    android:layout_height="25dp"
+                                    android:src="@drawable/ic_close_icon"
+                                    android:onClick="cancel_trip"
+                                    android:tint="#ff0000"
+                                    android:layout_marginLeft="5dp"/>
 
+                                <Button
+                                    android:id="@+id/canceltrip"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30dp"
+                                    android:text="Cancel Trip"
+                                    android:textColor="#000000"
+                                    android:textSize="12sp"
+                                    android:textAllCaps="false"
+                                    android:onClick="cancel_trip"
+                                    android:paddingLeft="5dp"
+                                    android:gravity="left|center_vertical"
+                                    android:background="@android:color/transparent"/>
+
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                     <LinearLayout
@@ -677,9 +688,10 @@
                             android:gravity="center">
 
                             <de.hdodenhof.circleimageview.CircleImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
                                 android:id="@+id/pic"
+                                android:layout_marginTop="5dp"
                                 android:src="@drawable/profile"/>
                         </LinearLayout>
                         <LinearLayout
@@ -913,7 +925,52 @@
                         </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#05affc"/>
+                <LinearLayout
+                    android:id="@+id/layout_offer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#8805affc"
+                    android:visibility="gone">
+                    <ListView
+                        android:id="@+id/list_offers"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:divider="#05affc"
+                        android:dividerHeight="1dp"/>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#05affc"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <EditText
+                            android:id="@+id/promocode"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:hint="Enter Promocode"
+                            android:paddingLeft="10dp"
+                            android:textColor="#000000"
+                            android:layout_marginEnd="50dp"/>
+                        <Button
+                            android:id="@+id/submit"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="#05affc"
+                            android:textColor="#000000"
+                            android:text="Go"
+                            android:onClick="apply"
+                            android:layout_alignParentEnd="true"/>
+                    </RelativeLayout>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"

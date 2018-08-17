@@ -549,8 +549,9 @@
                             android:gravity="center">
 
                             <ImageView
-                                android:layout_width="50dp"
+                                android:layout_width="70dp"
                                 android:layout_height="50dp"
+                                android:scaleX="-1"
                                 android:src="@drawable/carfinal"/>
                         </LinearLayout>
                         <LinearLayout
@@ -578,9 +579,7 @@
                                 android:text="BR01PH1234"
                                 android:textStyle="bold"
                                 android:textSize="14sp"
-                                android:layout_marginLeft="3dp"
-                                android:layout_marginRight="3dp"
-                                android:layout_marginBottom="3dp"
+                                android:layout_margin="8dp"
                                 android:background="@drawable/black_margin"
                                 android:textColor="#000000"/>
                         </LinearLayout>
@@ -591,6 +590,11 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#05affc"/>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
@@ -600,11 +604,12 @@
                                 android:id="@+id/otp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:text="OTP\n2548"
-                                android:textSize="18sp"
+                                android:text="OTP 2548"
+                                android:textSize="14sp"
                                 android:gravity="center"
                                 android:textColor="#000000"
                                 android:background="#aa05affc"
+                                android:layout_margin="8dp"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                         <LinearLayout
@@ -632,32 +637,49 @@
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:background="#aa05affc">
+                            android:layout_height="49dp"
+                            android:orientation="vertical"
+                            android:gravity="center">
 
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:src="@drawable/ic_close_icon"
-                                android:onClick="cancel_trip"
-                                android:tint="#ff0000"
-                                android:layout_marginLeft="5dp"/>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_margin="8dp"
+                                android:background="#aa05affc">
 
-                            <Button
-                                android:id="@+id/canceltrip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="Cancel Trip"
-                                android:textColor="#000000"
-                                android:textSize="12sp"
-                                android:textAllCaps="false"
-                                android:onClick="cancel_trip"
-                                android:paddingLeft="5dp"
-                                android:gravity="left|center_vertical"
-                                android:background="@android:color/transparent"/>
+                                <ImageView
+                                    android:layout_width="25dp"
+                                    android:layout_height="25dp"
+                                    android:src="@drawable/ic_close_icon"
+                                    android:onClick="cancel_trip"
+                                    android:tint="#ff0000"
+                                    android:layout_marginLeft="5dp"/>
 
+                                <Button
+                                    android:id="@+id/canceltrip"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30dp"
+                                    android:text="Cancel Trip"
+                                    android:textColor="#000000"
+                                    android:textSize="12sp"
+                                    android:textAllCaps="false"
+                                    android:onClick="cancel_trip"
+                                    android:paddingLeft="5dp"
+                                    android:gravity="left|center_vertical"
+                                    android:background="@android:color/transparent"/>
+
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="#05affc"/>
                         </LinearLayout>
                     </LinearLayout>
                     <LinearLayout
@@ -673,9 +695,10 @@
                             android:gravity="center">
 
                             <de.hdodenhof.circleimageview.CircleImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
                                 android:id="@+id/pic"
+                                android:layout_marginTop="5dp"
                                 android:src="@drawable/profile"/>
                         </LinearLayout>
                         <LinearLayout
@@ -750,13 +773,13 @@
 
                             <Button
                                 android:id="@+id/call_text"
-                                android:layout_width="wrap_content"
+                                android:layout_width="65dp"
                                 android:layout_height="30dp"
                                 android:text="Call Driver"
                                 android:textColor="#000000"
                                 android:textSize="12sp"
                                 android:textAllCaps="false"
-                                android:gravity="right|center_vertical"
+                                android:gravity="center_vertical"
                                 android:paddingRight="10dp"
                                 android:background="@android:color/transparent"/>
 
@@ -1142,7 +1165,7 @@
                     <ImageView
                         android:id="@+id/final_image"
                         android:layout_width="90dp"
-                        android:layout_height="50dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="center_horizontal"
                         android:src="@drawable/share"/>
                     <TextView
@@ -1194,7 +1217,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="40dp"
-                        android:background="#8805affc">
+                        android:background="#05affc">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -1206,13 +1229,23 @@
                             android:textColor="@android:color/black"
                             android:layout_gravity="center_vertical"/>
 
-                        <Spinner
+                        <!--<Spinner-->
+                            <!--android:id="@+id/seats"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:spinnerMode="dialog"-->
+                            <!--android:prompt="@string/seat"-->
+                            <!--android:visibility="gone"-->
+                            <!--android:backgroundTint="#000000"/>-->
+                        <TextView
                             android:id="@+id/seats"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:spinnerMode="dialog"
-                            android:prompt="@string/seat"
-                            android:backgroundTint="#000000"/>
+                            android:layout_height="match_parent"
+                            android:textSize="18sp"
+                            android:textColor="#000000"
+                            android:background="@drawable/blue_margin"
+                            android:text="1 seat"
+                            android:gravity="center"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -1221,7 +1254,7 @@
                         android:layout_weight="1"
                         android:layout_height="40dp"
                         android:onClick="selectpayment"
-                        android:background="#8805affc">
+                        android:background="#05affc">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -1246,12 +1279,84 @@
                         </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/layout_seats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:background="#ffffff">
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#05affc"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_margin="10dp"
+                                android:onClick="seatone"
+                                android:background="@drawable/round_button">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="1"
+                                    android:gravity="center"
+                                    android:textColor="#05affc"
+                                    android:textSize="22sp"
+                                    android:onClick="seatone"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_margin="10dp"
+                                android:onClick="seattwo"
+                                android:background="@drawable/round_button">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="2"
+                                    android:gravity="center"
+                                    android:textColor="#05affc"
+                                    android:textSize="22sp"
+                                    android:onClick="seattwo"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#05affc"
+                    android:layout_marginBottom="2dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/blue_margin_background">
+                    android:background="#05affc">
 
                     <TextView
                         android:id="@+id/offer"
@@ -1263,16 +1368,66 @@
                         android:textSize="20dp"
                         android:gravity="center"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/layout_offer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#ffffff"
+                    android:visibility="gone">
+                    <ListView
+                        android:id="@+id/list_offers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="#ffffff"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:dividerHeight="3dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#05affc"
+                        android:visibility="gone"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp">
+
+                        <EditText
+                            android:id="@+id/promocode"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:hint="Enter Promocode"
+                            android:paddingLeft="10dp"
+                            android:textColor="#000000"
+                            android:backgroundTint="#000000"
+                            android:layout_marginEnd="105dp"/>
+                        <Button
+                            android:id="@+id/submit"
+                            android:layout_width="100dp"
+                            android:layout_height="45dp"
+                            android:background="#05affc"
+                            android:textColor="#ffffff"
+                            android:text="Apply"
+                            android:onClick="apply"
+                            android:textAllCaps="false"
+                            android:layout_alignParentEnd="true"/>
+                    </RelativeLayout>
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/confirm"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:text="Confirm Booking"
-                    android:textColor="#000000"
+                    android:textColor="#ffffff"
                     android:background="#05affc"
                     android:textAllCaps="false"
-                    android:textSize="20sp"
+                    android:textSize="22sp"
+                    android:layout_marginTop="2dp"
                     android:layout_gravity="center_horizontal"/>
                 <!--android:onClick="logout"-->
             </LinearLayout>

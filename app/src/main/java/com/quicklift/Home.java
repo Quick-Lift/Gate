@@ -47,7 +47,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +63,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -182,10 +185,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     TextView time_bike, time_excel, time_car, time_auto, time_rickshaw, time_shareAuto, time_shareCar, time_shareRickshaw, final_time;
     boolean doubleBackToExitPressedOnce = false;
     DrawerLayout drawer;
-    Spinner seats;
+    TextView seats;
     TextView offer;
     String offercode = "";
-    Integer offervalue = 0, realprice = 0;
+    Integer offervalue = 0, realprice = 0, offerdiscount = 0;
     List<Marker> driver_markers = new ArrayList<>();
     private LatLng pick_loc;
     int show = 0;
@@ -216,6 +219,15 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     CheckConnectivity connectivity = new CheckConnectivity();
     private int total=0;
     private ProgressBar bar;
+    EditText promocode;
+    ArrayList<String> select_offers=new ArrayList<>();
+    ArrayList<String> select_discount=new ArrayList<>();
+    ArrayList<String> select_upto=new ArrayList<>();
+    ArrayList<String> select_offers_code=new ArrayList<>();
+    ListView list;
+    private DatabaseReference customer_offers;
+    int offer_click=0;
+    int seats_click=0;
 
     @Override
     public void onBackPressed() {
@@ -242,7 +254,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 offer.setText("");
                 offercode = "";
                 offervalue = 0;
+                offerdiscount = 0;
                 original_seats = 1;
+                offer_click=0;
 
 //                place_drivers_bike();
 //                place_drivers_auto();
@@ -340,7 +354,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         destn_address = (EditText) findViewById(R.id.destination);
         confirm = (Button) findViewById(R.id.confirm);
         payment = (TextView) findViewById(R.id.pay_mode);
-        seats = (Spinner) findViewById(R.id.seats);
+        seats = (TextView) findViewById(R.id.seats);
         offer = (TextView) findViewById(R.id.offer);
         hsv = (HorizontalScrollView) findViewById(R.id.fragmentTwo);
         price_auto = (TextView) findViewById(R.id.price_auto);
@@ -365,6 +379,73 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         ridedetails = (TextView) findViewById(R.id.ridedetails);
         final_image = (ImageView) findViewById(R.id.final_image);
         network_status = (TextView) findViewById(R.id.network_status);
+        list=(ListView)findViewById(R.id.list_offers);
+        promocode=(EditText) findViewById(R.id.promocode);
+        customer_offers= FirebaseDatabase.getInstance().getReference("CustomerOffers/"+log_id.getString("id",null));
+
+        customer_offers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                select_offers.clear();
+                select_offers_code.clear();
+                for (DataSnapshot data:dataSnapshot.getChildren()){
+//                    Toast.makeText(SelectOffers.this, ""+data.getKey(), Toast.LENGTH_SHORT).show();
+                    DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Offers");
+                    ref.orderByChild("code").equalTo(data.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                for (DataSnapshot dt : dataSnapshot.getChildren()) {
+                                    Map<String, Object> map = (Map<String, Object>) dt.getValue();
+                                    String str = "Get " + map.get("discount").toString() + "% off upto \u20B9 " + map.get("upto").toString();
+                                    select_offers.add(str);
+                                    select_discount.add(map.get("discount").toString());
+                                    select_upto.add(map.get("upto").toString());
+                                    select_offers_code.add(map.get("code").toString());
+                                }
+                                list.setVisibility(View.VISIBLE);
+                                list.setAdapter(new CustomAdapter());
+                            }
+                            else {
+                                list.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        promocode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus)
+                    list.setVisibility(View.GONE);
+            }
+        });
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent=new Intent();
+//                intent.putExtra("offer", select_offers.get(position));
+//                intent.putExtra("discount", select_discount.get(position));
+//                intent.putExtra("upto", select_upto.get(position));
+//                intent.putExtra("offer_code", select_offers_code.get(position));
+//                setResult(RESULT_OK,intent);
+//                finish();
+                processoffer(select_offers.get(position),select_discount.get(position),select_upto.get(position),select_offers_code.get(position));
+            }
+        });
 
         getTime();
 //        checkinternetconnection();
@@ -411,29 +492,41 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         destn_address.setInputType(0);
         destn_address.requestFocus();
 
-        seats.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//        seats.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (position == 0) {
+//                    if (original_seats == 2) {
+//                        original_seats = 1;
+//                        int val = Integer.parseInt(final_price.getText().toString().substring(2));
+//                        val = (int) ((val * 100) / 115);
+//                        final_price.setText("\u20B9 " + val);
+//                    }
+//                } else if (position == 1) {
+//                    if (original_seats == 1) {
+//                        original_seats = 2;
+//                        int val = Integer.parseInt(final_price.getText().toString().substring(2));
+//                        val = val + (int) ((val * 15) / 100);
+//                        final_price.setText("\u20B9 " + val);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
+        seats.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    if (original_seats == 2) {
-                        original_seats = 1;
-                        int val = Integer.parseInt(final_price.getText().toString().substring(4));
-                        val = (int) ((val * 100) / 115);
-                        final_price.setText("Rs. " + val);
-                    }
-                } else if (position == 1) {
-                    if (original_seats == 1) {
-                        original_seats = 2;
-                        int val = Integer.parseInt(final_price.getText().toString().substring(4));
-                        val = val + (int) ((val * 15) / 100);
-                        final_price.setText("Rs. " + val);
-                    }
+            public void onClick(View v) {
+                if (seats_click==0){
+                    seats_click=1;
+                    findViewById(R.id.layout_seats).setVisibility(View.VISIBLE);
+                } else {
+                    seats_click=0;
+                    findViewById(R.id.layout_seats).setVisibility(View.GONE);
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -745,7 +838,16 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         offer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(Home.this, SelectOffers.class), 3);
+//                startActivityForResult(new Intent(Home.this, SelectOffers.class), 3);
+                list.setVisibility(View.VISIBLE);
+                if(offer_click==0) {
+                    findViewById(R.id.layout_offer).setVisibility(View.VISIBLE);
+                    offer_click=1;
+                }
+                else {
+                    findViewById(R.id.layout_offer).setVisibility(View.GONE);
+                    offer_click=0;
+                }
             }
         });
     }
@@ -765,7 +867,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     otp.setText("OTP\n" + dataSnapshot.child("otp").getValue(String.class));
                     destn_address.setText(dataSnapshot.child("destination").getValue(String.class));
                     pickup_address.setText(dataSnapshot.child("source").getValue(String.class));
-                    final_price.setText("Rs. " + dataSnapshot.child("price").getValue(String.class));
+                    final_price.setText("\u20B9 " + dataSnapshot.child("price").getValue(String.class));
                     pick_loc = new LatLng(dataSnapshot.child("st_lat").getValue(Double.class), dataSnapshot.child("st_lng").getValue(Double.class));
                     editor.remove("show");
                     editor.putString("amount", String.valueOf((int) (Float.parseFloat(dataSnapshot.child("price").getValue(String.class)
@@ -881,11 +983,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         otp.setText("OTP\n" + id);
         editor.putString("otp", id);
         editor.commit();
-        data.setPrice(final_price.getText().toString().substring(4));
-        data.setOffer(String.valueOf(offervalue));
+        data.setPrice(final_price.getText().toString().substring(2));
+        data.setOffer_upto(String.valueOf(offervalue));
+        data.setOffer_disc(String.valueOf(offerdiscount));
         data.setSource(pickup_address.getText().toString());
         data.setDestination(destn_address.getText().toString());
-        data.setSeat(seats.getSelectedItem().toString().substring(0, 1));
+        data.setSeat(seats.getText().toString().substring(0, 1));
 
         final DatabaseReference share = FirebaseDatabase.getInstance().getReference("Share");
         ShareClass shareClass = new ShareClass();
@@ -893,7 +996,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         shareClass.setSt_lng(marker_pick.getPosition().longitude);
         shareClass.setEn_lat(marker_drop.getPosition().latitude);
         shareClass.setEn_lng(marker_drop.getPosition().longitude);
-        shareClass.setSeats(seats.getSelectedItem().toString().substring(0, 1));
+        shareClass.setSeats(seats.getText().toString().substring(0, 1));
         share.child(log_id.getString("id", null)).setValue(shareClass);
 //        if (found == 1)
 //            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
@@ -979,7 +1082,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                     if (dataSnapshot.exists()) {
 //                        Toast.makeText(Home.this, "hello", Toast.LENGTH_SHORT).show();
                         String seat = dataSnapshot.getValue(String.class);
-                        if (!seat.equals("full") && (Integer.parseInt(seat) + Integer.parseInt(seats.getSelectedItem().toString().substring(0, 1))) <= 4) {
+                        if (!seat.equals("full") && (Integer.parseInt(seat) + Integer.parseInt(seats.getText().toString().substring(0, 1))) <= 4) {
                             cust_req = FirebaseDatabase.getInstance().getReference("CustomerRequests/" + share_driver_list.get(sharedriver));
                             cust_req.child(log_id.getString("id", null)).setValue(data);
                             found = 0;
@@ -1147,14 +1250,15 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         otp.setText("OTP\n" + id);
         editor.putString("otp", id);
         editor.commit();
-        data.setPrice(final_price.getText().toString().substring(4));
-        data.setOffer(String.valueOf(offervalue));
+        data.setPrice(final_price.getText().toString().substring(2));
+        data.setOffer_upto(String.valueOf(offervalue));
+        data.setOffer_disc(String.valueOf(offerdiscount));
         data.setSource(pickup_address.getText().toString());
         data.setDestination(destn_address.getText().toString());
-        if (seats.getSelectedItem().toString().equals("full"))
-            data.setSeat(seats.getSelectedItem().toString());
+        if (seats.getText().toString().equals("full"))
+            data.setSeat(seats.getText().toString());
         else
-            data.setSeat(seats.getSelectedItem().toString().substring(0, 1));
+            data.setSeat(seats.getText().toString().substring(0, 1));
         //Toast.makeText(this, ""+String.valueOf(i), Toast.LENGTH_SHORT).show();
         if (found == 1) {
 //            Toast.makeText(this, "Ride Found", Toast.LENGTH_SHORT).show();
@@ -1445,10 +1549,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 final_price.setText(price_bike.getText());
 //                final_time.setText(time_bike.getText());
                 final_image.setImageResource(R.drawable.bike1);
-                seats.setSelection(0);
+                seats.setText("1 seat");
+                original_seats=1;
                 seats.setEnabled(false);
                 ridetype = "full";
-                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(4));
+                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(2));
                 place_drivers();
 
                 findViewById(R.id.layout4).setVisibility(View.VISIBLE);
@@ -1466,10 +1571,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 final_price.setText(price_car.getText());
 //                final_time.setText(time_car.getText());
                 final_image.setImageResource(R.drawable.niji);
-                seats.setSelection(0);
+                seats.setText("1 seat");
+                original_seats=1;
                 seats.setEnabled(false);
                 ridetype = "full";
-                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(4));
+                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(2));
                 place_drivers();
                 ridedetails.setText("This option is for booking car. It allows you to book complete car for yourself.");
 
@@ -1489,10 +1595,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 final_price.setText(price_excel.getText());
 //                final_time.setText(time_excel.getText());
                 final_image.setImageResource(R.drawable.carfinal);
-                seats.setSelection(0);
+                seats.setText("1 seat");
+                original_seats=1;
                 seats.setEnabled(false);
                 ridetype = "full";
-                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(4));
+                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(2));
                 place_drivers();
                 ridedetails.setText("This option is for booking excel car. It allows you to book complete car for yourself with passenger capacity more than 4.");
 
@@ -1510,10 +1617,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 final_price.setText(price_auto.getText());
 //                final_time.setText(time_auto.getText());
                 final_image.setImageResource(R.drawable.erickshaw1);
-                seats.setSelection(0);
+                seats.setText("1 seat");
+                original_seats=1;
                 seats.setEnabled(false);
                 ridetype = "full";
-                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(4));
+                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(2));
                 place_drivers();
 
                 findViewById(R.id.layout4).setVisibility(View.VISIBLE);
@@ -1532,7 +1640,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                seats.setSelection(0);
 //                seats.setEnabled(false);
 //                ridetype="full";
-//                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
+//                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(2));
 //                place_drivers();
 //                ridedetails.setText("This option is for booking rickshaw. It allows you to book full rickshaw for yourself.");
 //                remove_drivers_auto();
@@ -1550,10 +1658,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 final_price.setText(price_shareCar.getText());
 //                final_time.setText(time_shareCar.getText());
                 final_image.setImageResource(R.drawable.share);
-                seats.setSelection(0);
+                seats.setText("1 seat");
+                original_seats=1;
                 seats.setEnabled(true);
                 ridetype = "share";
-                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(4));
+                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(2));
                 place_drivers();
                 ridedetails.setText("This option is for booking share car. It allows you to book only required number of seats for yourself.");
 
@@ -1571,10 +1680,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 final_price.setText(price_shareAuto.getText());
 //                final_time.setText(time_shareAuto.getText());
                 final_image.setImageResource(R.drawable.erickshaw1);
-                seats.setSelection(0);
+                seats.setText("1 seat");
+                original_seats=1;
                 seats.setEnabled(true);
                 ridetype = "share";
-                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(4));
+                realprice = (int) Double.parseDouble(final_price.getText().toString().substring(2));
                 place_drivers();
 
                 findViewById(R.id.layout4).setVisibility(View.VISIBLE);
@@ -1593,7 +1703,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                seats.setSelection(0);
 //                seats.setEnabled(true);
 //                ridetype="share";
-//                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(4));
+//                realprice=(int)Double.parseDouble(final_price.getText().toString().substring(2));
 //                place_drivers();
 //                ridedetails.setText("This option is for booking share rickshaw. It allows you to book only required number of seats for yourself.");
 //                remove_drivers_auto();
@@ -4213,7 +4323,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             }
 
         } else if (requestCode==3 && resultCode==RESULT_OK){
-//            Double pr=Double.parseDouble(final_price.getText().toString().substring(4));
+//            Double pr=Double.parseDouble(final_price.getText().toString().substring(2));
             offercode=intent.getStringExtra("offer_code");
             double pr=realprice;
             double disc=(double) Double.parseDouble(intent.getStringExtra("discount"));
@@ -4223,18 +4333,19 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             if (less>upto)
                 less=upto;
 
-            offervalue=(int)less;
+            offervalue=(int)upto;
+            offerdiscount=(int)disc;
             if (pr<less)
                 pr=0;
             else
                 pr=pr-less;
 
-            final_price.setText("Rs. "+(int)pr);
+            final_price.setText("\u20B9 "+(int)pr);
             data.setOffer_code(offercode);
             offer.setText(intent.getStringExtra("offer"));
 
         } else if (requestCode==4 && resultCode==RESULT_OK){
-//            Double pr=Double.parseDouble(final_price.getText().toString().substring(4));
+//            Double pr=Double.parseDouble(final_price.getText().toString().substring(2));
             if (intent.getStringExtra("currentride").equals("true")){
                 finish();
                 startActivity(getIntent());
@@ -4300,7 +4411,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                    alert.getButton(alert.BUTTON_POSITIVE).setTextColor(Color.parseColor("#000000"));
 
                         title.setText("Pending Charge !");
-                        message.setText("You have pending cancellation charge Rs. " + data.getCancel_charge() +
+                        message.setText("You have pending cancellation charge \u20B9 " + data.getCancel_charge() +
                                 "\nThe amount will be collected by the driver on trip completion.");
                         left.setVisibility(View.GONE);
                         right.setText("Ok");
@@ -4479,29 +4590,34 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
     }
 
     public void seatfull(){
-        seats_list.clear();
-        seats_list.add("full");
-
-        ArrayAdapter<String> adapter1 =
-                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
-        adapter1.setDropDownViewResource(R.layout.payment_list);
-        seats.setAdapter(adapter1);
-
+        seats.setText("full");
+//        seats_list.clear();
+//        seats_list.add("full");
+//
+//        ArrayAdapter<String> adapter1 =
+//                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
+//        adapter1.setDropDownViewResource(R.layout.payment_list);
+//        seats.setAdapter(adapter1);
+//
         findViewById(R.id.layoutseat).setVisibility(View.GONE);
+        findViewById(R.id.layout_seats).setVisibility(View.GONE);
         findViewById(R.id.layoutpaymode).getLayoutParams().width= LinearLayout.LayoutParams.MATCH_PARENT;
     }
 
     public void seatshare(){
+        findViewById(R.id.layout_seats).setVisibility(View.GONE);
         findViewById(R.id.layoutseat).setVisibility(View.VISIBLE);
+        seats.setText("1 seat");
+        original_seats=1;
         findViewById(R.id.layoutpaymode).getLayoutParams().width= LinearLayout.LayoutParams.MATCH_PARENT/2;
-        seats_list.clear();
-        seats_list.add("1 seat");
-        seats_list.add("2 seat");
-
-        ArrayAdapter<String> adapter1 =
-                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
-        adapter1.setDropDownViewResource(R.layout.payment_list);
-        seats.setAdapter(adapter1);
+//        seats_list.clear();
+//        seats_list.add("1 seat");
+//        seats_list.add("2 seat");
+//
+//        ArrayAdapter<String> adapter1 =
+//                new ArrayAdapter<String>(getApplicationContext(), R.layout.payment_list, seats_list);
+//        adapter1.setDropDownViewResource(R.layout.payment_list);
+//        seats.setAdapter(adapter1);
     }
 
     public void getTime(){
@@ -4705,6 +4821,134 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         map.put("destination",data.getDestination());
         map.put("time",(new Date()).toString());
         rej_ride.push().setValue(map);
+    }
+
+    public class CustomAdapter extends BaseAdapter{
+
+        @Override
+        public int getCount() {
+            return select_offers.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup parent) {
+            view=getLayoutInflater().inflate(R.layout.place_text_view,null);
+            TextView txt=(TextView)view.findViewById(R.id.name);
+
+            txt.setText(select_offers.get(position));
+            txt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            txt.setTextColor(Color.parseColor("#05affc"));
+            return view;
+        }
+    }
+
+    public void processoffer(String off, String off_disc, String off_upto, String off_code) {
+        offercode=off_code;
+        double pr=realprice;
+        double disc=(double) Double.parseDouble(off_disc);
+        double upto=(double) Double.parseDouble(off_upto);
+
+        double less=(pr*disc)/100;
+        if (less>upto)
+            less=upto;
+
+        offervalue=(int)upto;
+        offerdiscount=(int)disc;
+        if (pr<less)
+            pr=0;
+        else
+            pr=pr-less;
+
+        final_price.setText("\u20B9 "+(int)pr);
+        data.setOffer_code(offercode);
+        offer.setText(off);
+        findViewById(R.id.layout_offer).setVisibility(View.GONE);
+        promocode.setText("");
+    }
+
+    public void apply(View view){
+        if (TextUtils.isEmpty(promocode.getText().toString())){
+//            Toast.makeText(this, "Please Enter Promocode.", Toast.LENGTH_SHORT).show();
+            promocode.setError("Required.");
+        }
+        else {
+            final ProgressDialog dialog=new ProgressDialog(this);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setMessage("Please Wait ...");
+            dialog.setIndeterminate(true);
+            dialog.show();
+
+            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Promocode/"+promocode.getText().toString());
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    dialog.dismiss();
+                    if (dataSnapshot.exists()) {
+                        if (dataSnapshot.hasChild("validity")) {
+                            try {
+                                Date date = new SimpleDateFormat("dd-MM-yyyy").parse(dataSnapshot.child("validity").getValue().toString());
+                                if (date.compareTo(new Date())==0){
+                                    String str = "Get " + dataSnapshot.child("discount").getValue().toString() + "% off upto \u20B9 " + dataSnapshot.child("upto").getValue().toString();
+                                    processoffer(str, dataSnapshot.child("discount").getValue().toString(), dataSnapshot.child("upto").getValue().toString(), dataSnapshot.child("code").getValue().toString());
+                                } else if ((new Date()).after(date)) {
+                                    Toast.makeText(Home.this, "Promocode Expired !", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    String str = "Get " + dataSnapshot.child("discount").getValue().toString() + "% off upto \u20B9 " + dataSnapshot.child("upto").getValue().toString();
+                                    processoffer(str, dataSnapshot.child("discount").getValue().toString(), dataSnapshot.child("upto").getValue().toString(), dataSnapshot.child("code").getValue().toString());
+                                }
+                            }catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else {
+                            String str = "Get " + dataSnapshot.child("discount").getValue().toString() + "% off upto \u20B9 " + dataSnapshot.child("upto").getValue().toString();
+                            processoffer(str, dataSnapshot.child("discount").getValue().toString(), dataSnapshot.child("upto").getValue().toString(), dataSnapshot.child("code").getValue().toString());
+                        }
+                    }
+                    else {
+                        Toast.makeText(Home.this, "Invalid Promocode !", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void seatone (View view){
+        seats.setText("1 seat");
+        if (original_seats == 2) {
+            original_seats = 1;
+            int val = Integer.parseInt(final_price.getText().toString().substring(2))+1;
+            val = (int) ((val * 100) / 115);
+            final_price.setText("\u20B9 " + val);
+        }
+        findViewById(R.id.layout_seats).setVisibility(View.GONE);
+    }
+
+    public void seattwo (View view){
+        seats.setText("2 seat");
+        if (original_seats == 1) {
+            original_seats = 2;
+            int val = Integer.parseInt(final_price.getText().toString().substring(2))+1;
+            val = val + (int) ((val * 15) / 100);
+            final_price.setText("\u20B9 " + val);
+        }
+        findViewById(R.id.layout_seats).setVisibility(View.GONE);
     }
 }
 

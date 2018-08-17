@@ -30,10 +30,10 @@ import java.util.Map;
 
 public class SelectOffers extends AppCompatActivity {
     EditText promocode;
-    ArrayList<String> offers=new ArrayList<>();
-    ArrayList<String> discount=new ArrayList<>();
-    ArrayList<String> upto=new ArrayList<>();
-    ArrayList<String> offers_code=new ArrayList<>();
+    ArrayList<String> select_offers=new ArrayList<>();
+    ArrayList<String> select_discount=new ArrayList<>();
+    ArrayList<String> select_upto=new ArrayList<>();
+    ArrayList<String> select_offers_code=new ArrayList<>();
     ListView list;
     DatabaseReference db;
     private SharedPreferences log_id;
@@ -72,8 +72,8 @@ public class SelectOffers extends AppCompatActivity {
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                offers.clear();
-                offers_code.clear();
+                select_offers.clear();
+                select_offers_code.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
 //                    Toast.makeText(SelectOffers.this, ""+data.getKey(), Toast.LENGTH_SHORT).show();
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Offers");
@@ -83,12 +83,12 @@ public class SelectOffers extends AppCompatActivity {
                             for (DataSnapshot dt:dataSnapshot.getChildren()) {
                                 Map<String, Object> map = (Map<String, Object>) dt.getValue();
                                 String str = "Get " + map.get("discount").toString() + "% off upto Rs. " + map.get("upto").toString();
-                                offers.add(str);
-                                discount.add(map.get("discount").toString());
-                                upto.add(map.get("upto").toString());
-                                offers_code.add(map.get("code").toString());
+                                select_offers.add(str);
+                                select_discount.add(map.get("discount").toString());
+                                select_upto.add(map.get("upto").toString());
+                                select_offers_code.add(map.get("code").toString());
                             }
-                            if (offers.size()==0)
+                            if (select_offers.size()==0)
                                 findViewById(R.id.nooffer).setVisibility(View.VISIBLE);
                             else
                                 findViewById(R.id.nooffer).setVisibility(View.GONE);
@@ -113,10 +113,10 @@ public class SelectOffers extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent();
-                intent.putExtra("offer", offers.get(position));
-                intent.putExtra("discount", discount.get(position));
-                intent.putExtra("upto", upto.get(position));
-                intent.putExtra("offer_code", offers_code.get(position));
+                intent.putExtra("offer", select_offers.get(position));
+                intent.putExtra("discount", select_discount.get(position));
+                intent.putExtra("upto", select_upto.get(position));
+                intent.putExtra("offer_code", select_offers_code.get(position));
                 setResult(RESULT_OK,intent);
                 finish();
             }
@@ -187,7 +187,7 @@ public class SelectOffers extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return offers.size();
+            return select_offers.size();
         }
 
         @Override
@@ -205,7 +205,7 @@ public class SelectOffers extends AppCompatActivity {
             view=getLayoutInflater().inflate(R.layout.place_text_view,null);
             TextView txt=(TextView)view.findViewById(R.id.name);
 
-            txt.setText(offers.get(position));
+            txt.setText(select_offers.get(position));
             return view;
         }
     }

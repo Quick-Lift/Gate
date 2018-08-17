@@ -6,7 +6,7 @@ package com.quicklift;
 
 public class Data {
     double st_lat,st_lng,en_lat,en_lng,d_lat,d_lng;
-    String customer_id,source,destination,price,otp,seat,offer="0",paymode="Cash",cancel_charge="0",veh_type,parking_price="0";
+    String customer_id,source,destination,price,otp,seat,offer_upto="0",offer_disc="0",paymode="Cash",cancel_charge="0",veh_type,parking_price="0";
     String waitcharge="0",triptime="0",timecharge="0",waittime="0",version="5",request_time="",offer_code="";
     Integer accept=0;
 
@@ -31,10 +31,6 @@ public class Data {
 
     public String getOtp() {
         return otp;
-    }
-
-    public String getOffer() {
-        return offer;
     }
 
     public String getWaitcharge() {
@@ -85,8 +81,20 @@ public class Data {
         this.parking_price = parking_price;
     }
 
-    public void setOffer(String offer) {
-        this.offer = offer;
+    public String getOffer_upto() {
+        return offer_upto;
+    }
+
+    public void setOffer_upto(String offer_upto) {
+        this.offer_upto = offer_upto;
+    }
+
+    public String getOffer_disc() {
+        return offer_disc;
+    }
+
+    public void setOffer_disc(String offer_disc) {
+        this.offer_disc = offer_disc;
     }
 
     public String getPaymode() {

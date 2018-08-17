@@ -73,7 +73,8 @@
 
         <activity
             android:name=".HomeScreen"
-            android:theme="@style/AppTheme2" />
+            android:theme="@style/AppTheme2"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".PlaceSelector"
             android:theme="@style/AppTheme2"/>
         <activity android:name=".CustomerRides" />
