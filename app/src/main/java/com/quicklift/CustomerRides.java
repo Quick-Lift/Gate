@@ -204,9 +204,11 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(CustomerRides.this,BillDetails.class);
-                intent.putExtra("rideid",ridekey.get(ridekey.size()-1-position));
-                startActivity(intent);
+                if (ride_list.get(ride_list.size()-position-1).get("status").toString().equals("Completed")) {
+                    Intent intent = new Intent(CustomerRides.this, BillDetails.class);
+                    intent.putExtra("rideid", ridekey.get(ridekey.size() - 1 - position));
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -369,6 +371,8 @@ public class CustomerRides extends AppCompatActivity implements NavigationView.O
                 charge=Float.valueOf(ride_list.get(ride_list.size()-1-position).get("amount").toString());
             }
             amount.setText("Rs. "+(int)charge);
+            if (!ride_list.get(ride_list.size()-position-1).get("status").toString().equals("Completed"))
+                amount.setVisibility(View.INVISIBLE);
             if (ride_list.get(ride_list.size()-1-position).containsKey("status")){
                 if (ride_list.get(ride_list.size()-1-position).get("status").equals("Cancelled")){
                     status.setText(ride_list.get(ride_list.size()-1-position).get("status").toString());

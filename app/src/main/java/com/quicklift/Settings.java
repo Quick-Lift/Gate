@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -191,14 +192,14 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
 
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                item_id=position;
-                registerForContextMenu(list);
-                return false;
-            }
-        });
+//        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                item_id=position;
+//                registerForContextMenu(list);
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -348,12 +349,23 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup parent) {
-            view=getLayoutInflater().inflate(R.layout.place_text_view,null);
+        public View getView(final int position, View view, ViewGroup parent) {
+            view=getLayoutInflater().inflate(R.layout.settings_place_layout,null);
             TextView name=(TextView)view.findViewById(R.id.name);
+            ImageView del=(ImageView)view.findViewById(R.id.delete);
 
             name.setTextColor(Color.parseColor("#05affc"));
             name.setText(loc_name.get(position));
+
+            del.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    item_id=position;
+                    DatabaseReference ref=FirebaseDatabase.getInstance().getReference("SavedLocations/"+log_id.getString("id",null)+"/saved");
+                    ref.child(loc_key.get(item_id)).removeValue();
+                    Toast.makeText(Settings.this, "Location Removed !!", Toast.LENGTH_LONG).show();
+                }
+            });
 
             return view;
         }

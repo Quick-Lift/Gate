@@ -4,14 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     tools:context="com.quicklift.DriveWithUs">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="COMING SOON ..."
+        android:text="Add your Vehicle in our fleet\nDouble your monthly income"
         android:textColor="#05affc"
-        android:textSize="30sp"/>
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="For more details contact support"
+        android:textColor="#05affc"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/drivewithus"/>
 
 </LinearLayout>

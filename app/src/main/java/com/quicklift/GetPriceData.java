@@ -29,13 +29,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class GetPriceData extends AsyncTask<Object,String,String> {
     GoogleMap mmap;
     String url,googleDirectionsData,duration,distance;
-    TextView price_bike,price_excel, price_car, price_auto, price_rickshaw, price_shareAuto, price_shareCar, price_shareRickshaw;
+    TextView price_bike,price_excel, price_car, price_auto, price_rickshaw, price_shareAuto, price_shareCar, price_shareRickshaw,final_price;
     Data data;
     Marker marker_drop;
     Cursor cursor,spec_location;
     Context context;
-    int spec_package=-1,vehicle_case,parking;
-    String parkingpricefull,parkingpriceshare,parkingpriceexcel;
+    int spec_package=-1,vehicle_case,parking,realprice;
+    String parkingpricefull,parkingpriceshare,parkingpriceexcel,veh_type;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
@@ -59,7 +59,9 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
         parkingpricefull=(String) objects[15];
         parkingpriceexcel=(String) objects[16];
         data=(Data) objects[17];
-        //duration=(String) objects[2];
+        final_price=(TextView) objects[18];
+        veh_type=(String) objects[19];
+        realprice=(int) objects[20];
 
         DownloadUrl downloadUrl=new DownloadUrl();
 
@@ -118,6 +120,16 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
 //        editText4.setText(duration);
 //        editText5.setText(duration);
 //        editText6.setText(duration);
+
+        if (veh_type!=null){
+            if (veh_type.equals("car"))
+                final_price.setText(price_car.getText().toString());
+            else if (veh_type.equals("excel"))
+                final_price.setText(price_excel.getText().toString());
+            else if (veh_type.equals("sharecar"))
+                final_price.setText(price_shareCar.getText().toString());
+            realprice=Integer.parseInt(final_price.getText().toString().substring(2));
+        }
     }
 
     private void priceexcel(int pckg, Cursor sloc, int index, Cursor cursor, int distanceValue, int time, int parking) {

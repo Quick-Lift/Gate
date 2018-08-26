@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -110,11 +111,42 @@ public class ChangePhoneNumber extends AppCompatActivity {
 //                                        }
 //                                    });
                             mAuth.getCurrentUser().updatePhoneNumber(phoneAuthCredential)
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            if (pdialog.isShowing())
+                                                pdialog.dismiss();
+                                            if (e.toString().contains("com.google.firebase.auth.FirebaseAuthUserCollisionException")){
+                                                Toast.makeText(ChangePhoneNumber.this, "This phone is already registered !", Toast.LENGTH_LONG).show();
+                                            }
+                                            else {
+                                                Toast.makeText(ChangePhoneNumber.this, "Verification Failed ! Try Again Later ! "+e.toString(), Toast.LENGTH_LONG).show();
+                                            }
+// Log.v("MESSAGE","/"+e.toString()+"/");
+                                            finish();
+                                        }
+                                    })
+//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void aVoid) {
+//                                            if (pdialog.isShowing())
+//                                                pdialog.dismiss();
+////                                            Toast.makeText(ChangePhoneNumber.this, ""+aVoid.toString(), Toast.LENGTH_SHORT).show();
+//                                            SharedPreferences log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
+//
+//                                            DatabaseReference db= FirebaseDatabase.getInstance().getReference("Users/"+log_id.getString("id",null)+"/phone");
+//                                            db.setValue(phone.getText().toString());
+//
+//                                            Toast.makeText(ChangePhoneNumber.this, "Phone Number Changed !", Toast.LENGTH_SHORT).show();
+//                                            finish();
+//                                        }
+//                                    })
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()){if (pdialog.isShowing())
-                                                pdialog.dismiss();
+                                            if (task.isSuccessful()){
+                                                if (pdialog.isShowing())
+                                                    pdialog.dismiss();
                                                 SharedPreferences log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
 
                                                 DatabaseReference db= FirebaseDatabase.getInstance().getReference("Users/"+log_id.getString("id",null)+"/phone");
@@ -123,13 +155,15 @@ public class ChangePhoneNumber extends AppCompatActivity {
                                                 Toast.makeText(ChangePhoneNumber.this, "Phone Number Changed !", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
-                                            else {if (pdialog.isShowing())
-                                                pdialog.dismiss();
-                                                Toast.makeText(ChangePhoneNumber.this, "Verification Failed ! Try Again Later ! "+task.getResult().toString(), Toast.LENGTH_SHORT).show();
-                                                finish();
-                                            }
+//                                            else {
+//                                                if (pdialog.isShowing())
+//                                                pdialog.dismiss();
+//                                                Toast.makeText(ChangePhoneNumber.this, "Verification Failed ! Try Again Later ! "+task.getResult().toString(), Toast.LENGTH_SHORT).show();
+//                                                finish();
+//                                            }
                                         }
                                     });
+
                         }
 
                         @Override

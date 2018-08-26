@@ -29,7 +29,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="35dp"
             android:background="#fdfefe">
 
             <EditText
@@ -123,17 +123,19 @@
                 android:background="@drawable/all_margin"/>
 
             <HorizontalScrollView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
                 android:id="@+id/fragmentTwo"
                 android:visibility="gone"
-                android:background="#aa05affc">
+                android:background="#05affc">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_gravity="center">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -184,7 +186,7 @@
                                     android:gravity="center"
                                     android:orientation="vertical"
                                     android:id="@+id/rickshaw"
-                                    android:onClick="select_vehicle"
+                                    android:onClick="confirmLocation"
                                     android:layout_marginTop="8dp"
                                     android:layout_marginLeft="5dp"
                                     android:background="@drawable/round_button">
@@ -230,7 +232,7 @@
                                     android:gravity="center"
                                     android:orientation="vertical"
                                     android:id="@+id/car"
-                                    android:onClick="select_vehicle"
+                                    android:onClick="confirmLocation"
                                     android:layout_marginTop="8dp"
                                     android:layout_marginLeft="6dp"
                                     android:layout_marginRight="3dp"
@@ -275,13 +277,13 @@
                                     android:gravity="center"
                                     android:orientation="vertical"
                                     android:id="@+id/excel"
-                                    android:onClick="select_vehicle"
+                                    android:onClick="confirmLocation"
                                     android:layout_marginLeft="3dp"
                                     android:layout_marginRight="3dp"
                                     android:layout_marginTop="8dp"
                                     android:background="@drawable/round_button">
                                     <ImageView
-                                        android:layout_width="65dp"
+                                        android:layout_width="45dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center_horizontal"
                                         android:src="@drawable/carfinal"/>
@@ -325,7 +327,7 @@
                                     android:gravity="center"
                                     android:orientation="vertical"
                                     android:id="@+id/shareCar"
-                                    android:onClick="select_vehicle"
+                                    android:onClick="confirmLocation"
                                     android:layout_marginTop="8dp"
                                     android:layout_marginLeft="5dp"
                                     android:background="@drawable/round_button">
@@ -354,7 +356,7 @@
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="25dp"
-                                    android:text="pool"
+                                    android:text="Pool"
                                     android:gravity="center"
                                     android:textSize="13sp"
                                     android:textColor="#000000"/>
@@ -370,7 +372,7 @@
                                     android:gravity="center"
                                     android:orientation="vertical"
                                     android:id="@+id/shareRickshaw"
-                                    android:onClick="select_vehicle"
+                                    android:onClick="confirmLocation"
                                     android:layout_marginLeft="6dp"
                                     android:layout_marginRight="5dp"
                                     android:layout_marginTop="8dp"
@@ -780,7 +782,7 @@
                                 android:textSize="12sp"
                                 android:textAllCaps="false"
                                 android:gravity="center_vertical"
-                                android:paddingRight="10dp"
+                                android:layout_marginRight="10dp"
                                 android:background="@android:color/transparent"/>
 
                             <LinearLayout
@@ -1301,49 +1303,58 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:weightSum="2"
+                            android:paddingLeft="25dp"
+                            android:paddingRight="20dp">
 
                             <LinearLayout
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_margin="10dp"
-                                android:onClick="seatone"
-                                android:background="@drawable/round_button">
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
 
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="1"
-                                    android:gravity="center"
-                                    android:textColor="#05affc"
-                                    android:textSize="22sp"
+                                <LinearLayout
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_margin="10dp"
                                     android:onClick="seatone"
-                                    android:textStyle="bold"/>
+                                    android:background="@drawable/round_button">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:text="1"
+                                        android:gravity="center"
+                                        android:textColor="#05affc"
+                                        android:textSize="22sp"
+                                        android:onClick="seatone"
+                                        android:textStyle="bold"/>
+                                </LinearLayout>
                             </LinearLayout>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:layout_height="wrap_content">
-
                             <LinearLayout
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_margin="10dp"
-                                android:onClick="seattwo"
-                                android:background="@drawable/round_button">
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
 
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="2"
-                                    android:gravity="center"
-                                    android:textColor="#05affc"
-                                    android:textSize="22sp"
+                                <LinearLayout
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_margin="10dp"
                                     android:onClick="seattwo"
-                                    android:textStyle="bold"/>
+                                    android:background="@drawable/round_button">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:text="2"
+                                        android:gravity="center"
+                                        android:textColor="#05affc"
+                                        android:textSize="22sp"
+                                        android:onClick="seattwo"
+                                        android:textStyle="bold"/>
+                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>

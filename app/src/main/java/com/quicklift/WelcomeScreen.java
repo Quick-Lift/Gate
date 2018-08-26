@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -87,17 +88,24 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_welcome_screen);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 //        startActivity(new Intent(this,CancelReason.class));
 
 //        DatabaseReference mail=FirebaseDatabase.getInstance().getReference("Mail_id");
 //        mail.child("email").setValue("qiklift@gmail.com");
 //        mail.child("password").setValue("PasswordForQuickLift");
-
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
 
         generateLog.appendLog(tag,"Loading page !");
+
+//        Handler handler=new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                startActivity(new Intent(WelcomeScreen.this, PhoneAuthActivity.class));
+//                finish();
+//            }
+//        },5000);
 
         if (log_id.contains("id")) {
             DatabaseReference vers = FirebaseDatabase.getInstance().getReference("Version_customer");
@@ -141,7 +149,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                                     }
                                 });
                             } else if (valid) {
-                                startActivity(new Intent(WelcomeScreen.this, Login.class));
+                                startActivity(new Intent(WelcomeScreen.this, PhoneAuthActivity.class));
                                 finish();
                             } else {
                                 valid = true;

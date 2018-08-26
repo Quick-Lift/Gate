@@ -60,7 +60,8 @@
         <activity android:name=".CustomerRegistration" />
         <activity
             android:name=".Home"
-            android:theme="@style/AppTheme2" />
+            android:theme="@style/AppTheme2"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".PhoneAuthentication" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

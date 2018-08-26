@@ -115,11 +115,11 @@ public class EditProfile extends AppCompatActivity implements NavigationView.OnN
         (findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                (findViewById(R.id.edit1)).setVisibility(View.VISIBLE);
+                (findViewById(R.id.edit1)).setVisibility(View.VISIBLE);
                 (findViewById(R.id.edit2)).setVisibility(View.VISIBLE);
                 (findViewById(R.id.edit3)).setVisibility(View.VISIBLE);
                 (findViewById(R.id.layoutsave)).setVisibility(View.VISIBLE);
-                (findViewById(R.id.layoutcancel)).setVisibility(View.VISIBLE);
+//                (findViewById(R.id.layoutcancel)).setVisibility(View.GONE);
                 email.setInputType(1);
 //                phone.setInputType(1);
                 address.setInputType(1);
