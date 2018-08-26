@@ -110,7 +110,7 @@ public class BillDetails extends AppCompatActivity {
                         total=total+(float) Float.parseFloat(dataSnapshot.child("waiting").getValue().toString());
                     }
                     if (dataSnapshot.hasChild("timing") && !dataSnapshot.child("timing").getValue().toString().equals("0")) {
-                        findViewById(R.id.timingLayout).setVisibility(View.VISIBLE);
+                        findViewById(R.id.timingLayout).setVisibility(View.GONE);
                         ((TextView) findViewById(R.id.timing)).setText("Rs. "+dataSnapshot.child("timing").getValue().toString());
                         timing=(float) Float.parseFloat(dataSnapshot.child("timing").getValue().toString());
                         total=total+(float) Float.parseFloat(dataSnapshot.child("timing").getValue().toString());
@@ -144,7 +144,7 @@ public class BillDetails extends AppCompatActivity {
                     }
                     ((TextView)findViewById(R.id.paymode)).setText(dataSnapshot.child("paymode").getValue().toString());
                     float base=(float) Float.parseFloat(dataSnapshot.child("amount").getValue().toString()) - total +Float.parseFloat(dataSnapshot.child("discount").getValue().toString());
-                    ((TextView)findViewById(R.id.basefare)).setText("Rs. "+String.format("%.2f",(base)));
+                    ((TextView)findViewById(R.id.basefare)).setText("Rs. "+String.format("%.2f",(base+timing)));
                     ((TextView)findViewById(R.id.total)).setText("Rs. "+String.valueOf(total+base+cancel-offer));
 
                     charges.add("Base Fare");

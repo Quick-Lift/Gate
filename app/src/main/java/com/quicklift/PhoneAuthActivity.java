@@ -1,10 +1,15 @@
 package com.quicklift;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +37,14 @@ public class PhoneAuthActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     SharedPreferences log_id;
     SharedPreferences.Editor editor;
+    Receiver receiver=new Receiver();
+    int load=0;
+
+    @Override
+    public void onBackPressed() {
+        System.exit(0);
+        super.onBackPressed();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,23 +55,81 @@ public class PhoneAuthActivity extends AppCompatActivity {
         // ...
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
-// Choose authentication providers
-        if (!log_id.contains("id")) {
-            List<AuthUI.IdpConfig> providers = Arrays.asList(
-                    new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
+
+        boolean status1 = haveNetworkConnection();
+        boolean status2 = hasActiveInternetConnection();
+        if (status1 && status2) {
+            if (!log_id.contains("id")) {
+                List<AuthUI.IdpConfig> providers = Arrays.asList(
+                        new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
 
 // Create and launch sign-in intent
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(providers)
-                            .build(),
-                    RC_SIGN_IN);
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build(),
+                        RC_SIGN_IN);
+            } else {
+                startActivity(new Intent(PhoneAuthActivity.this, Home.class));
+                finish();
+            }
         }
         else {
-            startActivity(new Intent(PhoneAuthActivity.this,Home.class));
-            finish();
+            Toast.makeText(this, "No internet access !", Toast.LENGTH_LONG).show();
         }
+
+//        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+//        registerReceiver(receiver, intentFilter);
+// Choose authentication providers
+//        if (!log_id.contains("id")) {
+//            List<AuthUI.IdpConfig> providers = Arrays.asList(
+//                    new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
+//
+//// Create and launch sign-in intent
+//            startActivityForResult(
+//                    AuthUI.getInstance()
+//                            .createSignInIntentBuilder()
+//                            .setAvailableProviders(providers)
+//                            .build(),
+//                    RC_SIGN_IN);
+//        }
+//        else {
+//            startActivity(new Intent(PhoneAuthActivity.this,Home.class));
+//            finish();
+//        }
+    }
+
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    public boolean hasActiveInternetConnection(){
+        // TCP/HTTP/DNS (depending on the port, 53=DNS, 80=HTTP, etc.)
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -290,6 +362,37 @@ public class PhoneAuthActivity extends AppCompatActivity {
                 Toast.makeText(this, "Signin failed ! Please try again later !", Toast.LENGTH_LONG).show();
                 finish();
                 startActivity(getIntent());
+            }
+        }
+    }
+
+    public class Receiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean isConnected = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+            if (isConnected) {
+                load=1;
+//                findViewById(R.id.network_status).setVisibility(View.VISIBLE);
+                Toast.makeText(PhoneAuthActivity.this, "No internet access !", Toast.LENGTH_LONG).show();
+            }
+            else {
+                load=0;
+//                if (!log_id.contains("id")) {
+//                    List<AuthUI.IdpConfig> providers = Arrays.asList(
+//                            new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
+//
+//// Create and launch sign-in intent
+//                    startActivityForResult(
+//                            AuthUI.getInstance()
+//                                    .createSignInIntentBuilder()
+//                                    .setAvailableProviders(providers)
+//                                    .build(),
+//                            RC_SIGN_IN);
+//                } else {
+//                    startActivity(new Intent(PhoneAuthActivity.this, Home.class));
+//                    finish();
+//                }
             }
         }
     }

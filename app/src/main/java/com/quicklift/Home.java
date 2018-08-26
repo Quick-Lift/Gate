@@ -262,6 +262,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 offer_click=0;
                 data.setOffer_value("0");
                 promocode.setText("");
+                oneseat=0;
+                twoseat=0;
 
 //                place_drivers_bike();
 //                place_drivers_auto();
@@ -289,7 +291,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 }, 2000);
             }
         }
-
     }
 
     @Override
@@ -2718,6 +2719,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
 //                return false;
 //            }
 //        });
+//        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+//            @Override
+//            public boolean onMyLocationButtonClick() {
+//                Toast.makeText(Home.this, "bye", Toast.LENGTH_SHORT).show();
+//                return false;
+//            }
+//        });
         gpc = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -4307,7 +4315,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 LatLngBounds bounds = builder.build();
 
                 int padding = 40;
-
+                mMap.setPadding(50,400,20,400);
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                 mMap.animateCamera(cu);
 
@@ -4358,29 +4366,29 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
             latitude = intent.getDoubleExtra("lat", 0);
             longitude = intent.getDoubleExtra("lng", 0);
 
-//            if (intent.getStringExtra("case").equals("1")) {
-//                vehcasedrop = 1;
-//                if (vehcasepick == 2) {
-//                    vehicle_case = 2;
-//                    hide_share_vehicles();
-//                } else {
-//                    vehicle_case = 1;
-//                    show_share_vehicles();
-//                }
-//            } else {
-//                vehcasedrop = 2;
-//                vehicle_case = 2;
-//                hide_share_vehicles();
-//            }
-
             if (intent.getStringExtra("case").equals("1")) {
+                vehcasedrop = 1;
+                if (vehcasepick == 2) {
+                    vehicle_case = 2;
+                    hide_share_vehicles();
+                } else {
                     vehicle_case = 1;
                     show_share_vehicles();
-            }
-            else {
+                }
+            } else {
+                vehcasedrop = 2;
                 vehicle_case = 2;
                 hide_share_vehicles();
             }
+
+//            if (intent.getStringExtra("case").equals("1")) {
+//                    vehicle_case = 1;
+//                    show_share_vehicles();
+//            }
+//            else {
+//                vehicle_case = 2;
+//                hide_share_vehicles();
+//            }
 
             findViewById(R.id.rating_bar).setVisibility(View.GONE);
             destn_address.setText(name);
@@ -4439,6 +4447,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                 LatLngBounds bounds = builder.build();
 
                 int padding = 40;
+                mMap.setPadding(50,400,20,400);
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                 mMap.animateCamera(cu);
 
@@ -4570,7 +4579,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
                         LatLngBounds bounds = builder.build();
 
                         int padding = 40;
-                        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                        mMap.setPadding(50,400,20,400);
+                        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,padding);
                         mMap.animateCamera(cu);
 
                         Log.v("Park"," "+(park_drop+park_pick));
@@ -5015,6 +5025,18 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         if (!data.getOffer_value().equals("0"))
             pr=pr+Double.parseDouble(data.getOffer_value().toString());
 
+//        if (ridetype.equals("share")){
+//            double less=(pr*disc)/100;
+//            if (less>upto)
+//                less=upto;
+//            offer1=(int) less;
+//
+//            double nextpr=pr+((pr*15)/100);
+//            less=(nextpr*disc)/100;
+//            if (less>upto)
+//                less=upto;
+//            offer2=(int) less;
+//        }
         double less=(pr*disc)/100;
         if (less>upto)
             less=upto;
@@ -5092,28 +5114,47 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback, Googl
         }
     }
 
+    int oneseat=0,twoseat=0;
     public void seatone (View view){
         seats.setText("1 seat");
         if (original_seats == 2) {
             original_seats = 1;
-            int val = Integer.parseInt(final_price.getText().toString().substring(2))+1;
-            val = (int) ((val * 100) / 115);
-            realprice=val;
-            final_price.setText("\u20B9 " + val);
+            if (oneseat==0) {
+                int val = Integer.parseInt(final_price.getText().toString().substring(2)) + 1;
+                val = (int) ((val * 100) / 115);
+                realprice = val;
+                oneseat=val;
+                final_price.setText("\u20B9 " + val);
+            }
+            else {
+                realprice = oneseat;
+                final_price.setText("\u20B9 " + (oneseat-Integer.parseInt(data.getOffer_value())));
+            }
         }
         findViewById(R.id.layout_seats).setVisibility(View.GONE);
+//        seats.requestFocus();
     }
 
     public void seattwo (View view){
+//        Toast.makeText(this, ""+offer1+" "+offer2, Toast.LENGTH_SHORT).show();
         seats.setText("2 seat");
         if (original_seats == 1) {
             original_seats = 2;
-            int val = Integer.parseInt(final_price.getText().toString().substring(2))+1;
-            val = val + (int) ((val * 15) / 100);
-            realprice=val;
-            final_price.setText("\u20B9 " + val);
+            if (twoseat==0) {
+                oneseat=Integer.parseInt(final_price.getText().toString().substring(2))+Integer.parseInt(data.getOffer_value());
+                int val = Integer.parseInt(final_price.getText().toString().substring(2)) + Integer.parseInt(data.getOffer_value()) + 1;
+                val = val + (int) ((val * 15) / 100);
+                realprice = val;
+                twoseat=val;
+                final_price.setText("\u20B9 " + val);
+            }
+            else {
+                realprice = twoseat;
+                final_price.setText("\u20B9 " + (twoseat-Integer.parseInt(data.getOffer_value())));
+            }
         }
         findViewById(R.id.layout_seats).setVisibility(View.GONE);
+//        seats.requestFocus();
     }
 
     public void confirmLocation(View view){

@@ -1195,6 +1195,7 @@
                     android:textSize="16sp"
                     android:textColor="#05affc"
                     android:visibility="gone"
+                    android:gravity="center"
                     android:background="@drawable/all_margin"
                     android:layout_marginTop="5dp"
                     android:padding="3dp"/>

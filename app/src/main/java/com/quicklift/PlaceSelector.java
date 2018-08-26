@@ -213,7 +213,7 @@ public class PlaceSelector extends AppCompatActivity {
 //                            if (myPlace.getLatLng().latitude >= 25.548596 && myPlace.getLatLng().latitude <= 25.701826
 //                                    && myPlace.getLatLng().longitude >= 84.854858 && myPlace.getLatLng().longitude <= 85.278055 ) {
 
-//                            if (myPlace.getAddress().toString().contains("Bihar")){
+                            if (myPlace.getAddress().toString().contains("Bihar")){
                                 destination.setText(myPlace.getAddress());
 //                            Log.v("Address",myPlace.getAddress().toString());
 //                            Toast.makeText(PlaceSelector.this, ""+myPlace.getLatLng().latitude, Toast.LENGTH_SHORT).show();
@@ -221,27 +221,27 @@ public class PlaceSelector extends AppCompatActivity {
                                 intent.putExtra("place", myPlace.getAddress());
                                 intent.putExtra("lat", myPlace.getLatLng().latitude);
                                 intent.putExtra("lng", myPlace.getLatLng().longitude);
-                                intent.putExtra("case","1");
+//                                intent.putExtra("case","1");
 //                                Log.v("Tag",""+myPlace.getLatLng().latitude+" "+myPlace.getLatLng().longitude);
 
 
 
-//                                if (myPlace.getLatLng().latitude >= 25.561272 && myPlace.getLatLng().latitude <= 25.654152
-//                                        && myPlace.getLatLng().longitude >= 85.020262 && myPlace.getLatLng().longitude <= 85.278055){
-//                                    intent.putExtra("case","1");
-//                                }
-//                                else {
-//                                    intent.putExtra("case","2");
-//                                }
+                                if (myPlace.getLatLng().latitude >= 25.561272 && myPlace.getLatLng().latitude <= 25.654152
+                                        && myPlace.getLatLng().longitude >= 85.020262 && myPlace.getLatLng().longitude <= 85.278055){
+                                    intent.putExtra("case","1");
+                                }
+                                else {
+                                    intent.putExtra("case","2");
+                                }
 
 
                                 setResult(RESULT_OK, intent);
                                 finish();
 
-//                            } else {
-////                                Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
-//                                outofbound.setVisibility(View.VISIBLE);
-//                            }
+                            } else {
+//                                Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
+                                outofbound.setVisibility(View.VISIBLE);
+                            }
 //
 //
 //
@@ -264,39 +264,39 @@ public class PlaceSelector extends AppCompatActivity {
                 intent.putExtra("place", name.get(position).getPlace());
                 intent.putExtra("lat", Double.parseDouble(name.get(position).getLat()));
                 intent.putExtra("lng", Double.parseDouble(name.get(position).getLng()));
-                intent.putExtra("case","1");
+//                intent.putExtra("case","1");
 
-//                double latitude = Double.parseDouble(name.get(position).getLat());
-//                double longitude = Double.parseDouble(name.get(position).getLng());
-//                Geocoder geocoder = new Geocoder(PlaceSelector.this, Locale.getDefault());
-////                //List<Address> addresses =geocoder.getFromLocation(latitude, longitude, 1);
-////Log.v("Tag",""+Double.parseDouble(name.get(position).getLat())+" "+Double.parseDouble(name.get(position).getLng()));
-//                try {
-//                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-//                    String stateName = addresses.get(0).getAdminArea();
-//
-////                    Log.v("Address",addresses.get(0).getAdminArea());
-//                    if (Double.parseDouble(name.get(position).getLat()) >= 25.561272 && Double.parseDouble(name.get(position).getLat()) <= 25.654152
-//                            && Double.parseDouble(name.get(position).getLng()) >= 85.020262 && Double.parseDouble(name.get(position).getLng()) <= 85.278055){
-//                        intent.putExtra("case","1");
-//                        setResult(RESULT_OK,intent);
-//                        finish();
-//                    }
-//                    else if (stateName.equals("Bihar")){
-//                        intent.putExtra("case","2");
-//                        setResult(RESULT_OK,intent);
-//                        finish();
-//                    }
-//                    else {
-////                      Log.v("TAG","outside");
-////                      Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
-//                        outofbound.setVisibility(View.VISIBLE);
-//                    }
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(PlaceSelector.this, "Failed to retrieve address ! Please try again !", Toast.LENGTH_SHORT).show();
-//                }
+                double latitude = Double.parseDouble(name.get(position).getLat());
+                double longitude = Double.parseDouble(name.get(position).getLng());
+                Geocoder geocoder = new Geocoder(PlaceSelector.this, Locale.getDefault());
+//                //List<Address> addresses =geocoder.getFromLocation(latitude, longitude, 1);
+//Log.v("Tag",""+Double.parseDouble(name.get(position).getLat())+" "+Double.parseDouble(name.get(position).getLng()));
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    String stateName = addresses.get(0).getAdminArea();
+
+//                    Log.v("Address",addresses.get(0).getAdminArea());
+                    if (Double.parseDouble(name.get(position).getLat()) >= 25.561272 && Double.parseDouble(name.get(position).getLat()) <= 25.654152
+                            && Double.parseDouble(name.get(position).getLng()) >= 85.020262 && Double.parseDouble(name.get(position).getLng()) <= 85.278055){
+                        intent.putExtra("case","1");
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                    else if (stateName.equals("Bihar")){
+                        intent.putExtra("case","2");
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                    else {
+//                      Log.v("TAG","outside");
+//                      Toast.makeText(PlaceSelector.this, "Location is out of our service area !", Toast.LENGTH_SHORT).show();
+                        outofbound.setVisibility(View.VISIBLE);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(PlaceSelector.this, "Failed to retrieve address ! Please try again !", Toast.LENGTH_SHORT).show();
+                }
 
 
 
@@ -322,8 +322,8 @@ public class PlaceSelector extends AppCompatActivity {
 
 
 
-                setResult(RESULT_OK,intent);
-                finish();
+//                setResult(RESULT_OK,intent);
+//                finish();
             }
         });
 
