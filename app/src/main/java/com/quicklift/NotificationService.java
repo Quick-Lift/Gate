@@ -69,7 +69,7 @@ public class NotificationService extends Service {
                         }, 2000);
                     } else if (text.equals("Cancel")) {
                         String str="The trip is cancelled by driver ...";
-                        if (log.contains("offer")){
+                        if (log.contains("offer_value")){
                             SharedPreferences.Editor ed=log.edit();
                             ed.remove("offer");
                             ed.commit();

@@ -783,6 +783,23 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
                 }
             });
+            final DatabaseReference off_ref=FirebaseDatabase.getInstance().getReference("SpecialOffer/"+log_id.getString("offer", null));
+            off_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        off_ref.removeValue();
+                        SharedPreferences.Editor ed = log_id.edit();
+                        ed.remove("offer");
+                        ed.commit();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 }

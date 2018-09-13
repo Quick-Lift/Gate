@@ -193,8 +193,8 @@ public class CustomerRegistration extends AppCompatActivity {
             user_db.child(key).setValue(customer);
             final DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ReferalCode");
             ref.child(key+"/code").setValue(phone.getText().toString()+"@qik");
-            DatabaseReference newref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
-            newref.child("100").setValue("1");
+//            DatabaseReference newref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
+//            newref.child("100").setValue("1");
             if (!refcode.getText().toString().equals("")){
                 DatabaseReference reference=FirebaseDatabase.getInstance().getReference("ReferalCode");
                 reference.orderByChild("code").equalTo(refcode.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {

@@ -104,6 +104,7 @@ public class GetPriceData extends AsyncTask<Object,String,String> {
         }
 
         data.setTriptime(String.valueOf(Integer.valueOf(duration)/60));
+        data.setTripdistance(String.valueOf(Integer.valueOf(distance)/1000));
 //        pricebike(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
         priceexcel(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60,parking);
 //        priceauto(spec_package,spec_location,index, cursor,Integer.valueOf(distance)/1000,Integer.valueOf(duration)/60);
