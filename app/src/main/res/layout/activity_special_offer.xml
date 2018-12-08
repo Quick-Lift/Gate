@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SpecialOffer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="20dp">
+
+        <EditText
+            android:id="@+id/num_of_offers"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="No. of coupons"
+            android:inputType="number"/>
+
+        <EditText
+            android:id="@+id/user_limit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Limit per users"
+            android:inputType="number"/>
+
+        <EditText
+            android:id="@+id/min_amount"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Minimum Amount"
+            android:inputType="number"/>
+
+        <EditText
+            android:id="@+id/discount"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Discount"
+            android:inputType="number"/>
+
+        <EditText
+            android:id="@+id/validity"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="DD-MM-YYYY"/>
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Name of Offer"/>
+
+        <Button
+            android:id="@+id/generate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Generate"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:layout_marginTop="40dp"/>
+    </LinearLayout>
+</ScrollView>

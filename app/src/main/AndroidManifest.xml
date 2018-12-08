@@ -61,8 +61,7 @@
         <activity
             android:name=".Home"
             android:theme="@style/AppTheme2"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".PhoneAuthentication" />
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -73,11 +72,8 @@
         -->
 
         <activity
-            android:name=".HomeScreen"
-            android:theme="@style/AppTheme2"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".PlaceSelector"
-            android:theme="@style/AppTheme2"/>
+            android:name=".PlaceSelector"
+            android:theme="@style/AppTheme2" />
         <activity android:name=".CustomerRides" />
         <activity android:name=".EditProfile" />
         <activity android:name=".RatingActivity" />
@@ -114,7 +110,6 @@
         <!-- </intent-filter> -->
         <!-- </receiver> -->
 
-        <activity android:name=".DisplayAlertbox" />
         <activity android:name=".AboutUs" />
         <activity android:name=".RideOptions" />
         <activity android:name=".FaresandCharges" />
@@ -123,7 +118,27 @@
         <activity android:name=".ConfirmLocation" />
         <activity android:name=".Terms_and_Condition" />
         <activity android:name=".CancelReason" />
-        <activity android:name=".ChangePhoneNumber"></activity>
+        <activity android:name=".ChangePhoneNumber" />
+        <activity android:name=".SpecialOffer" />
+
+        <service android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notification_icon" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
     </application>
 
 </manifest>

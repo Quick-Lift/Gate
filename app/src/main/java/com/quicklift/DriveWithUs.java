@@ -39,6 +39,8 @@ public class DriveWithUs extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+//        startActivity(new Intent(DriveWithUs.this,SpecialOffer.class));
+
 //        startActivity(new Intent(this,ConfirmLocation.class));
 //        finish();
 

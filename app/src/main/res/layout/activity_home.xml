@@ -43,25 +43,6 @@
                 android:gravity="center_vertical"
                 android:textColorHint="@android:color/darker_gray"
                 android:background="@android:color/transparent"/>
-            <!--
-                    <Button
-                        android:id="@+id/pick_go"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:layout_marginRight="20dp"
-                        android:text="Go"
-                        android:textColor="#fdfefe"
-                        android:textColorHint="#dcdcdc"
-                        android:visibility="gone"
-                        android:background="#850000ff" />
-
-                    <fragment
-                        android:id="@+id/place_autocomplete_fragment_pickup"
-                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-            -->
         </LinearLayout>
 
         <LinearLayout
@@ -85,25 +66,7 @@
                 android:textColorHint="@android:color/darker_gray"
                 android:background="@android:color/transparent"
                 android:layout_below="@+id/pickup"/>
-            <!--
-                             <Button
-                                 android:id="@+id/dest_go"
-                                 android:layout_width="0dp"
-                                 android:layout_height="40dp"
-                                 android:layout_weight="1"
-                                 android:layout_marginRight="20dp"
-                                 android:text="Go"
-                                 android:textColor="#fdfefe"
-                                 android:textColorHint="#dcdcdc"
-                                 android:visibility="gone"
-                                 android:background="#850000ff" />
 
-                             <fragment
-                                 android:id="@+id/place_autocomplete_fragment"
-                                 android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                                 android:layout_width="match_parent"
-                                 android:layout_height="40dp" />
-            -->
         </LinearLayout>
 
         <LinearLayout
@@ -140,29 +103,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-                        <!--<TextView-->
-                        <!--android:id="@+id/niji"-->
-                        <!--android:layout_width="300dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Niji"-->
-                        <!--android:textSize="22sp"-->
-                        <!--android:textColor="#000000"-->
-                        <!--android:background="@drawable/blue_margin"-->
-                        <!--android:textStyle="bold"-->
-                        <!--android:padding="2dp"-->
-                        <!--android:gravity="center"/>-->
 
-                        <!--<TextView-->
-                        <!--android:id="@+id/sanjha"-->
-                        <!--android:layout_width="175dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Sajha"-->
-                        <!--android:textSize="22sp"-->
-                        <!--android:textColor="#000000"-->
-                        <!--android:background="@drawable/blue_margin"-->
-                        <!--android:textStyle="bold"-->
-                        <!--android:padding="2dp"-->
-                        <!--android:gravity="center"/>-->
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -551,6 +492,7 @@
                             android:gravity="center">
 
                             <ImageView
+                                android:id="@+id/vehtype"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:scaleX="-1"

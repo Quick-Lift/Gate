@@ -191,10 +191,15 @@ public class CustomerRegistration extends AppCompatActivity {
             }
 
             user_db.child(key).setValue(customer);
+            SharedPreferences log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
+
+            if (log_id.contains("firebasetoken")){
+                user_db.child(key+"/token").setValue(log_id.getString("firebasetoken",null));
+            }
             final DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ReferalCode");
             ref.child(key+"/code").setValue(phone.getText().toString()+"@qik");
-//            DatabaseReference newref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
-//            newref.child("100").setValue("1");
+            DatabaseReference newref=FirebaseDatabase.getInstance().getReference("CustomerOffers/"+key);
+            newref.child("100").setValue("1");
             if (!refcode.getText().toString().equals("")){
                 DatabaseReference reference=FirebaseDatabase.getInstance().getReference("ReferalCode");
                 reference.orderByChild("code").equalTo(refcode.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -213,7 +218,6 @@ public class CustomerRegistration extends AppCompatActivity {
                     }
                 });
             }
-            SharedPreferences log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
             final SharedPreferences.Editor editor=log_id.edit();
             //Toast.makeText(CustomerRegistration.this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
             //Log.v("TAG",user.getUid());
@@ -246,6 +250,18 @@ public class CustomerRegistration extends AppCompatActivity {
                     editor.putString("waittime",String.valueOf(dataSnapshot.child("WaitingTime").getValue(Integer.class)));
                     editor.putString("waitingcharge",String.valueOf(dataSnapshot.child("WaitingCharge").getValue(Integer.class)));
                     editor.putString("tax",String.valueOf(dataSnapshot.child("Tax").getValue().toString()));
+                    editor.putString("rentalextra",String.valueOf(dataSnapshot.child("Rental/extra").getValue(String.class)));
+                    editor.putString("rentalvan",String.valueOf(dataSnapshot.child("Rental/van").getValue(String.class)));
+                    editor.putString("rentalsedan",String.valueOf(dataSnapshot.child("Rental/sedan").getValue(String.class)));
+                    editor.putString("rentalsuv",String.valueOf(dataSnapshot.child("Rental/suv").getValue(String.class)));
+                    editor.putString("outstationvan",String.valueOf(dataSnapshot.child("Outstation/Van").getValue(String.class)));
+                    editor.putString("outstationsedan",String.valueOf(dataSnapshot.child("Outstation/Sedan").getValue(String.class)));
+                    editor.putString("outstationsuv",String.valueOf(dataSnapshot.child("Outstation/Suv").getValue(String.class)));
+                    editor.putString("outstationmultiplier",String.valueOf(dataSnapshot.child("Outstation/Multiplier").getValue(String.class)));
+                    editor.putString("outstationtimingcharge",String.valueOf(dataSnapshot.child("Outstation/TimingCharge").getValue(String.class)));
+                    editor.putString("erickshawtimeratio",String.valueOf(dataSnapshot.child("ERickshawTimeRatio").getValue(String.class)));
+                    editor.putString("erickshawradius",String.valueOf(dataSnapshot.child("ERickshawSearchRadius").getValue(String.class)));
+                    editor.putString("erickshawpickupdist",String.valueOf(dataSnapshot.child("ERickshawPickupDistance").getValue(String.class)));
                     editor.commit();
                     for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                         ArrayList<String> price=new ArrayList<String>();

@@ -142,6 +142,9 @@ public class BillDetails extends AppCompatActivity {
                             findViewById(R.id.invoice_layout).setVisibility(View.GONE);
                         }
                     }
+                    if (dataSnapshot.hasChild("type") && dataSnapshot.child("type").getValue().equals("rickshaw")){
+                        ((ImageView)findViewById(R.id.vehimg)).setImageResource(R.drawable.rickshawfinal);
+                    }
                     ((TextView)findViewById(R.id.paymode)).setText(dataSnapshot.child("paymode").getValue().toString());
                     float base=(float) Float.parseFloat(dataSnapshot.child("amount").getValue().toString()) - total +Float.parseFloat(dataSnapshot.child("discount").getValue().toString());
                     ((TextView)findViewById(R.id.basefare)).setText("Rs. "+String.format("%.2f",(base+timing)));

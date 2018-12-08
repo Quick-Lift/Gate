@@ -15,6 +15,71 @@
         android:layout_weight="1" />
 
     <LinearLayout
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#05affc"
+        android:paddingLeft="50dp"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/lcl"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="Local"
+                android:textColor="#05affc"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:onClick="ridetype"
+                android:background="#ffffff"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/rntl"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="Rental"
+                android:onClick="ridetype"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/icty"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="Intercity"
+                android:onClick="ridetype"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -42,25 +107,7 @@
                 android:textColor="#000000"
                 android:textColorHint="@android:color/darker_gray"
                 android:background="@android:color/transparent"/>
-            <!--
-                    <Button
-                        android:id="@+id/pick_go"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:layout_marginRight="20dp"
-                        android:text="Go"
-                        android:textColor="#fdfefe"
-                        android:textColorHint="#dcdcdc"
-                        android:visibility="gone"
-                        android:background="#850000ff" />
 
-                    <fragment
-                        android:id="@+id/place_autocomplete_fragment_pickup"
-                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-            -->
         </LinearLayout>
 
         <LinearLayout
@@ -83,26 +130,14 @@
                 android:textColorHint="@android:color/darker_gray"
                 android:background="@android:color/transparent"
                 android:layout_below="@+id/pickup"/>
-            <!--
-                             <Button
-                                 android:id="@+id/dest_go"
-                                 android:layout_width="0dp"
-                                 android:layout_height="40dp"
-                                 android:layout_weight="1"
-                                 android:layout_marginRight="20dp"
-                                 android:text="Go"
-                                 android:textColor="#fdfefe"
-                                 android:textColorHint="#dcdcdc"
-                                 android:visibility="gone"
-                                 android:background="#850000ff" />
 
-                             <fragment
-                                 android:id="@+id/place_autocomplete_fragment"
-                                 android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                                 android:layout_width="match_parent"
-                                 android:layout_height="40dp" />
-            -->
         </LinearLayout>
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/local"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="bottom|center_horizontal">-->
 
         <LinearLayout
             android:id="@+id/layout2"
@@ -140,29 +175,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-                        <!--<TextView-->
-                        <!--android:id="@+id/niji"-->
-                        <!--android:layout_width="300dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Niji"-->
-                        <!--android:textSize="22sp"-->
-                        <!--android:textColor="#000000"-->
-                        <!--android:background="@drawable/blue_margin"-->
-                        <!--android:textStyle="bold"-->
-                        <!--android:padding="2dp"-->
-                        <!--android:gravity="center"/>-->
 
-                        <!--<TextView-->
-                        <!--android:id="@+id/sanjha"-->
-                        <!--android:layout_width="175dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Sajha"-->
-                        <!--android:textSize="22sp"-->
-                        <!--android:textColor="#000000"-->
-                        <!--android:background="@drawable/blue_margin"-->
-                        <!--android:textStyle="bold"-->
-                        <!--android:padding="2dp"-->
-                        <!--android:gravity="center"/>-->
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -207,9 +220,9 @@
                                         android:id="@+id/price_rickshaw"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Upcoming"
+                                        android:text=""
                                         android:gravity="center"
-                                        android:textSize="10sp"
+                                        android:textSize="14sp"
                                         android:textColor="@android:color/black"/>
                                 </LinearLayout>
                                 <TextView
@@ -551,6 +564,7 @@
                             android:gravity="center">
 
                             <ImageView
+                                android:id="@+id/vehtype"
                                 android:layout_width="70dp"
                                 android:layout_height="50dp"
                                 android:scaleX="-1"
@@ -803,343 +817,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-            <!--<LinearLayout-->
-                <!--android:id="@+id/layout3"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="vertical"-->
-                <!--android:background="#ffffff"-->
-                <!--android:visibility="gone">-->
-
-                <!--<TextView-->
-                    <!--android:id="@+id/waiting"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:textSize="16sp"-->
-                    <!--android:padding="5dp"-->
-                    <!--android:visibility="gone"-->
-                    <!--android:layout_margin="2dp"-->
-                    <!--android:background="#FFFFFF"-->
-                    <!--android:textColor="#05affc"-->
-                    <!--android:text="Driver is waiting at the location ..."-->
-                    <!--android:gravity="center"/>-->
-
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="100dp"-->
-                    <!--android:gravity="center"-->
-                    <!--android:orientation="horizontal"-->
-                    <!--android:weightSum="3">-->
-
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="2"-->
-                        <!--android:layout_height="100dp"-->
-                        <!--android:gravity="center"-->
-                        <!--android:orientation="horizontal">-->
-
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:gravity="center"-->
-                            <!--android:layout_height="match_parent">-->
-
-                            <!--<LinearLayout-->
-                            <!--android:layout_width="80dp"-->
-                            <!--android:layout_height="80dp"-->
-                            <!--android:gravity="center"-->
-                            <!--android:orientation="vertical"-->
-                            <!--android:background="@drawable/round_button">-->
-
-                            <!--<LinearLayout-->
-                            <!--android:layout_width="70dp"-->
-                            <!--android:layout_height="70dp"-->
-                            <!--android:orientation="vertical"-->
-                            <!--android:gravity="center"-->
-                            <!--android:background="@drawable/round_button">-->
-
-                            <!--<de.hdodenhof.circleimageview.CircleImageView-->
-                            <!--android:layout_width="60dp"-->
-                            <!--android:layout_height="60dp"-->
-                            <!--android:id="@+id/call"-->
-                            <!--android:layout_gravity="center"-->
-                            <!--android:src="@drawable/ic_call"/>-->
-                            <!--</LinearLayout>-->
-                            <!--</LinearLayout>-->
-                            <!--<ImageView-->
-                                <!--android:layout_width="80dp"-->
-                                <!--android:layout_height="80dp"-->
-                                <!--android:src="@drawable/carfinal"/>-->
-                        <!--</LinearLayout>-->
-
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:gravity="center"-->
-                            <!--android:layout_height="match_parent">-->
-
-                            <!--<LinearLayout-->
-                            <!--android:layout_width="80dp"-->
-                            <!--android:layout_height="80dp"-->
-                            <!--android:gravity="center"-->
-                            <!--android:orientation="vertical"-->
-                            <!--android:background="@drawable/round_button">-->
-
-                            <!--<LinearLayout-->
-                            <!--android:layout_width="70dp"-->
-                            <!--android:layout_height="70dp"-->
-                            <!--android:orientation="vertical"-->
-                            <!--android:gravity="center"-->
-                            <!--android:background="@drawable/round_button">-->
-
-                            <!--<TextView-->
-                                <!--android:id="@+id/otp"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent"-->
-                                <!--android:text="OTP\n"-->
-                                <!--android:textSize="18sp"-->
-                                <!--android:gravity="center"-->
-                                <!--android:textColor="#000000"-->
-                                <!--android:background="#aa05affc"-->
-                                <!--android:textStyle="bold"-->
-                                <!--android:layout_margin="10dp"/>-->
-                            <!--</LinearLayout>-->
-                            <!--</LinearLayout>-->
-                        <!--</LinearLayout>-->
-                    <!--</LinearLayout>-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:gravity="center"-->
-                        <!--android:layout_height="100dp">-->
-
-                        <!--<de.hdodenhof.circleimageview.CircleImageView-->
-                            <!--android:layout_width="85dp"-->
-                            <!--android:layout_height="85dp"-->
-                            <!--android:id="@+id/pic"-->
-                            <!--android:src="@drawable/profile"/>-->
-                    <!--</LinearLayout>-->
-                <!--</LinearLayout>-->
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:gravity="center"-->
-                    <!--android:orientation="vertical">-->
-
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:weightSum="3"-->
-                        <!--android:orientation="horizontal">-->
-
-                        <!--<TextView-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:id="@+id/bike_name"-->
-                            <!--android:gravity="center"-->
-                            <!--android:text=""-->
-                            <!--android:textSize="18sp"-->
-                            <!--android:layout_marginLeft="3dp"-->
-                            <!--android:layout_marginRight="3dp"-->
-                            <!--android:textColor="#000000"/>-->
-
-                        <!--<TextView-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:gravity="center"-->
-                            <!--android:text="Estimated Fare"-->
-                            <!--android:textSize="12sp"-->
-                            <!--android:layout_marginLeft="3dp"-->
-                            <!--android:layout_marginRight="3dp"-->
-                            <!--android:textColor="#000000"/>-->
-
-                        <!--<TextView-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:gravity="center"-->
-                            <!--android:text=""-->
-                            <!--android:paddingEnd="5dp"-->
-                            <!--android:id="@+id/dname"-->
-                            <!--android:textSize="18sp"-->
-                            <!--android:layout_marginLeft="3dp"-->
-                            <!--android:layout_marginRight="3dp"-->
-                            <!--android:textColor="#000000"/>-->
-
-                    <!--</LinearLayout>-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="35dp"-->
-                        <!--android:gravity="center"-->
-                        <!--android:orientation="horizontal"-->
-                        <!--android:weightSum="3">-->
-
-                        <!--<TextView-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:gravity="center"-->
-                            <!--android:text=""-->
-                            <!--android:textSize="18sp"-->
-                            <!--android:layout_marginLeft="3dp"-->
-                            <!--android:layout_marginRight="3dp"-->
-                            <!--android:layout_marginBottom="3dp"-->
-                            <!--android:textColor="#000000"/>-->
-
-                        <!--<TextView-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:gravity="center"-->
-                            <!--android:text=""-->
-                            <!--android:id="@+id/amount"-->
-                            <!--android:layout_marginLeft="3dp"-->
-                            <!--android:layout_marginRight="3dp"-->
-                            <!--android:layout_marginBottom="3dp"-->
-                            <!--android:textSize="18sp"-->
-                            <!--android:textColor="#000000"/>-->
-
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:gravity="center"-->
-                            <!--android:orientation="horizontal"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:layout_marginLeft="3dp"-->
-                            <!--android:layout_marginRight="3dp"-->
-                            <!--android:layout_marginBottom="3dp">-->
-
-                            <!--<RatingBar-->
-                            <!--android:id="@+id/driver_rating"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--style="@style/foodRatingBar"-->
-                            <!--android:isIndicator="true"-->
-                            <!--android:visibility="gone"-->
-                            <!--android:layout_gravity="center_horizontal"-->
-                            <!--android:numStars="5"/>-->
-
-                            <!--<LinearLayout-->
-                                <!--android:layout_width="0dp"-->
-                                <!--android:layout_weight="0.5"-->
-                                <!--android:layout_height="match_parent">-->
-
-                                <!--<TextView-->
-                                    <!--android:id="@+id/rating_value"-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="match_parent"-->
-                                    <!--android:text=""-->
-                                    <!--android:textSize="18sp"-->
-                                    <!--android:textColor="#000000"-->
-                                    <!--android:gravity="center_vertical|end"-->
-                                    <!--android:paddingEnd="5dp"/>-->
-                            <!--</LinearLayout>-->
-                            <!--<LinearLayout-->
-                                <!--android:layout_width="0dp"-->
-                                <!--android:layout_weight="0.5"-->
-                                <!--android:layout_height="match_parent">-->
-
-                                <!--<ImageView-->
-                                    <!--android:layout_width="30dp"-->
-                                    <!--android:layout_height="match_parent"-->
-                                    <!--android:src="@drawable/ic_star_fill"-->
-                                    <!--android:layout_gravity="start"/>-->
-                            <!--</LinearLayout>-->
-                        <!--</LinearLayout>-->
-                    <!--</LinearLayout>-->
-                <!--</LinearLayout>-->
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:orientation="horizontal"-->
-                    <!--android:weightSum="3">-->
-
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:layout_height="match_parent" >-->
-
-                        <!--<TextView-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:gravity="center"-->
-                            <!--android:id="@+id/bike_no"-->
-                            <!--android:text=""-->
-                            <!--android:textSize="18sp"-->
-                            <!--android:layout_marginLeft="3dp"-->
-                            <!--android:layout_marginRight="3dp"-->
-                            <!--android:layout_marginBottom="3dp"-->
-                            <!--android:background="@drawable/margin"-->
-                            <!--android:textColor="#000000"/>-->
-                    <!--</LinearLayout>-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:gravity="center"-->
-                        <!--android:background="#aa05affc">-->
-
-                        <!--<ImageView-->
-                            <!--android:layout_width="25dp"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:src="@drawable/ic_close_icon"-->
-                            <!--android:onClick="cancel_trip"-->
-                            <!--android:tint="#ff0000"/>-->
-
-                        <!--<Button-->
-                            <!--android:id="@+id/canceltrip"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="50dp"-->
-                            <!--android:text="Cancel Trip"-->
-                            <!--android:textColor="#000000"-->
-                            <!--android:textSize="12sp"-->
-                            <!--android:textAllCaps="false"-->
-                            <!--android:onClick="cancel_trip"-->
-                            <!--android:paddingLeft="5dp"-->
-                            <!--android:gravity="left|center_vertical"-->
-                            <!--android:background="@android:color/transparent"/>-->
-
-                    <!--</LinearLayout>-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:gravity="center"-->
-                        <!--android:paddingRight="10dp"-->
-                        <!--android:layout_height="match_parent">-->
-
-                        <!--<Button-->
-                            <!--android:id="@+id/call_text"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="50dp"-->
-                            <!--android:text="Call Driver"-->
-                            <!--android:textColor="#000000"-->
-                            <!--android:textSize="12sp"-->
-                            <!--android:textAllCaps="false"-->
-                            <!--android:gravity="right|center_vertical"-->
-                            <!--android:paddingRight="5dp"-->
-                            <!--android:background="@android:color/transparent"/>-->
-
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="25dp"-->
-                            <!--android:layout_height="25dp"-->
-                            <!--android:orientation="vertical"-->
-                            <!--android:gravity="center"-->
-                            <!--android:background="@drawable/round_button">-->
-
-                            <!--<de.hdodenhof.circleimageview.CircleImageView-->
-                                <!--android:layout_width="20dp"-->
-                                <!--android:layout_height="20dp"-->
-                                <!--android:id="@+id/call"-->
-                                <!--android:layout_gravity="center"-->
-                                <!--android:src="@drawable/ic_call"/>-->
-                        <!--</LinearLayout>-->
-
-                    <!--</LinearLayout>-->
-                <!--</LinearLayout>-->
-            <!--</LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/layout4"
@@ -1700,4 +1377,580 @@
             android:textColor="#ffffff"/>
 
     </LinearLayout>
+    <!--</LinearLayout>-->
+
+    <ScrollView
+        android:id="@+id/rental"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#ffffff">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:text="Get a cab on hourly basis at affordable price"
+                android:textColor="#05affc"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Select the vehicle"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@android:color/darker_gray"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/r_van"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:onClick="rental_vehicle_type"
+                        android:background="@drawable/round_button">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/niji"/>
+
+                        <TextView
+                            android:id="@+id/r_price_van"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="\u20B9 314"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:textColor="#000000"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Van"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="4 seats"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/darker_gray"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="all types of hatchback"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:textColor="@android:color/darker_gray"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/r_sedan"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:onClick="rental_vehicle_type"
+                        android:background="@drawable/round_button">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/niji"/>
+
+                        <TextView
+                            android:id="@+id/r_price_sedan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="\u20B9 394"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:textColor="#000000"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sedan"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="4 seats"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/darker_gray"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="all types of sedan vehicles"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:textColor="@android:color/darker_gray"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/r_suv"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:onClick="rental_vehicle_type"
+                        android:background="@drawable/round_button">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/carfinal"/>
+
+                        <TextView
+                            android:id="@+id/r_price_suv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="\u20B9 245"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:textColor="#000000"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SUV"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="6 seats"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/darker_gray"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="all types of large utility vehicles"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:textColor="@android:color/darker_gray"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Select the duration"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@android:color/darker_gray"/>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checkedButton="@+id/onehr">
+
+                <RadioButton
+                    android:id="@+id/onehr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:onClick="calculate_rental_price"
+                    android:text="One hour / 10 Km"/>
+
+                <RadioButton
+                    android:id="@+id/twohr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:onClick="calculate_rental_price"
+                    android:text="Two hour / 20 Km"/>
+
+                <RadioButton
+                    android:id="@+id/threehr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:onClick="calculate_rental_price"
+                    android:text="Three hour / 30 Km"/>
+
+                <RadioButton
+                    android:id="@+id/fourhr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:onClick="calculate_rental_price"
+                    android:text="Four hour / 40 Km"/>
+
+                <RadioButton
+                    android:id="@+id/fivehr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:onClick="calculate_rental_price"
+                    android:text="Five hour / 50 Km"/>
+
+                <RadioButton
+                    android:id="@+id/sixhr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:onClick="calculate_rental_price"
+                    android:text="Six hour / 60 Km"/>
+
+                <RadioButton
+                    android:id="@+id/sevenhr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:onClick="calculate_rental_price"
+                    android:text="Seven hour / 70 Km"/>
+
+                <RadioButton
+                    android:id="@+id/eighthr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:onClick="calculate_rental_price"
+                    android:text="Eight hour / 80 Km"/>
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/rental_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#05affc"
+                android:layout_marginTop="5dp"
+                android:text="Confirm Booking"
+                android:textSize="20sp"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+    </ScrollView>
+    <ScrollView
+        android:id="@+id/intercity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#ffffff">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:text="Enjoy intercity rides at affordable fares"
+                android:textColor="#05affc"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Select the vehicle"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@android:color/darker_gray"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/i_van"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:onClick="intercity_vehicle_type"
+                        android:background="@drawable/round_button">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/niji"/>
+
+                        <TextView
+                            android:id="@+id/i_price_van"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="\u20B9 314"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:textColor="#000000"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Van"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="4 seats"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/darker_gray"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="all types of hatchback"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:textColor="@android:color/darker_gray"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/i_sedan"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:onClick="intercity_vehicle_type"
+                        android:background="@drawable/round_button">
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/niji"/>
+
+                        <TextView
+                            android:id="@+id/i_price_sedan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="\u20B9 394"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:textColor="#000000"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sedan"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="4 seats"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/darker_gray"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="all types of sedan vehicles"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:textColor="@android:color/darker_gray"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/i_suv"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:onClick="intercity_vehicle_type"
+                        android:background="@drawable/round_button">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/carfinal"/>
+
+                        <TextView
+                            android:id="@+id/i_price_suv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="\u20B9 245"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:textColor="#000000"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SUV"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="6 seats"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/darker_gray"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="all types of large utility vehicles"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:textColor="@android:color/darker_gray"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Select the trip mode"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@android:color/darker_gray"/>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checkedButton="@+id/oneway">
+
+                <RadioButton
+                    android:id="@+id/oneway"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:text="One way"/>
+
+                <RadioButton
+                    android:id="@+id/roundtrip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#05affc"
+                    android:textColor="#000000"
+                    android:text="Round trip"/>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Select the Date and Time"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/darker_gray"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp">
+
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/intercity_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#05affc"
+                android:layout_marginTop="5dp"
+                android:text="Confirm Booking"
+                android:textSize="20sp"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

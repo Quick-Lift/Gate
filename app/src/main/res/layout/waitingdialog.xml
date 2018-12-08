@@ -2,59 +2,78 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="0dp">
+    android:layout_height="match_parent">
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerVertical="true">-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/image1"-->
+    <!--android:layout_width="70dp"-->
+    <!--android:layout_height="70dp"-->
+    <!--android:scaleX="-1"-->
+    <!--android:src="@drawable/carfinal"/>-->
+
+    <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/image2"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="70dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="70dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentEnd="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:src="@drawable/carfinal"/>&ndash;&gt;-->
+
+    <!--</RelativeLayout>-->
 
     <RelativeLayout
+        android:id="@+id/loadingPanel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true">
+        android:layout_height="match_parent"
+        android:gravity="center" >
 
-        <ImageView
-            android:id="@+id/image1"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:scaleX="-1"
-            android:src="@drawable/carfinal"/>
-
-        <!--<ImageView-->
-            <!--android:id="@+id/image2"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="70dp"-->
-            <!--android:layout_alignParentEnd="true"-->
-            <!--android:src="@drawable/carfinal"/>-->
-
+        <ProgressBar
+            android:id="@+id/pbar"
+            android:layout_width="wrap_content"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/custom_progress_dialog"
+            android:indeterminate="true"
+            android:indeterminateDuration="2000"/>
     </RelativeLayout>
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:background="#fdfefe"
+        android:background="@android:color/transparent"
         android:text="Finding ride for you "
-        android:textColor="#05affc"
+        android:textColor="#ffffff"
         android:textSize="18sp"
-        android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"/>
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom"
+        android:layout_above="@+id/prgbar"/>
 
     <LinearLayout
+        android:id="@+id/prgbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fdfefe"
-        android:layout_toRightOf="@+id/text"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true">
 
         <ProgressBar
             android:id="@+id/progress"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:max="800"
-            android:progressTint="#05affc"
+            android:layout_height="10dp"
+            android:max="600"
+            android:progressDrawable="@drawable/gradientprogress"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal" />
+            style="@android:style/Widget.ProgressBar.Horizontal" />
 
     </LinearLayout>
 </RelativeLayout>

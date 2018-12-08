@@ -56,28 +56,16 @@ public class PhoneAuthActivity extends AppCompatActivity {
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
 
-        boolean status1 = haveNetworkConnection();
-        boolean status2 = hasActiveInternetConnection();
-        if (status1 && status2) {
-            if (!log_id.contains("id")) {
-                List<AuthUI.IdpConfig> providers = Arrays.asList(
-                        new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
-
-// Create and launch sign-in intent
-                startActivityForResult(
-                        AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(providers)
-                                .build(),
-                        RC_SIGN_IN);
-            } else {
-                startActivity(new Intent(PhoneAuthActivity.this, Home.class));
-                finish();
-            }
-        }
-        else {
-            Toast.makeText(this, "No internet access !", Toast.LENGTH_LONG).show();
-        }
+//        boolean status1 = haveNetworkConnection();
+//        boolean status2 = hasActiveInternetConnection();
+//        if (status1 && status2) {
+//
+//        }
+//        else {
+//            Toast.makeText(this, "No internet access !", Toast.LENGTH_LONG).show();
+//        }
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(receiver, intentFilter);
 
 //        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
 //        registerReceiver(receiver, intentFilter);
@@ -115,6 +103,12 @@ public class PhoneAuthActivity extends AppCompatActivity {
                     haveConnectedMobile = true;
         }
         return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     public boolean hasActiveInternetConnection(){
@@ -282,6 +276,18 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                             editor.putString("waittime",String.valueOf(dataSnapshot.child("WaitingTime").getValue(Integer.class)));
                                             editor.putString("waitingcharge",String.valueOf(dataSnapshot.child("WaitingCharge").getValue(Integer.class)));
                                             editor.putString("tax",String.valueOf(dataSnapshot.child("Tax").getValue().toString()));
+                                            editor.putString("rentalextra",String.valueOf(dataSnapshot.child("Rental/extra").getValue(String.class)));
+                                            editor.putString("rentalvan",String.valueOf(dataSnapshot.child("Rental/van").getValue(String.class)));
+                                            editor.putString("rentalsedan",String.valueOf(dataSnapshot.child("Rental/sedan").getValue(String.class)));
+                                            editor.putString("rentalsuv",String.valueOf(dataSnapshot.child("Rental/suv").getValue(String.class)));
+                                            editor.putString("outstationvan",String.valueOf(dataSnapshot.child("Outstation/Van").getValue(String.class)));
+                                            editor.putString("outstationsedan",String.valueOf(dataSnapshot.child("Outstation/Sedan").getValue(String.class)));
+                                            editor.putString("outstationsuv",String.valueOf(dataSnapshot.child("Outstation/Suv").getValue(String.class)));
+                                            editor.putString("outstationmultiplier",String.valueOf(dataSnapshot.child("Outstation/Multiplier").getValue(String.class)));
+                                            editor.putString("outstationtimingcharge",String.valueOf(dataSnapshot.child("Outstation/TimingCharge").getValue(String.class)));
+                                            editor.putString("erickshawtimeratio",String.valueOf(dataSnapshot.child("ERickshawTimeRatio").getValue(String.class)));
+                                            editor.putString("erickshawradius",String.valueOf(dataSnapshot.child("ERickshawSearchRadius").getValue(String.class)));
+                                            editor.putString("erickshawpickupdist",String.valueOf(dataSnapshot.child("ERickshawPickupDistance").getValue(String.class)));
                                             editor.commit();
                                             for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                                                 ArrayList<String> price=new ArrayList<String>();
@@ -373,11 +379,12 @@ public class PhoneAuthActivity extends AppCompatActivity {
             boolean isConnected = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
             if (isConnected) {
                 load=1;
-//                findViewById(R.id.network_status).setVisibility(View.VISIBLE);
-                Toast.makeText(PhoneAuthActivity.this, "No internet access !", Toast.LENGTH_LONG).show();
+                findViewById(R.id.msg).setVisibility(View.VISIBLE);
+//                Toast.makeText(PhoneAuthActivity.this, "No internet access !", Toast.LENGTH_LONG).show();
             }
             else {
                 load=0;
+                findViewById(R.id.msg).setVisibility(View.GONE);
 //                if (!log_id.contains("id")) {
 //                    List<AuthUI.IdpConfig> providers = Arrays.asList(
 //                            new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
@@ -393,6 +400,21 @@ public class PhoneAuthActivity extends AppCompatActivity {
 //                    startActivity(new Intent(PhoneAuthActivity.this, Home.class));
 //                    finish();
 //                }
+                if (!log_id.contains("id")) {
+                    List<AuthUI.IdpConfig> providers = Arrays.asList(
+                            new AuthUI.IdpConfig.PhoneBuilder().build());
+
+// Create and launch sign-in intent
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setAvailableProviders(providers)
+                                    .build(),
+                            RC_SIGN_IN);
+                } else {
+                    startActivity(new Intent(PhoneAuthActivity.this, Home.class));
+                    finish();
+                }
             }
         }
     }

@@ -70,9 +70,12 @@ public class TripCompleted extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        Log.v("Checking","started");
         log_id = getApplicationContext().getSharedPreferences("Login", MODE_PRIVATE);
         editor=log_id.edit();
         driverid=getIntent().getStringExtra("id");
+
+        Log.v("Checking","started2");
         db= FirebaseDatabase.getInstance().getReference("Drivers/"+getIntent().getStringExtra("id"));
         photo=(CircleImageView)findViewById(R.id.photo);
         rating=(RatingBar)findViewById(R.id.rating);
@@ -92,6 +95,7 @@ public class TripCompleted extends AppCompatActivity {
 //        db.removeValue();
 //        ref.removeValue();
 
+        Log.v("Checking","started3");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -227,7 +231,7 @@ public class TripCompleted extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
 //                    Log.v("TAG","hello");
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    if (!map.get("thumb").toString().equals("")) {
+                    if (map.containsKey("thumb") && !map.get("thumb").toString().equals("")) {
                         byte[] dec = Base64.decode(map.get("thumb").toString(), Base64.DEFAULT);
                         Bitmap decbyte = BitmapFactory.decodeByteArray(dec, 0, dec.length);
                         photo.setImageBitmap(decbyte);

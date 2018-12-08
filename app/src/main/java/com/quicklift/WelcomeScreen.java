@@ -1,37 +1,30 @@
 package com.quicklift;
 
-import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,21 +43,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+
+import believe.cht.fadeintextview.TextViewListener;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS;
 
 public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public static final int RequestPermissionCode = 1;
@@ -74,6 +62,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
     String tag="Welcome";
     int load=0;
     boolean valid=false;
+    boolean anim_handle=false,verscheck=false,permcheck=false;
     Receiver receiver=new Receiver();
 
     @Override
@@ -93,19 +82,67 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 //        DatabaseReference mail=FirebaseDatabase.getInstance().getReference("Mail_id");
 //        mail.child("email").setValue("qiklift@gmail.com");
 //        mail.child("password").setValue("PasswordForQuickLift");
+
+//        ImageView imageView=findViewById(R.id.image);
+//        Glide.with(this).load(R.drawable.welcomescreen).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).crossFade().into(imageView);
         log_id=getApplicationContext().getSharedPreferences("Login",MODE_PRIVATE);
         editor=log_id.edit();
 
+        Animation animation;
+        animation = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.zoomin);
+        ((ImageView)findViewById(R.id.image)).startAnimation(animation);
+
         generateLog.appendLog(tag,"Loading page !");
+
+        final believe.cht.fadeintextview.TextView textView = findViewById(R.id.textView);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // setting a listener for tracking events (optional)
+                textView.setListener(new TextViewListener() {
+                    @Override
+                    public void onTextStart() {
+//                Toast.makeText(getBaseContext(), "onTextStart() fired!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onTextFinish() {
+                        anim_handle=true;
+                        if (verscheck && permcheck) {
+                            startActivity(new Intent(WelcomeScreen.this, PhoneAuthActivity.class));
+                            overridePendingTransition(R.anim.animation_slide1, R.anim.animation_slide2);
+                            finish();
+                        }
+//                Toast.makeText(getBaseContext(), "onTextFinish() fired!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                textView.setLetterDuration(250); // sets letter duration programmatically
+                textView.setText("QuickLift"); // sets the text with animation (Read "KNOWN BUGS" if it doesn't give desired results)
+                textView.isAnimating(); // returns current boolean animation state (optional)
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 
 //        Handler handler=new Handler();
 //        handler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-//                startActivity(new Intent(WelcomeScreen.this, PhoneAuthActivity.class));
-//                finish();
+//
 //            }
-//        },5000);
+//        },10000);
 
         if (log_id.contains("id")) {
             DatabaseReference vers = FirebaseDatabase.getInstance().getReference("Version_customer");
@@ -148,16 +185,19 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                                         alert.dismiss();
                                     }
                                 });
-                            } else if (valid) {
+                            } else if (permcheck && anim_handle) {
                                 startActivity(new Intent(WelcomeScreen.this, PhoneAuthActivity.class));
+                                overridePendingTransition(R.anim.animation_slide1, R.anim.animation_slide2);
                                 finish();
                             } else {
+                                verscheck=true;
                                 valid = true;
                             }
                         } catch (PackageManager.NameNotFoundException e) {
                             e.printStackTrace();
                         }
                     } else {
+                        verscheck=true;
                         valid = true;
                     }
                 }
@@ -169,6 +209,7 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             });
         }
         else {
+            verscheck=true;
             valid=true;
         }
 
@@ -222,6 +263,18 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                 editor.putString("waittime",String.valueOf(dataSnapshot.child("WaitingTime").getValue(Integer.class)));
                 editor.putString("waitingcharge",String.valueOf(dataSnapshot.child("WaitingCharge").getValue(Integer.class)));
                 editor.putString("tax",String.valueOf(dataSnapshot.child("Tax").getValue().toString()));
+                editor.putString("rentalextra",String.valueOf(dataSnapshot.child("Rental/extra").getValue(String.class)));
+                editor.putString("rentalvan",String.valueOf(dataSnapshot.child("Rental/van").getValue(String.class)));
+                editor.putString("rentalsedan",String.valueOf(dataSnapshot.child("Rental/sedan").getValue(String.class)));
+                editor.putString("rentalsuv",String.valueOf(dataSnapshot.child("Rental/suv").getValue(String.class)));
+                editor.putString("outstationvan",String.valueOf(dataSnapshot.child("Outstation/Van").getValue(String.class)));
+                editor.putString("outstationsedan",String.valueOf(dataSnapshot.child("Outstation/Sedan").getValue(String.class)));
+                editor.putString("outstationsuv",String.valueOf(dataSnapshot.child("Outstation/Suv").getValue(String.class)));
+                editor.putString("outstationmultiplier",String.valueOf(dataSnapshot.child("Outstation/Multiplier").getValue(String.class)));
+                editor.putString("outstationtimingcharge",String.valueOf(dataSnapshot.child("Outstation/TimingCharge").getValue(String.class)));
+                editor.putString("erickshawtimeratio",String.valueOf(dataSnapshot.child("ERickshawTimeRatio").getValue(String.class)));
+                editor.putString("erickshawradius",String.valueOf(dataSnapshot.child("ERickshawSearchRadius").getValue(String.class)));
+                editor.putString("erickshawpickupdist",String.valueOf(dataSnapshot.child("ERickshawPickupDistance").getValue(String.class)));
                 editor.commit();
                 for (DataSnapshot data:dataSnapshot.child("Package").getChildren()){
                     ArrayList<String> price=new ArrayList<String>();
@@ -364,12 +417,14 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             }
             else {
                 generateLog.appendLog(tag,"All permissions available!");
-                if (valid) {
+                if (verscheck && anim_handle) {
                     Intent i = new Intent(this, PhoneAuthActivity.class);
                     startActivity(i);
+                    overridePendingTransition(R.anim.animation_slide1, R.anim.animation_slide2);
                     finish();
                 }
                 else {
+                    permcheck=true;
                     valid=true;
                 }
             }
@@ -568,12 +623,14 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
 
                     if (CameraPermission && RecordAudioPermission && WriteStoragePermission && ReadStorgaePermission && LocationService && CallPhone) {
                         generateLog.appendLog(tag,"Request Permission Granted !");
-                        if (valid) {
+                        if (verscheck && anim_handle) {
                             Intent i = new Intent(this, PhoneAuthActivity.class);
                             startActivity(i);
+                            overridePendingTransition(R.anim.animation_slide1, R.anim.animation_slide2);
                             finish();
                         }
                         else {
+                            permcheck=true;
                             valid=true;
                         }
                         //Toast.makeText(AnimationActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
@@ -581,12 +638,14 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
                     else {
                         //Toast.makeText(WelcomeScreen.this,"Permission Denied",Toast.LENGTH_LONG).show();
                         generateLog.appendLog(tag,"Request Permission Denied !");
-                        if (valid){
+                        if (verscheck && anim_handle){
                             Intent i = new Intent(this,PhoneAuthActivity.class);
                             startActivity(i);
+                            overridePendingTransition(R.anim.animation_slide1, R.anim.animation_slide2);
                             finish();
                         }
                         else {
+                            permcheck=true;
                             valid=true;
                         }
                     }
@@ -706,9 +765,10 @@ public class WelcomeScreen extends AppCompatActivity implements GoogleApiClient.
             }
             else {
                 findViewById(R.id.network_status).setVisibility(View.GONE);
-                if (load==1) {
+                if (load==1 && anim_handle) {
                     Intent i = new Intent(WelcomeScreen.this, PhoneAuthActivity.class);
                     startActivity(i);
+                    overridePendingTransition(R.anim.animation_slide1, R.anim.animation_slide2);
                     finish();
                 }
             }

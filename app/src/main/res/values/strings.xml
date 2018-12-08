@@ -86,4 +86,6 @@
     <array name="delete_list">
         <item>Delete</item>
     </array>
+
+    <string name="default_notification_channel_id">channel-01</string>
 </resources>
